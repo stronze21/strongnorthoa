@@ -18,6 +18,7 @@ return new class extends Migration
             // $table->rememberToken()->nullable();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->foreignId('sspl_id')->nullable();
             // $table->timestamps();
         });
     }
@@ -30,7 +31,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['email_verified_at', 'current_team_id', 'profile_photo_path', 'created_at', 'updated_at', 'remember_token']);
+            $table->dropColumn(['email_verified_at', 'current_team_id', 'profile_photo_path', 'created_at', 'updated_at', 'remember_token', 'sspl_id']);
         });
     }
 };

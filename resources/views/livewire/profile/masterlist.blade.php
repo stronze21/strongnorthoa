@@ -14,15 +14,16 @@
 <div class="flex flex-col px-3 py-5 mx-auto">
     <div class="flex justify-between">
         <div>
-            <a href="{{route('cs.add')}}" class="btn btn-sm btn-primary">Add Cooking Show</a>
+            <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">Add Cooking Show</a>
         </div>
         <div>
             <div class="form-control">
                 <label class="input-group input-group-sm">
                     <span><i class="las la-search"></i></span>
-                    <input type="text" placeholder="Search" class="input input-bordered input-sm" wire:model.lazy="search" />
+                    <input type="text" placeholder="Search" class="input input-bordered input-sm"
+                        wire:model.lazy="search" />
                 </label>
-              </div>
+            </div>
         </div>
     </div>
     <div class="flex flex-col justify-center w-full mt-2 overflow-x-auto">
@@ -48,11 +49,11 @@
             <tbody>
                 @forelse ($users as $user)
                     <tr class="border cursor-pointer hover">
-                        <td>{{$user->user_id}}</td>
-                        <td class="capitalize">{{$user->full_name}}</td>
-                        <td>{{$user->birth_date ?? 'Not Set'}}</td>
-                        <td>{{$user->municipality ? $user->municipality->municipality_name : 'Not Set'}}</td>
-                        <td>{{$user->province ? $user->province->province_name : 'Not Set'}}</td>
+                        <td>{{ $user->user_id }}</td>
+                        <td class="capitalize">{{ $user->full_name }}</td>
+                        <td>{{ $user->birth_date ?? 'Not Set' }}</td>
+                        <td>{{ $user->municipality ? $user->municipality->municipality_name : 'Not Set' }}</td>
+                        <td>{{ $user->province ? $user->province->province_name : 'Not Set' }}</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -64,14 +65,14 @@
                         <td></td>
                     </tr>
                 @empty
-                <tr>
-                    <th class="text-center" colspan="9">No record found!</th>
-                </tr>
+                    <tr>
+                        <th class="text-center" colspan="9">No record found!</th>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
         <div class="mt-2">
-            {{$users->links()}}
+            {{ $users->links() }}
         </div>
-      </div>
+    </div>
 </div>

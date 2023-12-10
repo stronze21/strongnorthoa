@@ -17,10 +17,13 @@ class CreateUserLifechangerProfilesTable extends Migration
         Schema::create('user_lifechanger_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class, 'user_id')->constrained('users')->references('user_id');
-            $table->string('occupation');
-            $table->string('current_level');
-            $table->foreignIdFor(User::class, 'team_builder')->constrained('users')->references('user_id');
-            $table->foreignIdFor(User::class, 'distributor')->constrained('users')->references('user_id');
+            $table->string('occupation')->nullable();
+            $table->string('current_level')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->string('birth_place')->nullable();
+            $table->string('civil_status')->nullable();
+            $table->foreignIdFor(User::class, 'team_builder')->constrained('users')->references('user_id')->nullable();
+            $table->foreignIdFor(User::class, 'distributor')->constrained('users')->references('user_id')->nullable();
             $table->timestamps();
         });
     }

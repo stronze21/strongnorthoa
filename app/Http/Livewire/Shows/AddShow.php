@@ -38,7 +38,7 @@ class AddShow extends Component
         $this->occupation = null;
         $this->host_email = null;
         $this->social_media = null;
-        $this->lifechanger = null;
+        $this->lifechanger = Auth::user()->fullname();
         $this->presenter = null;
         $this->partner = null;
         $this->partner_type = null;
@@ -52,7 +52,7 @@ class AddShow extends Component
     public function save()
     {
         $this->validate([
-            'date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:'.$this->min_date],
+            'date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:' . $this->min_date],
             'time' => ['required'],
             'type' => ['required', 'string'],
             'host' => ['required', 'string'],

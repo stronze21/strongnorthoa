@@ -33,24 +33,25 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'full_name', 'email', 'password', 'pw',
-            'f_name',
-            'l_name',
-            'm_name',
-            'birth_date',
-            'region_id',
-            'province_id',
-            'municipality',
+        'f_name',
+        'l_name',
+        'm_name',
+        'birth_date',
+        'region_id',
+        'province_id',
+        'municipality',
+        'current_level',
     ];
 
     /**
-    * Get the password for the user.
-    *
-    * @return string
-    */
-   public function getAuthPassword()
-   {
-       return $this->pw;
-   }
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->pw;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -101,5 +102,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile()
     {
         return $this->hasOne(UserLifechangerProfile::class, 'user_id', 'user_id');
+    }
+
+    public function fullname()
+    {
+        $fullname = $this->l_name ? $this->l_name . ', ' . $this->f_name . ' ' . $this->m_name : $this->full_name;
+
+        return $fullname;
     }
 }
