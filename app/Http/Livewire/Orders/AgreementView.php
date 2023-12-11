@@ -12,7 +12,7 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 class AgreementView extends Component
 {
     use LivewireAlert;
-    protected $listeners = ['return_item', 'return_gift', 'delete_item', 'submit_order'];
+    protected $listeners = ['return_item', 'return_gift', 'delete_item', 'submit_order', 'cancel_order'];
 
     public $oa;
     public $item_id, $item_qty = 1, $item_remarks;
@@ -43,7 +43,7 @@ class AgreementView extends Component
         $product = Product::find($this->item_id);
 
 
-        if($product->tblset_id){
+        if ($product->tblset_id) {
             OrderAgreementItem::create([
                 'order_agreement_id' => $this->oa->id,
                 'product_id' => $this->item_id,
@@ -53,7 +53,7 @@ class AgreementView extends Component
                 'remarks' => 'Composed of:',
             ]);
 
-            foreach($product->set->compositions()->get() as $row){
+            foreach ($product->set->compositions()->get() as $row) {
                 OrderAgreementItem::create([
                     'order_agreement_id' => $this->oa->id,
                     'product_id' => $row->product_id,
@@ -64,7 +64,7 @@ class AgreementView extends Component
                     'tblset_id' => $row->tblsets_id,
                 ]);
             }
-        }else{
+        } else {
             OrderAgreementItem::create([
                 'order_agreement_id' => $this->oa->id,
                 'product_id' => $this->item_id,
@@ -76,7 +76,7 @@ class AgreementView extends Component
         }
 
         $this->resetExcept('oa');
-        $this->alert('success', $this->item_qty.' '.$product->product_description.' added to order as item.');
+        $this->alert('success', $this->item_qty . ' ' . $product->product_description . ' added to order as item.');
     }
 
     public function add_gift()
@@ -99,12 +99,12 @@ class AgreementView extends Component
         ]);
 
         $this->resetExcept('oa');
-        $this->alert('success', $this->item_qty.' '.$product->product_description.' added to order as gift.');
+        $this->alert('success', $this->item_qty . ' ' . $product->product_description . ' added to order as gift.');
     }
 
     public function delete_item($item_id, $type)
     {
-        switch($type){
+        switch ($type) {
             case "item":
                 $delete = OrderAgreementItem::find($item_id);
                 break;
@@ -114,7 +114,7 @@ class AgreementView extends Component
                 break;
         }
         $delete->delete();
-        $this->alert('success', $type.' removed successfully!');
+        $this->alert('success', $type . ' removed successfully!');
     }
 
     public function update_details()
@@ -142,7 +142,7 @@ class AgreementView extends Component
 
         $image_base64 = base64_decode($image_parts[1]);
 
-        $file = $folderPath . uniqid() . '.'.$image_type;
+        $file = $folderPath . uniqid() . '.' . $image_type;
         file_put_contents($file, $image_base64);
 
         return $this->alert('success', 'success Full upload signature');
@@ -150,6 +150,7 @@ class AgreementView extends Component
 
     public function submit_order()
     {
+        $this->oa->status = 'Waiting Confirmation';
         $this->oa->submitted = true;
         $this->oa->save();
 
@@ -160,5 +161,12 @@ class AgreementView extends Component
         ]);
     }
 
+    public function cancel_order()
+    {
+        $this->oa->status = 'Cancelled';
+        $this->oa->save();
 
+        $this->resetExcept('oa');
+        $this->alert('success', 'Order Cancelled.');
+    }
 }

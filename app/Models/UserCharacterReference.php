@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class UserCharacterReference extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'relationship',
+        'contact',
+    ];
 }

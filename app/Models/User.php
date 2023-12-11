@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
-use App\Models\Region;
-use App\Models\Province;
 use App\Models\Municipality;
-use Laravel\Jetstream\HasTeams;
-use Laravel\Sanctum\HasApiTokens;
-use Laravel\Jetstream\HasProfilePhoto;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\Province;
+use App\Models\Region;
+use App\Models\UserLifechangerProfile;
+use App\Models\UserLifechangerPromotion;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\HasTeams;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -109,5 +111,16 @@ class User extends Authenticatable implements MustVerifyEmail
         $fullname = $this->l_name ? $this->l_name . ', ' . $this->f_name . ' ' . $this->m_name : $this->full_name;
 
         return $fullname;
+    }
+
+    public function full_address()
+    {
+        $address = $this->address . ', ' . $this->municipality->municipality_name . ', ' . $this->province->province_name;
+        return $address;
+    }
+
+    public function cur_level()
+    {
+        return $this->hasOne(UserLifechangerPromotion::class, 'user_id', 'user_id')->latest('date_promoted');
     }
 }

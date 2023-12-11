@@ -21,18 +21,29 @@
                             <th>Consultant</th>
                             <th>Associate</th>
                             <th>Presenter</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($orders as $oa)
-                            <tr wire:key="view-oa-{{$oa->id}}" wire:click="view_oa({{$oa->id}})" class="cursor-pointer hover">
-                                <td>{{$oa->date}}</td>
-                                <td>{{$oa->cs_id}}</td>
-                                <td>{{$oa->client}}</td>
-                                <td>{{$oa->contact}}</td>
-                                <td>{{$oa->consultant}}</td>
-                                <td>{{$oa->associate}}</td>
-                                <td>{{$oa->presenter}}</td>
+                            <tr wire:key="view-oa-{{ $oa->id }}" wire:click="view_oa({{ $oa->id }})"
+                                class="cursor-pointer hover">
+                                <td>{{ $oa->date }}</td>
+                                <td>{{ $oa->cs_id }}</td>
+                                <td>{{ $oa->client }}</td>
+                                <td>{{ $oa->contact }}</td>
+                                <td>{{ $oa->consultant }}</td>
+                                <td>{{ $oa->associate }}</td>
+                                <td>{{ $oa->presenter }}</td>
+                                <td>
+                                    @if ($oa->status == 'Cancelled')
+                                        <span class="badge badge-error">{{ $oa->status }}</span>
+                                    @elseif ($oa->status == 'Pending')
+                                        <span class="badge badge-warning">{{ $oa->status }}</span>
+                                    @else
+                                        <span class="badge badge-success">{{ $oa->status }}</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -42,7 +53,7 @@
                     </tbody>
                 </table>
                 <div class="mt-2">
-                    {{$orders->links()}}
+                    {{ $orders->links() }}
                 </div>
             </div>
         </div>
@@ -59,9 +70,10 @@
                     <span>Select Cooking Show</span>
                     <label class="w-full input-group">
                         <select class="w-full max-w-xs select-bordered select" wire:model='cs_id'>
-                                <option></option>
+                            <option></option>
                             @foreach ($bookings as $show)
-                                <option value="{{$show->cs_id}}">{{$show->date}} - {{$show->host}}</option>
+                                <option value="{{ $show->cs_id }}">{{ $show->date }} - {{ $show->host }}
+                                </option>
                             @endforeach
                         </select>
                         <button class="btn btn-outline btn-error" wire:click="$set('cs_id', null)">X</button>
@@ -71,90 +83,90 @@
                 <label class="mb-3 h3">Cooking Show Details</label>
                 <div class="mb-3 form-control">
                     <label class="label">
-                      <span class="label-text">Date</span>
+                        <span class="label-text">Date</span>
                     </label>
                     <label class="input-group">
-                      <span>Date</span>
-                      <input type="date" wire:model="oa_date" class="input input-bordered" />
+                        <span>Date</span>
+                        <input type="date" wire:model="oa_date" class="input input-bordered" />
                     </label>
                     @error('oa_date')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
 
                 <label class="h4">Client Details</label>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Name</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_client"/>
+                        <span>Name</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_client" />
                     </label>
                     @error('oa_client')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Address</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_address"/>
+                        <span>Address</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_address" />
                     </label>
                     @error('oa_address')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full mb-3 form-control">
                     <label class="input-group">
-                      <span>Contact</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_contact"/>
+                        <span>Contact</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_contact" />
                     </label>
                     @error('oa_contact')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
 
                 <label class="h4">Lifechangers Involved</label>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Consultant</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_consultant"/>
+                        <span>Consultant</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_consultant" />
                     </label>
                     @error('oa_consultant')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Associate</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_associate"/>
+                        <span>Associate</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_associate" />
                     </label>
                     @error('oa_associate')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Presenter</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_presenter"/>
+                        <span>Presenter</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_presenter" />
                     </label>
                     @error('oa_presenter')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Team Builder</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_team_builder"/>
+                        <span>Team Builder</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_team_builder" />
                     </label>
                     @error('oa_team_builder')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full mb-2 form-control">
                     <label class="input-group">
-                      <span>Distributor</span>
-                      <input type="text" class="w-full input input-bordered" wire:model="oa_distributor"/>
+                        <span>Distributor</span>
+                        <input type="text" class="w-full input input-bordered" wire:model="oa_distributor" />
                     </label>
                     @error('oa_distributor')
-                        <small class="text-error">{{$message}}</small>
+                        <small class="text-error">{{ $message }}</small>
                     @enderror
                 </div>
             </div>

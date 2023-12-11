@@ -12,6 +12,7 @@ use App\Http\Livewire\Orders\AgreementView;
 use App\Http\Livewire\Reports\UserDashboard;
 use App\Http\Livewire\Reports\GeneralDashboard;
 use App\Http\Controllers\SignaturePadController;
+use App\Http\Livewire\Profile\AssociateForm;
 use App\Http\Livewire\Profile\LifechangerProfile;
 
 
@@ -33,7 +34,8 @@ Route::middleware([
 ])->group(function () {
 
     Route::get('/', GeneralDashboard::class)->name('gen.dashboard');
-    Route::get('/lifechanger-profile', LifechangerProfile::class)->name('lc.profile');
+    Route::get('/lifechanger-profile/{userID?}', LifechangerProfile::class)->name('lc.profile');
+    Route::get('/lifechanger-profile/assoc-form/{userID}', AssociateForm::class)->name('lc.assoc.form');
     Route::get('/lifechanger-masterlist', Masterlist::class)->name('lc.masterlist');
 
     Route::prefix('/cookingshows')->name('cs.')->group(function () {

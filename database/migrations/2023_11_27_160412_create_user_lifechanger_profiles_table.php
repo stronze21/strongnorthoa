@@ -22,6 +22,10 @@ class CreateUserLifechangerProfilesTable extends Migration
             $table->date('birth_date')->nullable();
             $table->string('birth_place')->nullable();
             $table->string('civil_status')->nullable();
+            $table->date('cs_date')->nullable();
+            $table->decimal('amount_invested')->nullable();
+            $table->date('sign_up_date')->nullable();
+            $table->foreignIdFor(User::class, 'team_leader')->constrained('users')->references('user_id')->nullable();
             $table->foreignIdFor(User::class, 'team_builder')->constrained('users')->references('user_id')->nullable();
             $table->foreignIdFor(User::class, 'distributor')->constrained('users')->references('user_id')->nullable();
             $table->timestamps();

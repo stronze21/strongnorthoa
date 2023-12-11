@@ -9,8 +9,15 @@
 </x-slot>
 
 <div class="flex flex-col mx-auto space-x-0 max-w-screen-2xl">
+    @if ($user->profile)
+        <div class="flex justify-end mt-5">
+            <a class="btn btn-sm btn-primary" href="{{ route('lc.assoc.form', $user->user_id) }}" target="_blank">Preview
+                Associate
+                Form</a>
+        </div>
+    @endif
     <div class="flex flex-col w-full px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
-        <span class="text-3xl font-bold">Personal Details</span>
+        <span class="text-2xl font-bold">Personal Details</span>
         @if ($errors->any())
             <div class="mb-3 rounded-lg shadow-lg alert alert-error">
                 <div>
@@ -181,13 +188,22 @@
                         readonly />
                 </label>
             </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Name of Spouse (if any):<span class="text-error">*</span></span>
+                </label>
+                <label class="">
+                    <input wire:model.defer="spouse" type="text" class="w-full input input-sm input-bordered"
+                        readonly />
+                </label>
+            </div>
         </div>
         <div class="flex justify-end mt-4">
             <button class="btn btn-primary" wire:click="save()">Save</button>
         </div>
     </div>
     <div class="flex flex-col w-full px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
-        <span class="text-3xl font-bold">Name of Children/Dependents</span>
+        <span class="text-2xl font-bold">Name of Children/Dependents</span>
         <div class="w-full">
             <table class="table w-full mb-3 overflow-auto table-pin-rows table-xs">
                 <thead class="border">
@@ -248,7 +264,7 @@
         </div>
     </div>
     <div class="flex flex-col w-full px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
-        <span class="text-3xl font-bold">Work Experience</span>
+        <span class="text-2xl font-bold">Work Experience</span>
         <div class="w-full">
             <table class="table w-full mb-3 overflow-auto table-pin-rows table-xs">
                 <thead class="border">
@@ -336,32 +352,54 @@
         </div>
     </div>
     <div class="flex flex-col w-full px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
-        <span class="text-3xl font-bold">Character References</span>
+        <span class="text-2xl font-bold">Character References</span>
+        <div class="w-full">
+            <table class="table w-full mb-3 overflow-auto table-pin-rows table-xs">
+                <thead class="border">
+                    <tr>
+                        <th>Name</th>
+                        <th>Relationship</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody class="border">
+                    @forelse ($references as $reference)
+                        <tr>
+                            <td>{{ $reference->name }}</td>
+                            <td>{{ $reference->relationship }}</td>
+                            <td>{{ $reference->contact }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5">No record found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Name<span class="text-error">*</span></span>
                 </label>
                 <label class="">
-                    <input wire:model.defer="child_name" type="text"
-                        class="w-full input input-sm input-bordered" />
+                    <input wire:model.defer="ref_name" type="text" class="w-full input input-sm input-bordered" />
                 </label>
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date of Birth<span class="text-error">*</span></span>
+                    <span class="label-text">Relationship<span class="text-error">*</span></span>
                 </label>
                 <label class="">
-                    <input wire:model.defer="child_dob" type="text"
-                        class="w-full input input-sm input-bordered" />
+                    <input wire:model.defer="ref_rel" type="text" class="w-full input input-sm input-bordered" />
                 </label>
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">School<span class="text-error">*</span></span>
+                    <span class="label-text">Contact #<span class="text-error">*</span></span>
                 </label>
                 <label class="">
-                    <input wire:model.defer="child_school" type="text"
+                    <input wire:model.defer="ref_contact" type="text"
                         class="w-full input input-sm input-bordered" />
                 </label>
             </div>
@@ -371,17 +409,43 @@
         </div>
     </div>
     <div class="flex flex-col w-full px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
-        <span class="text-3xl font-bold">Lifechanger Profile</span>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <span class="text-2xl font-bold">Lifechanger Profile</span>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Spirit of Success Program Level<span class="text-error">*</span></span>
+                    <span class="label-text">Date of Cooking Show<span class="text-error">*</span></span>
                 </label>
                 <label class="">
-                    <select wire:model.defer="sspl" class="w-full text-sm select select-sm select-bordered">
-                        <option value="">Not Set</option>
-                        @foreach ($levels as $level)
-                            <option value="{{ $level->id }}">{{ $level->level }}</option>
+                    <input wire:model.defer="cs_date" type="date" class="w-full input input-sm input-bordered" />
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Amount Invested<span class="text-error">*</span></span>
+                </label>
+                <label class="">
+                    <input wire:model.defer="amount_invested" type="number"
+                        class="w-full input input-sm input-bordered" />
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Sign-up Date<span class="text-error">*</span></span>
+                </label>
+                <label class="">
+                    <input wire:model.defer="sign_up_date" type="date"
+                        class="w-full input input-sm input-bordered" />
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Team Leader<span class="text-error">*</span></span>
+                </label>
+                <label class="">
+                    <select wire:model="team_leader" class="w-full text-sm select select-sm select-bordered">
+                        <option value=""></option>
+                        @foreach ($lcs as $lc)
+                            <option value="{{ $lc->user_id }}" class="uppercase">{{ $lc->full_name }}</option>
                         @endforeach
                     </select>
                 </label>
@@ -406,15 +470,66 @@
                 <label class="">
                     <select wire:model="distributor" class="w-full text-sm select select-sm select-bordered">
                         <option value=""></option>
-                        @foreach ($lcs as $lc)
-                            <option value="{{ $lc->user_id }}">{{ $lc->full_name }}</option>
+                        @foreach ($distribs as $dis)
+                            <option value="{{ $dis->user_id }}">{{ $dis->user->full_name }}</option>
                         @endforeach
                     </select>
                 </label>
             </div>
         </div>
         <div class="flex justify-end mt-4">
-            <button class="btn btn-primary" wire:click="add_dependent()">Save</button>
+            <button class="btn btn-primary" wire:click="save_profile()">Save</button>
         </div>
+        <span class="mt-5 text-2xl font-bold">Promotion History</span>
+        <div class="w-full">
+            <table class="table w-full mb-3 overflow-auto table-pin-rows table-xs">
+                <thead class="border">
+                    <tr>
+                        <th>Level</th>
+                        <th>Date Promoted</th>
+                    </tr>
+                </thead>
+                <tbody class="border">
+                    @forelse ($promotions as $promotion)
+                        <tr>
+                            <td>{{ $promotion->sspl->level }}</td>
+                            <td>{{ $promotion->date_promoted }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5">No record found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Spirit of Success Program Level<span class="text-error">*</span></span>
+                </label>
+                <label class="">
+                    <select wire:model.defer="sspl_id" class="w-full text-sm select select-sm select-bordered">
+                        <option value="">Not Set</option>
+                        @foreach ($levels as $level)
+                            <option value="{{ $level->id }}">{{ $level->level }}</option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Date Promoted<span class="text-error">*</span></span>
+                </label>
+                <label class="">
+                    <input wire:model.defer="date_promoted" type="date"
+                        class="w-full input input-sm input-bordered" />
+                </label>
+            </div>
+        </div>
+        <div class="flex justify-end mt-4">
+            <button class="btn btn-primary" wire:click="add_promotion()">Save</button>
+        </div>
+
     </div>
 </div>
