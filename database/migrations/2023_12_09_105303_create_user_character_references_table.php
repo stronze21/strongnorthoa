@@ -16,7 +16,7 @@ class CreateUserCharacterReferencesTable extends Migration
     {
         Schema::create('user_character_references', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class, 'user_id')->constrained('users')->references('user_id');
+            $table->bigInteger('user_id');
             $table->string('name');
             $table->string('relationship');
             $table->string('contact');

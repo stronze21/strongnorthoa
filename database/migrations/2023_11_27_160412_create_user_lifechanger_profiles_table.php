@@ -16,7 +16,7 @@ class CreateUserLifechangerProfilesTable extends Migration
     {
         Schema::create('user_lifechanger_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class, 'user_id')->constrained('users')->references('user_id');
+            $table->bigInteger('user_id');
             $table->string('occupation')->nullable();
             $table->string('current_level')->nullable();
             $table->date('birth_date')->nullable();
@@ -25,9 +25,9 @@ class CreateUserLifechangerProfilesTable extends Migration
             $table->date('cs_date')->nullable();
             $table->decimal('amount_invested')->nullable();
             $table->date('sign_up_date')->nullable();
-            $table->foreignIdFor(User::class, 'team_leader')->constrained('users')->references('user_id')->nullable();
-            $table->foreignIdFor(User::class, 'team_builder')->constrained('users')->references('user_id')->nullable();
-            $table->foreignIdFor(User::class, 'distributor')->constrained('users')->references('user_id')->nullable();
+            $table->bigInteger('team_leader')->nullable();
+            $table->bigInteger('team_builder')->nullable();
+            $table->bigInteger('distributor')->nullable();
             $table->timestamps();
         });
     }

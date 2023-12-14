@@ -16,7 +16,7 @@ class CreateUserWorkExperiencesTable extends Migration
     {
         Schema::create('user_work_experiences', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class, 'user_id')->constrained('users')->references('user_id');
+            $table->bigInteger('user_id');
             $table->string('name');
             $table->string('contact');
             $table->string('position');

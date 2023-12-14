@@ -1,19 +1,24 @@
 <?php
 
-use App\Http\Livewire\Shows\AddShow;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Livewire\Shows\ViewShow;
-use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\Shows\BookedShows;
-use App\Http\Livewire\Shows\CookedShows;
-use App\Http\Livewire\Profile\Masterlist;
+use App\Http\Controllers\SignaturePadController;
+use App\Http\Livewire\Contests\CsCreate;
+use App\Http\Livewire\Contests\CsList;
+use App\Http\Livewire\Contests\CsView;
 use App\Http\Livewire\Orders\AgreementList;
 use App\Http\Livewire\Orders\AgreementView;
-use App\Http\Livewire\Reports\UserDashboard;
-use App\Http\Livewire\Reports\GeneralDashboard;
-use App\Http\Controllers\SignaturePadController;
 use App\Http\Livewire\Profile\AssociateForm;
 use App\Http\Livewire\Profile\LifechangerProfile;
+use App\Http\Livewire\Profile\Masterlist;
+use App\Http\Livewire\Reports\GeneralDashboard;
+use App\Http\Livewire\Reports\UserDashboard;
+use App\Http\Livewire\Shows\AddShow;
+use App\Http\Livewire\Shows\BookedShows;
+use App\Http\Livewire\Shows\CookedShows;
+use App\Http\Livewire\Shows\ViewShow;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+
 
 
 /*
@@ -49,6 +54,9 @@ Route::middleware([
         Route::get('/', AgreementList::class)->name('list');
         Route::get('/{oa_id}', AgreementView::class)->name('view');
     });
+    Route::get('/contests', CsList::class)->middleware('auth')->name('contests.list');
+    Route::get('/contests/view/{contest_id}', CsView::class)->middleware('auth')->name('contests.view');
+    Route::get('/contests/create', CsCreate::class)->name('contests.create');
 
     Route::get('signaturepad/{oa_id}', [SignaturePadController::class, 'index'])->name('signaturepad');
     Route::post('signaturepad', [SignaturePadController::class, 'upload'])->name('signaturepad.upload');

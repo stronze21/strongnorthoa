@@ -29,53 +29,58 @@ class CookingShow extends Model
         return $this->hasMany(Result::class, 'cs_id', 'cs_id');
     }
 
+    public function contest()
+    {
+        return $this->belongsTo(Contest::class);
+    }
+
     public function full_address()
     {
-        $line_1 = $this->address.' ';
-        $line_2 = $this->address_2 ? $this->address_2.', ' : '';
-        $city = $this->city_town ? $this->city_town.', ' : '';
+        $line_1 = $this->address . ' ';
+        $line_2 = $this->address_2 ? $this->address_2 . ', ' : '';
+        $city = $this->city_town ? $this->city_town . ', ' : '';
         $province = $this->province;
 
-        $full_address = $line_1.$line_2.$city.$province;
+        $full_address = $line_1 . $line_2 . $city . $province;
 
         return $full_address;
     }
 
     public function host_fullname()
     {
-        $surename = $this->host_surename ? $this->host_surename.', ' : '';
-        return $surename.$this->host;
+        $surename = $this->host_surename ? $this->host_surename . ', ' : '';
+        return $surename . $this->host;
     }
 
     public function current_result()
     {
 
-        if($this->result == 'Closed'){
+        if ($this->result == 'Closed') {
             $result = '
             <div class="shadow-lg badge badge-success">
                 <div>
-                    <span>'.$this->result.'</span>
+                    <span>' . $this->result . '</span>
                 </div>
             </div>';
-        }elseif($this->result == 'For Follow Up'){
+        } elseif ($this->result == 'For Follow Up') {
             $result = '
             <div class="shadow-lg badge badge-warning">
                 <div>
-                    <span>'.$this->result.'</span>
+                    <span>' . $this->result . '</span>
                 </div>
             </div>';
-        }elseif($this->result == 'Booked'){
+        } elseif ($this->result == 'Booked') {
             $result = '
             <div class="shadow-lg badge badge-ghost">
                 <div>
-                    <span>'.$this->result.'</span>
+                    <span>' . $this->result . '</span>
                 </div>
             </div>';
-        }else{
+        } else {
             $result = '
             <div class="shadow-lg badge badge-error">
                 <div>
-                    <span>'.$this->result.'</span>
+                    <span>' . $this->result . '</span>
                 </div>
             </div>';
         }
