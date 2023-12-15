@@ -18,7 +18,9 @@ class Contest extends Model
         'shows',
         'sales',
         'sets',
-        'strict'
+        'strict',
+        'restriction',
+        'sspl_id',
     ];
 
     public function cs()
@@ -30,5 +32,10 @@ class Contest extends Model
     {
         $date = Carbon::parse($this->created_at)->format('mdy');
         return 'CNTST-' . $date . '-' . sprintf('%04d', $this->id);
+    }
+
+    public function sspl()
+    {
+        return $this->belongsTo(Sspl::class);
     }
 }

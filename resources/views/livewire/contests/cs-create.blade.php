@@ -71,7 +71,8 @@
                 <span class="label-text">Shows<span class="text-error">*</span></span>
             </label>
             <label class="">
-                <input wire:model.defer="shows" type="text" class="w-full input input-sm input-bordered" />
+                <input wire:model.defer="shows" type="number" step='1'
+                    class="w-full input input-sm input-bordered" />
             </label>
         </div>
         <div class="form-control">
@@ -79,7 +80,8 @@
                 <span class="label-text">Sales<span class="text-error">*</span></span>
             </label>
             <label class="">
-                <input wire:model.defer="sales" type="text" class="w-full input input-sm input-bordered" />
+                <input wire:model.defer="sales" type="number" step='0.01'
+                    class="w-full input input-sm input-bordered" />
             </label>
         </div>
         <div class="form-control">
@@ -87,7 +89,8 @@
                 <span class="label-text">Sets<span class="text-error">*</span></span>
             </label>
             <label class="">
-                <input wire:model.defer="sets" type="text" class="w-full input input-sm input-bordered" />
+                <input wire:model.defer="sets" type="number" step='0.01'
+                    class="w-full input input-sm input-bordered" />
             </label>
         </div>
     </div>
@@ -109,14 +112,14 @@
             </label>
             <select wire:model="level_restriction" class="text-sm select select-sm select-bordered">
                 <option value="all">--All--</option>
-                <option value="specify">--Specify Lifechanger/s--</option>
+                <option value="specific">--Specify Lifechanger/s--</option>
                 @foreach ($sspls as $sspl)
                     <option value="{{ $sspl->id }}">{{ $sspl->level }}</option>
                 @endforeach
             </select>
         </div>
     </div>
-    <div class="{{ $level_restriction == 'specify' ? '' : 'hidden' }}">
+    <div class="{{ $level_restriction == 'specific' ? '' : 'hidden' }}">
         <div class="transition-all form-control" wire:ignore>
             <label class="label">
                 <span class="label-text">Lifechanger<span class="text-error">*</span></span>

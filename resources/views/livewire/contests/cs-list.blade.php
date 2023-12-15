@@ -39,6 +39,7 @@
                     <th class="text-end">Start Date</th>
                     <th class="text-end">End Date</th>
                     <th class="text-center">Strict</th>
+                    <th class="text-center">Restriction</th>
                     <th></th>
                 </tr>
             </thead>
@@ -54,6 +55,9 @@
                         <td class="text-end">{{ \Carbon\Carbon::create($row->start_date)->format('M d, Y') }}</td>
                         <td class="text-end">{{ \Carbon\Carbon::create($row->end_date)->format('M d, Y') }}</td>
                         <td class="text-center">{{ $row->strict === 0 ? 'No' : 'Yes' }}</td>
+                        <td class="uppercase">{{ $row->restriction }}
+                            {{ $row->restriction == 'level' ? ': ' . $row->sspl->level : '' }}
+                        </td>
                         <td></td>
                     </tr>
                 @empty

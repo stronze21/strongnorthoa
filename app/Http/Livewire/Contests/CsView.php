@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Contests;
 
 use Carbon\Carbon;
 use App\Models\Contest;
+use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
@@ -17,21 +18,39 @@ class CsView extends Component
         $contest = Contest::find($this->contest_id);
         $start = $this->dt->create($contest->start_date)->format('Y-m-d');
         $end = $this->dt->create($contest->end_date)->format('Y-m-d');
-        if(!$contest->strict){
-            $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
-                            (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
-                            (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
-                        FROM `cooking_shows` as cs
-                        WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'
-                        GROUP BY cs.lifechanger ORDER BY sales DESC, sets DESC, shows DESC;";
-        }else{
-            $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
-                            (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
-                            (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
-                        FROM `cooking_shows` as cs
-                        WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'
-                        GROUP BY cs.lifechanger ORDER BY sales DESC, sets DESC, shows DESC;";
+        $select = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
+                    (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
+                    (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
+                    FROM `cooking_shows` as cs";
+        $order_by = " GROUP BY cs.user_id ORDER BY sales DESC, sets DESC, shows DESC;";
+        $join = "";
+        $where2 = "";
+
+        if (!$contest->strict) {
+            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'";
+            // $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
+            //                 (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
+            //                 (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
+            //             FROM `cooking_shows` as cs
+            //             WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'
+            //             GROUP BY cs.lifechanger ORDER BY sales DESC, sets DESC, shows DESC;";
+        } else {
+            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'";
+            // $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
+            //                 (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
+            //                 (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
+            //             FROM `cooking_shows` as cs
+            //             WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'
+            //             GROUP BY cs.lifechanger ORDER BY sales DESC, sets DESC, shows DESC;";
         }
+
+        if ($contest->restriction == 'level') {
+            $join = " INNER JOIN user_lifechanger_profiles as prof ON cs.user_id = prof.user_id";
+            $where2 = " AND prof.current_level = '$contest->sspl_id'";
+        }
+
+        $query = $select . $join . $where . $where2 . $order_by;
+
 
         $data = DB::select(DB::raw($query));
         // dd($data);

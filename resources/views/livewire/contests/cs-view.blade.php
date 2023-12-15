@@ -39,6 +39,7 @@
                 <table class="table table-hover table-sm" style="font-size: 12px;">
                     <thead class="fw-bold table-light">
                         <tr>
+                            <th>#</th>
                             <th>Lifechanger</th>
                             <th class="text-center">Shows</th>
                             <th class="text-center">Sales</th>
@@ -49,6 +50,7 @@
                     <tbody>
                         @foreach ($data as $row)
                             <tr>
+                                <td class="uppercase">{{ $loop->iteration }}</td>
                                 <td class="uppercase">{{ $row->lifechanger }}</td>
                                 <td class="text-center">
                                     <div class="flex flex-col justify-center">
