@@ -1,63 +1,83 @@
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between">
-                <span>Contest Title: <span class="fw-bolder text-uppercase">{{$contest->title}}</span></span>
-                <div class="d-flex">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text" id="search"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input class="form-control form-control-sm" type="text" wire:model.lazy="search" aria-label="Search" aria-describedby="search">
-                    </div>
-                </div>
-            </div>
+<x-slot name="header">
+    <div class="text-sm breadcrumbs">
+        <ul>
+            <li class="font-bold">
+                <i class="mr-1 las la-project-diagram la-lg"></i> Contests
+            </li>
+            <li>
+                <i class="mr-1 las la-eye la-lg"></i> View
+            </li>
+            <li>
+                {{ $contest->serial() }}
+            </li>
+        </ul>
+    </div>
+</x-slot>
 
+<div class="flex flex-col px-3 py-5 mx-auto max-w-screen-2xl">
+    <div class="p-5 bg-white rounded-md shadow-md">
+        <div class="flex flex-col justify-center px-2 mx-auto text-center">
+            <span class="text-xl font-black uppercase">{{ $contest->title }}</span>
+            <span class="text-xl font-semibold uppercase">{{ $contest->serial() }}</span>
         </div>
-        <div class="card-body" id="printDiv">
-            <div class="px-2 mb-3 fw-bold d-flex justify-content-between">
-                <div>
-                    <span class="row">{{$contest->description}}</span>
-                    <span class="row">Contest Duration: {{$contest->start_date}} to {{$contest->end_date}}</span>
-                    <span class="row">Days Remaining: {{$dt->diffInDays($contest->end_date)}}</span>
+
+        <div id="printDiv">
+            <div class="flex justify-between gap-2 px-2 mb-3 font-bold">
+                <div class="flex flex-col">
+                    <span>{{ $contest->description }}</span>
+                    <span>Contest Duration: {{ $contest->start_date }} to {{ $contest->end_date }}</span>
+                    <span>Days Remaining: {{ $dt->diffInDays($contest->end_date) }}</span>
                 </div>
-                <div class="me-5">
-                    <span class="row">Required Shows: {{$contest->shows}}</span>
-                    <span class="row">Required Sales: {{number_format($contest->sales,2)}}</span>
-                    <span class="row">Required Sets: {{number_format($contest->sets,2)}} </span>
+                <div class="flex flex-col">
+                    <span>Required Shows: {{ $contest->shows }}</span>
+                    <span>Required Sales: {{ number_format($contest->sales, 2) }}</span>
+                    <span>Required Sets: {{ number_format($contest->sets, 2) }} </span>
                 </div>
             </div>
             <hr>
             <div class="table">
-                <table class="table table-hover table-bordered table-striped" style="font-size: 12px;">
+                <table class="table table-hover table-sm" style="font-size: 12px;">
                     <thead class="fw-bold table-light">
                         <tr>
                             <th>Lifechanger</th>
-                            <th>Shows</th>
-                            <th>Sales</th>
-                            <th>Sets</th>
+                            <th class="text-center">Shows</th>
+                            <th class="text-center">Sales</th>
+                            <th class="text-center">Sets</th>
                             {{-- <th></th> --}}
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $row)
-                        <tr>
-                            <td class="text-uppercase">{{$row->lifechanger}}</td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: @if($contest->shows != 0) {{($row->shows/$contest->shows)*100}}%@else 100% @endif" aria-valuenow="{{$row->shows}}" aria-valuemin="0" aria-valuemax="{{$contest->shows}}">{{$row->shows}}/{{$contest->shows}}</div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: @if($contest->sales != 0) {{($row->sales/$contest->sales)*100}}%@else 100% @endif" aria-valuenow="{{$row->sales}}" aria-valuemin="0" aria-valuemax="{{$contest->sales}}">{{number_format($row->sales,2)}} / {{number_format($contest->sales,2)}}</div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: @if($contest->sets != 0) {{($row->sets/$contest->sets)*100}}%@else 100% @endif" aria-valuenow="{{$row->sets}}" aria-valuemin="0" aria-valuemax="{{$contest->sets}}">{{number_format($row->sets,2)}} / {{number_format($contest->sets,2)}}</div>
-                                </div>
-                            </td>
-                            {{-- <td></td> --}}
-                        </tr>
+                            <tr>
+                                <td class="uppercase">{{ $row->lifechanger }}</td>
+                                <td class="text-center">
+                                    <div class="flex flex-col justify-center">
+                                        <span>{{ $row->shows }}/{{ $contest->shows }}</span>
+                                        <progress class="w-56 mx-auto progress progress-warning"
+                                            value="{{ $row->shows }}" max="{{ $contest->shows }}">
+                                        </progress>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="flex flex-col justify-center">
+                                        <span>{{ number_format($row->sales, 2) }}/{{ number_format($contest->sales, 2) }}</span>
+                                        <progress class="w-56 mx-auto progress progress-success"
+                                            value="{{ $row->sales }}"
+                                            max="{{ $contest->sales }}">{{ number_format($row->sales, 2) }} /
+                                        </progress>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="flex flex-col justify-center">
+                                        <span>{{ number_format($row->sets, 2) }}/{{ number_format($contest->sets, 2) }}</span>
+                                        <progress class="w-56 mx-auto progress progress-primary"
+                                            value="{{ $row->sets }}"
+                                            max="{{ $contest->sets }}">{{ number_format($row->sets, 2) }} /
+                                        </progress>
+                                    </div>
+                                </td>
+                                {{-- <td></td> --}}
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -65,4 +85,3 @@
         </div>
     </div>
 </div>
-
