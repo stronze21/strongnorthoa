@@ -107,7 +107,6 @@ class LifechangerProfile extends Component
         $user->address = $this->address;
         $user->contact_no = $this->contact_no;
         $user->email = $this->email;
-        $user->sspl_id = $this->sspl_id;
         $user->save();
 
         $profile = UserLifechangerProfile::firstOrCreate([

@@ -30,6 +30,7 @@
         <table class="table w-full table-zebra table-bordered table-compact">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th class="text-end">Required Shows</th>
@@ -44,6 +45,7 @@
             <tbody>
                 @forelse ($data as $row)
                     <tr wire:click="viewContest({{ $row->id }})" class="cursor-pointer">
+                        <td class="text-uppercase">{{ $row->serial() }}</td>
                         <td class="text-uppercase">{{ $row->title }}</td>
                         <td>{{ $row->description }}</td>
                         <td class="text-end">{{ $row->shows }}</td>

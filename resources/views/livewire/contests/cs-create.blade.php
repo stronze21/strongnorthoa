@@ -27,17 +27,6 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Date<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="date" type="date" min="{{ date('Y-m-d') }}"
-                    class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-    </div>
     <div class="grid grid-cols-1 gap-3 md:grid-cols-1">
         <div class="form-control">
             <label class="label">
@@ -76,7 +65,83 @@
             </label>
         </div>
     </div>
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text">Shows<span class="text-error">*</span></span>
+            </label>
+            <label class="">
+                <input wire:model.defer="shows" type="text" class="w-full input input-sm input-bordered" />
+            </label>
+        </div>
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text">Sales<span class="text-error">*</span></span>
+            </label>
+            <label class="">
+                <input wire:model.defer="sales" type="text" class="w-full input input-sm input-bordered" />
+            </label>
+        </div>
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text">Sets<span class="text-error">*</span></span>
+            </label>
+            <label class="">
+                <input wire:model.defer="sets" type="text" class="w-full input input-sm input-bordered" />
+            </label>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text">Strict? <span class="text-xs">(If "YES", points used in this contest do not
+                        share/overlap with other contest/s.)</span><span class="text-error">*</span></span>
+            </label>
+            <select wire:model.defer="strict" class="text-sm select select-sm select-bordered">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text">Level <span class="text-xs">(If "OPEN", all levels are included.)</span><span
+                        class="text-error">*</span></span>
+            </label>
+            <select wire:model="level_restriction" class="text-sm select select-sm select-bordered">
+                <option value="all">--All--</option>
+                <option value="specify">--Specify Lifechanger/s--</option>
+                @foreach ($sspls as $sspl)
+                    <option value="{{ $sspl->id }}">{{ $sspl->level }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="{{ $level_restriction == 'specify' ? '' : 'hidden' }}">
+        <div class="transition-all form-control" wire:ignore>
+            <label class="label">
+                <span class="label-text">Lifechanger<span class="text-error">*</span></span>
+            </label>
+            <select id="lifechangers" class="text-sm select select2 select-sm select-bordered" multiple>
+                <option></option>
+                @foreach ($lcs as $lc)
+                    <option value="{{ $lc->user_id }}">{{ $lc->fullname() }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
     <div class="flex justify-center mt-3">
         <button class="btn btn-primary" wire:click="save()">Submit</button>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        $('.select2').select2({
+            width: 'resolve',
+        });
+
+        $('#lifechangers').on('change', function() {
+            @this.set('lifechangers', $('#lifechangers').select2('val'));
+        })
+    </script>
+@endpush

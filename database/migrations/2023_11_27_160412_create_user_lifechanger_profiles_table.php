@@ -17,6 +17,7 @@ class CreateUserLifechangerProfilesTable extends Migration
         Schema::create('user_lifechanger_profiles', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id');
+            $table->string('spouse')->nullable();
             $table->string('occupation')->nullable();
             $table->string('current_level')->nullable();
             $table->date('birth_date')->nullable();

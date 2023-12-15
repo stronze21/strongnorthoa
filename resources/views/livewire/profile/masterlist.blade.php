@@ -52,10 +52,10 @@
                         wire:click='view_lc("{{ $user->user_id }}")'>
                         <td>{{ $user->user_id }}</td>
                         <td class="capitalize">{{ $user->full_name }}</td>
-                        <td>{{ $user->birth_date ?? 'Not Set' }}</td>
-                        <td>{{ $user->municipality ? $user->municipality->municipality_name : 'Not Set' }}</td>
-                        <td>{{ $user->province ? $user->province->province_name : 'Not Set' }}</td>
                         @if ($user->profile)
+                            <td>{{ $user->profile->birth_date ?? 'Not Set' }}</td>
+                            <td>{{ $user->municipality ? $user->municipality->municipality_name : 'Not Set' }}</td>
+                            <td>{{ $user->province ? $user->province->province_name : 'Not Set' }}</td>
                             <td>{{ $user->profile->sign_up_date }}</td>
                             <td>{{ $user->profile->builder ? $user->profile->builder->fullname() : '' }}</td>
                             <td>{{ $user->profile->leader ? $user->profile->leader->fullname() : '' }}</td>
@@ -66,7 +66,7 @@
                             <td>{{ $user->cur_level->sspl->level }}</td>
                             <td>{{ $user->cur_level->sspl->date_promoted }}</td>
                         @else
-                            <td colspan="9" class="uppercase text-error">Profile not set</td>
+                            <td colspan="12" class="uppercase text-error">Profile not set</td>
                         @endif
                     </tr>
                 @empty
