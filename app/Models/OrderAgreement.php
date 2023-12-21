@@ -30,7 +30,8 @@ class OrderAgreement extends Model
         'initial_investment',
         'terms',
         'host_signature',
-
+        'price_diff',
+        'price_override',
     ];
 
     public function items()
