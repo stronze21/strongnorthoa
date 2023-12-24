@@ -63,8 +63,8 @@
                             <td>{{ $user->profile->cs_date }}</td>
                             <td>{{ $user->profile->amount_invested }}</td>
                             <td>{{ $user->email_verified_at ? 'Active' : 'Inactive' }}</td>
-                            <td>{{ $user->cur_level->sspl->level }}</td>
-                            <td>{{ $user->cur_level->sspl->date_promoted }}</td>
+                            <td>{{ $user->cur_level ? $user->cur_level->sspl->level : 'N/A' }}</td>
+                            <td>{{ $user->cur_level ? $user->cur_level->sspl->date_promoted : 'N/A' }}</td>
                         @else
                             <td colspan="12" class="uppercase text-error">Profile not set</td>
                         @endif

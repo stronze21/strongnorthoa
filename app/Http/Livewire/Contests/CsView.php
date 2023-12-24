@@ -18,16 +18,16 @@ class CsView extends Component
         $contest = Contest::find($this->contest_id);
         $start = $this->dt->create($contest->start_date)->format('Y-m-d');
         $end = $this->dt->create($contest->end_date)->format('Y-m-d');
-        $select = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
-                    (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
-                    (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
+        $select = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows', main.id as maid, cs.contest_id,
+        (SELECT SUM(rs.amount) FROM trial_dr.orders as oa join trial_dr.order_payment_histories as rs on rs.oa_id = oa.oa_id WHERE oa.reference_oa = main.id GROUP BY rs.oa_id) as 'sales',
+        (SELECT SUM(rs.amount)/320000 FROM trial_dr.orders as oa join trial_dr.order_payment_histories as rs on rs.oa_id = oa.oa_id WHERE oa.reference_oa = main.id GROUP BY rs.oa_id) as 'sets'
                     FROM `cooking_shows` as cs";
         $order_by = " GROUP BY cs.user_id ORDER BY sales DESC, sets DESC, shows DESC;";
-        $join = "";
+        $join = " join order_agreements main on cs.cs_id = main.cs_id";
         $where2 = "";
 
         if (!$contest->strict) {
-            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'";
+            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result = 'Closed') AND lifechanger LIKE '%$this->search%'";
             // $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
             //                 (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
             //                 (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
@@ -35,7 +35,7 @@ class CsView extends Component
             //             WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'
             //             GROUP BY cs.lifechanger ORDER BY sales DESC, sets DESC, shows DESC;";
         } else {
-            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'";
+            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result = 'Closed) AND lifechanger LIKE '%$this->search%'";
             // $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
             //                 (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
             //                 (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id

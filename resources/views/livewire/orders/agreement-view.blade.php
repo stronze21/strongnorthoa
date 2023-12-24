@@ -25,11 +25,14 @@
 
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-xl sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200 sm:px-20">
-                <div class="mt-8 text-2xl text-center uppercase text-error">
-                    Cancelled
-                    Order Agreement
-                </div>
+            <div class="p-6 text-center bg-white border-b border-gray-200 sm:px-20">
+                <h3 class="font-bold">ORDER AGREEMENT</h3>
+                @if ($oa->final_oa)
+                    <h7 class="font-bold text-error">{{ $oa->final_oa->oa_number }}</h7>
+                @else
+                    <h7 class="font-bold text-error">OA ref ID: #{{ $oa->id }}</h7>
+                @endif
+                <hr>
             </div>
 
             <div class="bg-opacity-25">

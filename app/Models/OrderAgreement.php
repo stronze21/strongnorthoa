@@ -48,4 +48,9 @@ class OrderAgreement extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function final_oa()
+    {
+        return $this->hasOne(Order::class, 'reference_oa', 'id');
+    }
 }

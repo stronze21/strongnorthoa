@@ -33,16 +33,22 @@ class CreateNewUser implements CreatesNewUsers
 
         return DB::transaction(function () use ($input) {
             return tap(User::create([
-                'full_name' => $input['l_name'].', '.$input['f_name'].' '.$input['m_name'],
+                'full_name' => $input['l_name'] . ', ' . $input['f_name'] . ' ' . $input['m_name'],
                 'l_name' => $input['l_name'],
                 'f_name' => $input['f_name'],
                 'm_name' => $input['m_name'],
                 'email' => $input['email'],
                 'pw' => Hash::make($input['password']),
             ]), function (User $user) {
-                $this->createTeam($user);
+                $this->setRole($user);
             });
         });
+    }
+
+    protected function setRole(User $user)
+    {
+        $user->assignRole('user');
+        return true;
     }
 
     /**
@@ -56,7 +62,7 @@ class CreateNewUser implements CreatesNewUsers
         return true;
         $user->ownedTeams()->save(Team::forceCreate([
             'user_id' => $user->id,
-            'name' => explode(' ', $user->full_name, 2)[0]."'s Team",
+            'name' => explode(' ', $user->full_name, 2)[0] . "'s Team",
             'personal_team' => true,
         ]));
     }
