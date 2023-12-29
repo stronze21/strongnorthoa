@@ -33,7 +33,7 @@ class CsView extends Component
         }
 
         if ($contest->restriction == 'level') {
-            $join = " INNER JOIN user_lifechanger_profiles as prof ON cs.user_id = prof.user_id";
+            $join = $join . " INNER JOIN user_lifechanger_profiles as prof ON cs.user_id = prof.user_id";
             $where2 = " AND prof.current_level = '$contest->sspl_id'";
         }
 
