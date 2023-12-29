@@ -42,9 +42,10 @@ class AddShow extends Component
         $this->presenter = null;
         $this->partner = null;
         $this->partner_type = null;
-        $this->team_builder = null;
-        $this->distributor = null;
-        $this->sspl = null;
+        $this->team_builder = Auth::user()->profile->builder ? Auth::user()->profile->builder->fullname() : 'N/A';
+        $this->distributor = Auth::user()->profile->distrib ? Auth::user()->profile->distrib->fullname() : 'N/A';
+        $this->sspl = Auth::user()->cur_level ? Auth::user()->cur_level->sspl->level : '0';
+
         $this->reason1 = null;
         $this->reason2 = null;
     }

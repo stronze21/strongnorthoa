@@ -201,7 +201,8 @@
                 <span class="label-text">Spirit of Success Program Level<span class="text-error">*</span></span>
             </label>
             <label class="">
-                <select wire:model.defer="sspl" class="w-full select select-bordered" readonly>
+                <select wire:model.defer="sspl" class="w-full select select-bordered" readonly disabled>
+                    <option value="0">Not Set</option>
                     <option value="Associate">Associate</option>
                     <option value="Consultant">Consultant</option>
                     <option value="Senior Consultant">Senior Consultant</option>
