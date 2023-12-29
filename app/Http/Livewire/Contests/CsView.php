@@ -27,7 +27,7 @@ class CsView extends Component
         $where2 = "";
 
         if (!$contest->strict) {
-            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result = 'Closed') AND lifechanger LIKE '%$this->search%'";
+            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result = 'Closed')";
             // $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
             //                 (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
             //                 (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
@@ -35,7 +35,7 @@ class CsView extends Component
             //             WHERE (cs.date BETWEEN '$start' AND '$end') AND (cs.contest_id IS NULL OR cs.contest_id = '') AND (cs.result <> 'Reschedule' OR cs.result <> 'Cancelled') AND lifechanger LIKE '%$this->search%'
             //             GROUP BY cs.lifechanger ORDER BY sales DESC, sets DESC, shows DESC;";
         } else {
-            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result = 'Closed) AND lifechanger LIKE '%$this->search%'";
+            $where = " WHERE (cs.date BETWEEN '$start' AND '$end') AND cs.contest_id = '$contest->id' AND (cs.result = 'Closed)";
             // $query = "SELECT lifechanger, COUNT(cs.cs_id) as 'shows',
             //                 (SELECT SUM(rs.amount) FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sales',
             //                 (SELECT SUM(rs.amount)/320000 FROM results as rs WHERE rs.cs_id = cs.cs_id) as 'sets', cs.contest_id
