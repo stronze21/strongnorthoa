@@ -62,7 +62,7 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div class="form-control">
             <label class="label">
-                <span class="label-text">Name of Host<span class="text-error">*</span></span>
+                <span class="label-text">First Name of Host<span class="text-error">*</span></span>
             </label>
             <label class="">
                 <input wire:model.defer="host" type="text" class="w-full input input-sm input-bordered" />
@@ -70,7 +70,7 @@
         </div>
         <div class="form-control">
             <label class="label">
-                <span class="label-text">Surename of Host<span class="text-error">*</span></span>
+                <span class="label-text">Last Name of Host<span class="text-error">*</span></span>
             </label>
             <label class="">
                 <input wire:model.defer="host_surename" type="text" class="w-full input input-sm input-bordered" />
