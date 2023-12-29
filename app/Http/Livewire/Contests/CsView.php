@@ -23,7 +23,7 @@ class CsView extends Component
         (SELECT SUM(rs.amount)/320000 FROM order_agreements as oa join order_agreement_payment_histories as rs on rs.order_agreement_id = oa.id WHERE oa.id = main.id GROUP BY rs.order_agreement_id) as 'sets'
                     FROM `cooking_shows` as cs";
         $order_by = " GROUP BY cs.user_id ORDER BY sales DESC, sets DESC, shows DESC;";
-        $join = " join order_agreements main on cs.cs_id = main.cs_id";
+        $join = " join order_agreements as main on cs.cs_id = main.cs_id";
         $where2 = "";
 
         if (!$contest->strict) {
