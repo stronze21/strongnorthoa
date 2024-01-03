@@ -20,7 +20,7 @@ class LifechangerProfile extends Component
 {
     use LivewireAlert;
 
-    protected $listeners = ['update_child'];
+    protected $listeners = ['update_child', 'remove_child', 'update_experience', 'remove_experience'];
 
     public $user_id;
     public $f_name, $m_name, $l_name, $birthdate;
@@ -219,8 +219,30 @@ class LifechangerProfile extends Component
         $this->alert('success', 'Added new dependent successfully!');
     }
 
+    public function remove_child($child_id)
+    {
+        $child = UserDependent::find($child_id);
+        $child->delete();
+        $this->alert('warning', 'Dependent removed!');
+    }
+
     public function add_experience()
     {
+        $validate = $this->validate([
+            'exp_name' => ['required', 'string', 'max:255'],
+            'exp_contact' => ['required', 'string', 'max:13'],
+            'exp_position' => ['required', 'string', 'max:255'],
+            'exp_salary' => ['required', 'string', 'max:255'],
+            'exp_from' => ['required', 'date', 'before:' . date('Y-m-d')],
+            'exp_to' => ['nullable', 'date'],
+        ], [
+            'exp_name.required' => 'Company name is required...',
+            'exp_contact.required' => 'Company contact is required...',
+            'exp_position.required' => 'Position is required...',
+            'exp_salary.required' => 'Salary is required...',
+            'exp_from.required' => 'Date of start required...',
+        ]);
+
         UserWorkExperience::create([
             'user_id' => $this->user_id,
             'name' => $this->exp_name,
@@ -232,6 +254,43 @@ class LifechangerProfile extends Component
         ]);
         $this->reset('exp_name', 'exp_contact', 'exp_position', 'exp_salary', 'exp_from', 'exp_to');
         $this->alert('success', 'Added new work experience successfully!');
+    }
+
+    public function update_experience($work_id)
+    {
+        $validate = $this->validate([
+            'exp_name' => ['required', 'string', 'max:255'],
+            'exp_contact' => ['required', 'string', 'max:13'],
+            'exp_position' => ['required', 'string', 'max:255'],
+            'exp_salary' => ['required', 'string', 'max:255'],
+            'exp_from' => ['required', 'date', 'before:' . date('Y-m-d')],
+            'exp_to' => ['nullable', 'date'],
+        ], [
+            'exp_name.required' => 'Company name is required...',
+            'exp_contact.required' => 'Company contact is required...',
+            'exp_position.required' => 'Position is required...',
+            'exp_salary.required' => 'Salary is required...',
+            'exp_from.required' => 'Date of start required...',
+        ]);
+
+        $work = UserWorkExperience::find($work_id);
+        $work->name = $this->exp_name;
+        $work->contact = $this->exp_contact;
+        $work->position = $this->exp_position;
+        $work->salary = $this->exp_salary;
+        $work->from_date = $this->exp_from;
+        $work->to_date = $this->exp_to;
+        $work->save();
+
+        $this->reset('exp_name', 'exp_contact', 'exp_position', 'exp_salary', 'exp_from', 'exp_to');
+        $this->alert('success', 'Updated dependent successfully!');
+    }
+
+    public function remove_experience($work_id)
+    {
+        $child = UserWorkExperience::find($work_id);
+        $child->delete();
+        $this->alert('warning', 'Work experience removed!');
     }
 
     public function add_reference()
@@ -248,11 +307,13 @@ class LifechangerProfile extends Component
 
     public function add_promotion()
     {
-        UserLifechangerPromotion::create([
+        $promotion = UserLifechangerPromotion::firstOrCreate([
             'user_id' => $this->user_id,
             'sspl_id' => $this->sspl_id,
-            'date_promoted' => $this->date_promoted,
         ]);
+        $promotion->date_promoted = $this->date_promoted;
+        $promotion->save();
+
         $this->reset('sspl_id', 'date_promoted');
         $this->alert('success', 'Added new promotion history successfully!');
     }

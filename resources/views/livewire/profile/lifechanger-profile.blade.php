@@ -359,6 +359,7 @@
                         <th>Position</th>
                         <th>Salary</th>
                         <th>Inclusive Dates</th>
+                        <th class="text-center">Update/Delete</th>
                     </tr>
                 </thead>
                 <tbody class="border">
@@ -369,6 +370,10 @@
                             <td>{{ $work->position }}</td>
                             <td>{{ number_format($work->salary, 2) }}</td>
                             <td>{{ $work->from_date . ' - ' . ($date->to_date ?? 'present') }}</td>
+                            <td class="text-center"><a class="btn btn-xs btn-warning"
+                                    onclick="update_experience(`{{ $work->id }}`, `{{ $work->name }}`, `{{ $work->contact }}`, `{{ $work->position }}`, `{{ $work->salary }}`, `{{ $work->from_date }}`, `{{ $work->to_date ?? null }}`)"><i
+                                        class="las la-edit"></i></a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -381,7 +386,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Name<span class="text-error">*</span></span>
+                    <span class="label-text">Name
+                        <span class="text-error">*
+                            @error('exp_name')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="exp_name" type="text" class="w-full input input-sm input-bordered" />
@@ -389,7 +400,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Contact</span>
+                    <span class="label-text">Contact
+                        <span class="text-error">*
+                            @error('exp_contact')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="exp_contact" type="text"
@@ -398,7 +415,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Position<span class="text-error">*</span></span>
+                    <span class="label-text">Position
+                        <span class="text-error">*
+                            @error('exp_position')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="exp_position" type="text"
@@ -407,7 +430,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Salary<span class="text-error">*</span></span>
+                    <span class="label-text">Salary
+                        <span class="text-error">*
+                            @error('exp_salary')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="exp_salary" type="text"
@@ -416,7 +445,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Start Date<span class="text-error">*</span></span>
+                    <span class="label-text">Start Date
+                        <span class="text-error">*
+                            @error('exp_from')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="exp_from" type="date" class="w-full input input-sm input-bordered" />
@@ -425,7 +460,13 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">End Date <span class="text-xs text-error">Defaults to "present" if not
-                            set.</span></span>
+                            set.</span>
+                        <span class="text-error">
+                            @error('exp_to')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="exp_to" type="date" class="w-full input input-sm input-bordered" />
@@ -639,6 +680,8 @@
                         </div>`,
                 showCancelButton: true,
                 confirmButtonText: `Save`,
+                showDenyButton: true,
+                denyButtonText: `Delete`,
                 didOpen: () => {}
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
@@ -651,6 +694,72 @@
                     @this.set('child_school', new_child_school.value);
 
                     Livewire.emit('update_child', id)
+                } else if (result.isDenied) {
+                    Livewire.emit('remove_child', id)
+                }
+            });
+        }
+
+        function update_experience(id, name, contact, position, salary, start_date, end_date = null) {
+            Swal.fire({
+                title: '<h5> Update Dependent </h5>',
+                html: `<div class="text-left">
+                            <label for="name" class="label-text">Name</label>
+                            <input id="work_name" type="text" class="w-full input input-sm input-bordered" value="` +
+                    name +
+                    `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="contact" class="label-text">Contact</label>
+                            <input id="work_contact" type="text" class="w-full input input-sm input-bordered" value="` +
+                    contact +
+                    `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="position" class="label-text">Position</label>
+                            <input id="work_position" type="text" class="w-full input input-sm input-bordered" value="` +
+                    position + `" required>
+                        </div>
+                        <div class="text-left">
+                            <label for="salary" class="label-text">Salary</label>
+                            <input id="work_salary" type="text" class="w-full input input-sm input-bordered" value="` +
+                    salary +
+                    `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="start_date" class="label-text">Start Date</label>
+                            <input id="work_start_date" type="date" class="w-full input input-sm input-bordered" value="` +
+                    start_date +
+                    `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="end_date" class="label-text">End Date</label>
+                            <input id="work_end_date" type="text" class="w-full input input-sm input-bordered" required>
+                        </div>`,
+                showCancelButton: true,
+                confirmButtonText: `Save`,
+                showDenyButton: true,
+                denyButtonText: `Delete`,
+                didOpen: () => {}
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    const new_name = Swal.getHtmlContainer().querySelector('#work_name')
+                    const new_contact = Swal.getHtmlContainer().querySelector('#work_contact')
+                    const new_position = Swal.getHtmlContainer().querySelector('#work_position')
+                    const new_salary = Swal.getHtmlContainer().querySelector('#work_salary')
+                    const new_start_date = Swal.getHtmlContainer().querySelector('#work_start_date')
+                    const new_end_date = Swal.getHtmlContainer().querySelector('#work_end_date')
+                    @this.set('exp_name', new_name.value);
+                    @this.set('exp_contact', new_contact.value);
+                    @this.set('exp_position', new_position.value);
+                    @this.set('exp_salary', new_salary.value);
+                    @this.set('exp_from', new_start_date.value);
+                    @this.set('exp_to', new_end_date.value);
+
+                    Livewire.emit('update_experience', id)
+                } else if (result.isDenied) {
+                    Livewire.emit('remove_experience', id)
                 }
             });
         }
