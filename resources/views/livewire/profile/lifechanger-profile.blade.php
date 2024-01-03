@@ -255,8 +255,7 @@
                     </span>
                 </label>
                 <label class="">
-                    <input wire:model.defer="spouse" type="text" class="w-full input input-sm input-bordered"
-                        readonly />
+                    <input wire:model.defer="spouse" type="text" class="w-full input input-sm input-bordered" />
                 </label>
             </div>
         </div>
