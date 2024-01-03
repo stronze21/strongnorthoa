@@ -639,17 +639,16 @@
                         </div>`,
                 showCancelButton: true,
                 confirmButtonText: `Save`,
-                didOpen: () => {
-                    const new_child_name = Swal.getHtmlContainer().querySelector('#name')
-                    const new_child_dob = Swal.getHtmlContainer().querySelector('#dob')
-                    const new_child_school = Swal.getHtmlContainer().querySelector('#school')
-                }
+                didOpen: () => {}
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    @this.set('child_name');
-                    @this.set('child_dob');
-                    @this.set('child_school');
+                    const new_child_name = Swal.getHtmlContainer().querySelector('#name')
+                    const new_child_dob = Swal.getHtmlContainer().querySelector('#dob')
+                    const new_child_school = Swal.getHtmlContainer().querySelector('#school')
+                    @this.set('child_name', new_child_name.value);
+                    @this.set('child_dob', new_child_dob.value);
+                    @this.set('child_school', new_child_school.value);
 
                     Livewire.emit('update_child', id)
                 }
