@@ -56,7 +56,10 @@ class LifechangerProfile extends Component
         $references = UserCharacterReference::where('user_id', $this->user_id)->get();
         $promotions = UserLifechangerPromotion::where('user_id', $this->user_id)->orderBy('date_promoted', 'DESC')->get();
 
-        return view('livewire.profile.lifechanger-profile', compact('user', 'distribs', 'regions', 'provinces', 'municipalities', 'lcs', 'levels', 'dependents', 'works', 'references', 'promotions'));
+        return view(
+            'livewire.profile.lifechanger-profile',
+            compact('user', 'distribs', 'regions', 'provinces', 'municipalities', 'lcs', 'levels', 'dependents', 'works', 'references', 'promotions')
+        );
     }
 
     public function mount($userID = null)
@@ -96,6 +99,31 @@ class LifechangerProfile extends Component
 
     public function save()
     {
+
+        $validate = $this->validate([
+            'f_name' => ['required', 'string', 'max:255'],
+            'm_name' => ['nullable', 'string', 'max:255'],
+            'l_name' => ['required', 'string', 'max:255'],
+            'birth_date' => ['required', 'date', 'before:' . date('Y-m-d')],
+            'occupation' => ['nullable', 'string', 'max:255'],
+            'spouse' => ['nullable', 'string', 'max:255'],
+            'civil_status' => ['required', 'string', 'max:20'],
+            'region_id' => ['required', 'exists:table_region,region_id'],
+            'province_id' => ['required', 'exists:table_province,province_id'],
+            'municipality_id' => ['required', 'exists:table_municipality,municipality_id'],
+            'address' => ['required', 'string', 'max:255'],
+            'contact_no' => ['required', 'string', 'max:13'],
+            'email' => ['required', 'string', 'max:255'],
+        ], [
+            'f_name.required' => 'First name required...',
+            'l_name.required' => 'Last name required...',
+            'birth_date.required' => 'Date of birth required...',
+            'region_id.required' => 'Region required...',
+            'province_id.required' => 'Province required...',
+            'municipality_id.required' => 'Municipality required...',
+            'address.required' => 'Addres required...',
+        ]);
+
         $user = User::find($this->user_id);
         $user->f_name = $this->f_name;
         $user->m_name = $this->m_name;
@@ -149,6 +177,20 @@ class LifechangerProfile extends Component
 
     public function add_dependent()
     {
+        $validate = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'birth_date' => ['required', 'date', 'before:' . date('Y-m-d')],
+            'school' => ['nullable', 'string', 'max:255'],
+        ], [
+            'f_name.required' => 'First name required...',
+            'l_name.required' => 'Last name required...',
+            'birth_date.required' => 'Date of birth required...',
+            'region_id.required' => 'Region required...',
+            'province_id.required' => 'Province required...',
+            'municipality_id.required' => 'Municipality required...',
+            'address.required' => 'Addres required...',
+        ]);
+
         UserDependent::create([
             'user_id' => $this->user_id,
             'name' => $this->child_name,

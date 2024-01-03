@@ -18,9 +18,9 @@
     @endif
     <div class="flex flex-col w-full px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
         <span class="text-2xl font-bold">Personal Details</span>
-        @if ($errors->any())
+        {{-- @if ($errors->any())
             <div class="mb-3 rounded-lg shadow-lg alert alert-error">
-                <div>
+                <div class="flex space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 w-6 h-6 stroke-current" fill="none"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -29,12 +29,16 @@
                     <span>{{ $errors->first() }}</span>
                 </div>
             </div>
-        @endif
+        @endif --}}
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">First Name<span class="text-error">*</span></span>
+                    <span class="label-text">First Name<span class="text-error">*
+                            @error('f_name')
+                                {{ $message }}
+                            @enderror
+                        </span></span>
                 </label>
                 <label class="">
                     <input wire:model.defer="f_name" type="text" class="w-full input input-sm input-bordered" />
@@ -42,7 +46,12 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Middle Name<span class="text-error">*</span></span>
+                    <span class="label-text">Middle Name<span class="text-error">*
+                            @error('m_name')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="m_name" type="text" class="w-full input input-sm input-bordered" />
@@ -50,7 +59,12 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Last Name</span>
+                    <span class="label-text">Last Name
+                        <span class="text-error">*
+                            @error('l_name')
+                                {{ $message }}
+                            @enderror
+                        </span></span>
                 </label>
                 <label class="">
                     <input wire:model.defer="l_name" type="text" class="w-full input input-sm input-bordered" />
@@ -61,7 +75,12 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date of Birth<span class="text-error">*</span></span>
+                    <span class="label-text">Date of Birth<span class="text-error">*
+                            @error('birth_date')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="birth_date" type="date" class="w-full input input-sm input-bordered" />
@@ -69,7 +88,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Birthplace<span class="text-error">*</span></span>
+                    <span class="label-text">Birthplace
+                        <span class="text-error">
+                            @error('birth_place')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="birth_place" type="text" class="w-full input input-sm input-bordered" />
@@ -77,7 +102,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Occupation<span class="text-error">*</span></span>
+                    <span class="label-text">Occupation
+                        <span class="text-error">
+                            @error('occupation')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="occupation" type="text" class="w-full input input-sm input-bordered" />
@@ -88,7 +119,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Civil Status<span class="text-error">*</span></span>
+                    <span class="label-text">Civil Status
+                        <span class="text-error">*
+                            @error('civil_status')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <select wire:model.defer="civil_status" class="w-full text-sm select select-sm select-bordered">
@@ -102,7 +139,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Contact No<span class="text-error">*</span></span>
+                    <span class="label-text">Contact No
+                        <span class="text-error">*
+                            @error('contact_no')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="contact_no" type="text" class="w-full input input-sm input-bordered" />
@@ -110,7 +153,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Email<span class="text-error">*</span></span>
+                    <span class="label-text">Email
+                        <span class="text-error">*
+                            @error('email')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="email" type="email" class="w-full input input-sm input-bordered"
@@ -121,7 +170,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Region<span class="text-error">*</span></span>
+                    <span class="label-text">Region
+                        <span class="text-error">*
+                            @error('region_id')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <select wire:model="region_id" class="w-full text-sm select select-sm select-bordered">
@@ -133,7 +188,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Province<span class="text-error">*</span></span>
+                    <span class="label-text">Province
+                        <span class="text-error">*
+                            @error('province_id')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <select wire:model="province_id" class="w-full text-sm select select-sm select-bordered">
@@ -146,13 +207,20 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Municipality<span class="text-error">*</span></span>
+                    <span class="label-text">Municipality
+                        <span class="text-error">*
+                            @error('municipality_id')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <select wire:model="municipality_id" class="w-full text-sm select select-sm select-bordered">
                         <option value=""></option>
                         @foreach ($municipalities as $municipality)
-                            <option value="{{ $municipality->municipality_id }}">{{ $municipality->municipality_name }}
+                            <option value="{{ $municipality->municipality_id }}">
+                                {{ $municipality->municipality_name }}
                             </option>
                         @endforeach
                     </select>
@@ -162,7 +230,13 @@
         <div class="grid grid-cols-1 gap-4">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Address<span class="text-error">*</span></span>
+                    <span class="label-text">Address
+                        <span class="text-error">*
+                            @error('address')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="address" type="text" class="w-full input input-sm input-bordered">
@@ -172,7 +246,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Contact No<span class="text-error">*</span></span>
+                    <span class="label-text">Contact No
+                        <span class="text-error">*
+                            @error('contact_no')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="contact_no" type="text"
@@ -181,16 +261,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Email<span class="text-error">*</span></span>
-                </label>
-                <label class="">
-                    <input wire:model.defer="email" type="email" class="w-full input input-sm input-bordered"
-                        readonly />
-                </label>
-            </div>
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">Name of Spouse (if any):<span class="text-error">*</span></span>
+                    <span class="label-text">Name of Spouse (if any):
+                        <span class="text-error">
+                            @error('spouse')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="spouse" type="text" class="w-full input input-sm input-bordered"
@@ -233,7 +310,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Name<span class="text-error">*</span></span>
+                    <span class="label-text">Name
+                        <span class="text-error">*
+                            @error('child_name')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="child_name" type="text"
@@ -242,7 +325,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date of Birth<span class="text-error">*</span></span>
+                    <span class="label-text">Date of Birth
+                        <span class="text-error">*
+                            @error('child_dob')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="child_dob" type="date"
@@ -251,7 +340,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">School<span class="text-error">*</span></span>
+                    <span class="label-text">School
+                        <span class="text-error">*
+                            @error('child_school')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="child_school" type="text"
