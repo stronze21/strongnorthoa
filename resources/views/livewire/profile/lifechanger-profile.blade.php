@@ -246,21 +246,6 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Contact No
-                        <span class="text-error">*
-                            @error('contact_no')
-                                {{ $message }}
-                            @enderror
-                        </span>
-                    </span>
-                </label>
-                <label class="">
-                    <input wire:model.defer="contact_no" type="text"
-                        class="w-full input input-sm input-bordered" />
-                </label>
-            </div>
-            <div class="form-control">
-                <label class="label">
                     <span class="label-text">Name of Spouse (if any):
                         <span class="text-error">
                             @error('spouse')
@@ -289,6 +274,7 @@
                         <th>Date of Birth</th>
                         <th>Age</th>
                         <th>School</th>
+                        <th class="text-center">Update/Delete</th>
                     </tr>
                 </thead>
                 <tbody class="border">
@@ -298,6 +284,10 @@
                             <td>{{ $dependent->birth_date }}</td>
                             <td>{{ $dependent->age() }}</td>
                             <td>{{ $dependent->school }}</td>
+                            <td class="text-center"><a class="btn btn-xs btn-warning"
+                                    onclick="update_child(`{{ $dependent->id }}`, `{{ $dependent->name }}`, `{{ $dependent->birth_date }}`, `{{ $dependent->school }}`)"><i
+                                        class="las la-edit"></i></a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -341,7 +331,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">School
-                        <span class="text-error">*
+                        <span class="text-error">
                             @error('child_school')
                                 {{ $message }}
                             @enderror
@@ -628,3 +618,42 @@
 
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        function update_child(id, name, dob, school) {
+            Swal.fire({
+                title: '<h5> Update Dependent </h5>',
+                html: `<div class="text-left">
+                            <label for="name" class="label-text">Name</label>
+                            <input id="name" type="text" class="w-full input input-sm input-bordered" value="` + name + `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="dob" class="label-text">Date of Birth</label>
+                            <input id="dob" type="date" class="w-full input input-sm input-bordered" value="` + dob + `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="school" class="label-text">School</label>
+                            <input id="school" type="text" class="w-full input input-sm input-bordered" value="` +
+                    school + `" required>
+                        </div>`,
+                showCancelButton: true,
+                confirmButtonText: `Save`,
+                didOpen: () => {
+                    const new_child_name = Swal.getHtmlContainer().querySelector('#name')
+                    const new_child_dob = Swal.getHtmlContainer().querySelector('#dob')
+                    const new_child_school = Swal.getHtmlContainer().querySelector('#school')
+                }
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    @this.set('child_name');
+                    @this.set('child_dob');
+                    @this.set('child_school');
+
+                    Livewire.emit('update_child', id)
+                }
+            });
+        }
+    </script>
+@endpush

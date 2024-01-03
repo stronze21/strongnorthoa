@@ -20,6 +20,8 @@ class LifechangerProfile extends Component
 {
     use LivewireAlert;
 
+    protected $listeners = ['update_child'];
+
     public $user_id;
     public $f_name, $m_name, $l_name, $birthdate;
     public $region_id, $province_id, $municipality_id, $address;
@@ -178,17 +180,12 @@ class LifechangerProfile extends Component
     public function add_dependent()
     {
         $validate = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'birth_date' => ['required', 'date', 'before:' . date('Y-m-d')],
-            'school' => ['nullable', 'string', 'max:255'],
+            'child_name' => ['required', 'string', 'max:255'],
+            'child_dob' => ['required', 'date', 'before:' . date('Y-m-d')],
+            'child_school' => ['nullable', 'string', 'max:255'],
         ], [
-            'f_name.required' => 'First name required...',
-            'l_name.required' => 'Last name required...',
-            'birth_date.required' => 'Date of birth required...',
-            'region_id.required' => 'Region required...',
-            'province_id.required' => 'Province required...',
-            'municipality_id.required' => 'Municipality required...',
-            'address.required' => 'Addres required...',
+            'child_name.required' => 'Child name required...',
+            'child_dob.required' => 'Child date of birth required...',
         ]);
 
         UserDependent::create([
@@ -197,6 +194,27 @@ class LifechangerProfile extends Component
             'birth_date' => $this->child_dob,
             'school' => $this->child_school,
         ]);
+        $this->reset('child_name', 'child_dob', 'child_school');
+        $this->alert('success', 'Added new dependent successfully!');
+    }
+
+    public function update_child($child_id)
+    {
+        $validate = $this->validate([
+            'child_name' => ['required', 'string', 'max:255'],
+            'child_dob' => ['required', 'date', 'before:' . date('Y-m-d')],
+            'child_school' => ['nullable', 'string', 'max:255'],
+        ], [
+            'child_name.required' => 'Child name required...',
+            'child_dob.required' => 'Child date of birth required...',
+        ]);
+
+        $child = UserDependent::find($child_id);
+        $child->name = $this->child_name;
+        $child->birth_date = $this->child_dob;
+        $child->school = $this->child_school;
+        $child->save();
+
         $this->reset('child_name', 'child_dob', 'child_school');
         $this->alert('success', 'Added new dependent successfully!');
     }
