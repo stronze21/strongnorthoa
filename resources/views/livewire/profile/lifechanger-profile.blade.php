@@ -569,7 +569,7 @@
                 </label>
                 <label class="">
                     <select wire:model="team_leader" class="w-full text-sm select select-sm select-bordered">
-                        <option value=""></option>
+                        <option value="">N/A</option>
                         @foreach ($lcs as $lc)
                             <option value="{{ $lc->user_id }}" class="uppercase">{{ $lc->full_name }}</option>
                         @endforeach
@@ -582,7 +582,7 @@
                 </label>
                 <label class="">
                     <select wire:model="team_builder" class="w-full text-sm select select-sm select-bordered">
-                        <option value=""></option>
+                        <option value="">N/A</option>
                         @foreach ($lcs as $lc)
                             <option value="{{ $lc->user_id }}" class="uppercase">{{ $lc->full_name }}</option>
                         @endforeach
@@ -595,7 +595,7 @@
                 </label>
                 <label class="">
                     <select wire:model="distributor" class="w-full text-sm select select-sm select-bordered">
-                        <option value=""></option>
+                        <option value="">N/A</option>
                         @foreach ($distribs as $dis)
                             <option value="{{ $dis->user_id }}">{{ $dis->user->full_name }}</option>
                         @endforeach
