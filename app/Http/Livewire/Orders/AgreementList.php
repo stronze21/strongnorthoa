@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Orders;
 
 use App\Models\CookingShow;
 use App\Models\OrderAgreement;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,7 +19,7 @@ class AgreementList extends Component
     public function updatedCsId()
     {
         $cs = CookingShow::find($this->cs_id);
-        if($cs){
+        if ($cs) {
             $this->oa_date = $cs->date;
             $this->oa_client = $cs->host_fullname();
             $this->oa_address = $cs->address;
@@ -28,7 +29,7 @@ class AgreementList extends Component
             $this->oa_presenter = $cs->presenter;
             $this->oa_team_builder = $cs->team_builder;
             $this->oa_distributor = $cs->distributor;
-        }else{
+        } else {
             $this->resetExcept('cs_id');
         }
     }
@@ -40,11 +41,19 @@ class AgreementList extends Component
 
     public function render()
     {
-        $orders = OrderAgreement::where('user_id', Auth::user()->user_id)->paginate(20);
-        $bookings = CookingShow::where('host', 'LIKE', '%'.$this->oa_client.'%')
-                                ->where('user_id', Auth::user()->user_id)
-                                ->where('result', '<>', 'Booked')
-                                ->orderBy('date', 'DESC');
+
+        if (User::find(Auth::user()->user_id)->hasRole('admin')) {
+            $orders = OrderAgreement::paginate(20);
+            $bookings = CookingShow::where('host', 'LIKE', '%' . $this->oa_client . '%')
+                ->where('result', '<>', 'Booked')
+                ->orderBy('date', 'DESC');
+        } else {
+            $orders = OrderAgreement::where('user_id', Auth::user()->user_id)->paginate(20);
+            $bookings = CookingShow::where('host', 'LIKE', '%' . $this->oa_client . '%')
+                ->where('user_id', Auth::user()->user_id)
+                ->where('result', '<>', 'Booked')
+                ->orderBy('date', 'DESC');
+        }
 
 
         return view('livewire.orders.agreement-list', [
@@ -55,14 +64,14 @@ class AgreementList extends Component
 
     public function mount()
     {
-        $bookings = CookingShow::where('host', 'LIKE', '%'.$this->oa_client.'%')
-                                ->where('user_id', Auth::user()->user_id)
-                                ->where('result', '<>', 'Booked')
-                                ->orderBy('date', 'DESC')
-                                ->first();
+        $bookings = CookingShow::where('host', 'LIKE', '%' . $this->oa_client . '%')
+            ->where('user_id', Auth::user()->user_id)
+            ->where('result', '<>', 'Booked')
+            ->orderBy('date', 'DESC')
+            ->first();
 
 
-        if($bookings){
+        if ($bookings) {
             $this->cs_id = $bookings->cs_id;
         }
         $this->updatedCsId();
@@ -99,13 +108,12 @@ class AgreementList extends Component
         ]);
 
         $show = CookingShow::find($this->cs_id);
-        if($show){
+        if ($show) {
             $show->result = 'Closed';
             $show->save();
         }
 
         $this->redirect(route('oa.view', ['oa_id' => $oa->id]));
-
     }
 
     public function view_oa($oa_id)
