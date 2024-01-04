@@ -71,4 +71,5 @@ Route::middleware([
     Route::post('signaturepad', [SignaturePadController::class, 'upload'])->name('signaturepad.upload');
 
     Route::get('qr-codes', QrCodes::class)->name('qrs');
+    Route::view('post-show', 'emails.post-cs-questionaire');
 });

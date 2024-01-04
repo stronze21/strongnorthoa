@@ -2,11 +2,13 @@
 
 namespace App\Http\Livewire\Shows;
 
-use Livewire\Component;
+use App\Mail\CookingShowDone;
 use App\Models\CookingShow;
 use App\Models\OrderAgreement;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Component;
 
 class ViewShow extends Component
 {
@@ -18,6 +20,8 @@ class ViewShow extends Component
 
     public function render()
     {
+        // Mail::to('joshua070915@gmail.com')->send(new CookingShowDone());
+
         return view('livewire.shows.view-show');
     }
 
@@ -57,7 +61,6 @@ class ViewShow extends Component
         ]);
 
         $this->redirect(route('oa.view', ['oa_id' => $oa->id]));
-
     }
 
     public function view_oa($oa_id)
@@ -72,7 +75,7 @@ class ViewShow extends Component
         $this->show->save();
         $this->open_modal = false;
 
-        if($this->show->result == 'Closed'){
+        if ($this->show->result == 'Closed') {
             $this->create_oa();
         }
 
