@@ -438,7 +438,7 @@
                     </span>
                 </label>
                 <label class="">
-                    <input wire:model.defer="exp_salary" type="text"
+                    <input wire:model.defer="exp_salary" type="number" step="0.01"
                         class="w-full input input-sm input-bordered" />
                 </label>
             </div>
@@ -485,6 +485,7 @@
                         <th>Name</th>
                         <th>Relationship</th>
                         <th>Contact</th>
+                        <th class="text-center">Update/Delete</th>
                     </tr>
                 </thead>
                 <tbody class="border">
@@ -493,6 +494,10 @@
                             <td>{{ $reference->name }}</td>
                             <td>{{ $reference->relationship }}</td>
                             <td>{{ $reference->contact }}</td>
+                            <td class="text-center"><a class="btn btn-xs btn-warning"
+                                    onclick="update_reference(`{{ $reference->id }}`, `{{ $reference->name }}`, `{{ $reference->relationship }}`, `{{ $reference->contact }}`)"><i
+                                        class="las la-edit"></i></a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -759,6 +764,48 @@
                     Livewire.emit('update_experience', id)
                 } else if (result.isDenied) {
                     Livewire.emit('remove_experience', id)
+                }
+            });
+        }
+
+        function update_reference(id, name, relationship, contact) {
+            Swal.fire({
+                title: '<h5> Update Character Reference </h5>',
+                html: `<div class="text-left">
+                            <label for="new_ref_name" class="label-text">Name</label>
+                            <input id="new_ref_name" type="text" class="w-full input input-sm input-bordered" value="` +
+                    name +
+                    `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="new_ref_rel" class="label-text">Relationship</label>
+                            <input id="new_ref_rel" type="text" class="w-full input input-sm input-bordered" value="` +
+                    relationship +
+                    `" required>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <label for="new_ref_contact" class="label-text">Contact</label>
+                            <input id="new_ref_contact" type="text" class="w-full input input-sm input-bordered" value="` +
+                    contact + `" required>
+                        </div>`,
+                showCancelButton: true,
+                confirmButtonText: `Save`,
+                showDenyButton: true,
+                denyButtonText: `Delete`,
+                didOpen: () => {}
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    const new_ref_name = Swal.getHtmlContainer().querySelector('#new_ref_name')
+                    const new_ref_rel = Swal.getHtmlContainer().querySelector('#new_ref_rel')
+                    const new_ref_contact = Swal.getHtmlContainer().querySelector('#new_ref_contact')
+                    @this.set('ref_name', new_ref_name.value);
+                    @this.set('ref_rel', new_ref_rel.value);
+                    @this.set('ref_contact', new_ref_contact.value);
+
+                    Livewire.emit('update_reference', id)
+                } else if (result.isDenied) {
+                    Livewire.emit('remove_reference', id)
                 }
             });
         }

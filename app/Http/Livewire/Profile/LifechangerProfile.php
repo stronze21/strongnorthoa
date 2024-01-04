@@ -20,7 +20,7 @@ class LifechangerProfile extends Component
 {
     use LivewireAlert;
 
-    protected $listeners = ['update_child', 'remove_child', 'update_experience', 'remove_experience'];
+    protected $listeners = ['update_child', 'remove_child', 'update_experience', 'remove_experience', 'update_reference', 'remove_reference'];
 
     public $user_id;
     public $f_name, $m_name, $l_name, $birthdate;
@@ -232,7 +232,7 @@ class LifechangerProfile extends Component
             'exp_name' => ['required', 'string', 'max:255'],
             'exp_contact' => ['required', 'string', 'max:13'],
             'exp_position' => ['required', 'string', 'max:255'],
-            'exp_salary' => ['required', 'string', 'max:255'],
+            'exp_salary' => ['required', 'integer'],
             'exp_from' => ['required', 'date', 'before:' . date('Y-m-d')],
             'exp_to' => ['nullable', 'date'],
         ], [
@@ -240,6 +240,7 @@ class LifechangerProfile extends Component
             'exp_contact.required' => 'Company contact is required...',
             'exp_position.required' => 'Position is required...',
             'exp_salary.required' => 'Salary is required...',
+            'exp_salary.integer' => 'Salary must be a decimal...',
             'exp_from.required' => 'Date of start required...',
         ]);
 
@@ -262,7 +263,7 @@ class LifechangerProfile extends Component
             'exp_name' => ['required', 'string', 'max:255'],
             'exp_contact' => ['required', 'string', 'max:13'],
             'exp_position' => ['required', 'string', 'max:255'],
-            'exp_salary' => ['required', 'string', 'max:255'],
+            'exp_salary' => ['required', 'integer'],
             'exp_from' => ['required', 'date', 'before:' . date('Y-m-d')],
             'exp_to' => ['nullable', 'date'],
         ], [
@@ -270,6 +271,7 @@ class LifechangerProfile extends Component
             'exp_contact.required' => 'Company contact is required...',
             'exp_position.required' => 'Position is required...',
             'exp_salary.required' => 'Salary is required...',
+            'exp_salary.integer' => 'Salary must be a decimal...',
             'exp_from.required' => 'Date of start required...',
         ]);
 
@@ -295,6 +297,16 @@ class LifechangerProfile extends Component
 
     public function add_reference()
     {
+        $validate = $this->validate([
+            'ref_name' => ['required', 'string', 'max:255'],
+            'ref_rel' => ['required', 'string', 'max:255'],
+            'ref_contact' => ['required', 'string', 'max:13'],
+        ], [
+            'ref_name.required' => 'Reference name is required...',
+            'ref_contact.required' => 'Reference contact is required...',
+            'ref_rel.required' => 'Relationship to reference is required...',
+        ]);
+
         UserCharacterReference::create([
             'user_id' => $this->user_id,
             'name' => $this->ref_name,
@@ -303,6 +315,36 @@ class LifechangerProfile extends Component
         ]);
         $this->reset('ref_name', 'ref_rel', 'ref_contact');
         $this->alert('success', 'Added new character reference successfully!');
+    }
+
+    public function update_reference($ref_id)
+    {
+        $validate = $this->validate([
+            'ref_name' => ['required', 'string', 'max:255'],
+            'ref_rel' => ['required', 'string', 'max:255'],
+            'ref_contact' => ['required', 'string', 'max:13'],
+        ], [
+            'ref_name.required' => 'Reference name is required...',
+            'ref_contact.required' => 'Reference contact is required...',
+            'ref_rel.required' => 'Relationship to reference is required...',
+        ]);
+
+        $ref = UserCharacterReference::find($ref_id);
+        $ref->user_id = $this->user_id;
+        $ref->name = $this->ref_name;
+        $ref->relationship = $this->ref_rel;
+        $ref->contact = $this->ref_contact;
+        $ref->save();
+
+        $this->reset('ref_name', 'ref_rel', 'ref_contact');
+        $this->alert('success', 'Updated reference successfully!');
+    }
+
+    public function remove_reference($ref_id)
+    {
+        $ref = UserCharacterReference::find($ref_id);
+        $ref->delete();
+        $this->alert('warning', 'Character reference removed!');
     }
 
     public function add_promotion()
