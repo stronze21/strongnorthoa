@@ -34,7 +34,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">First Name<span class="text-error">*
+                    <span class="label-text">First Name<span class="text-xs text-error">*
                             @error('f_name')
                                 {{ $message }}
                             @enderror
@@ -46,7 +46,7 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Middle Name<span class="text-error">*
+                    <span class="label-text">Middle Name<span class="text-xs text-error">*
                             @error('m_name')
                                 {{ $message }}
                             @enderror
@@ -60,7 +60,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Last Name
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('l_name')
                                 {{ $message }}
                             @enderror
@@ -75,7 +75,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date of Birth<span class="text-error">*
+                    <span class="label-text">Date of Birth<span class="text-xs text-error">*
                             @error('birth_date')
                                 {{ $message }}
                             @enderror
@@ -89,7 +89,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Birthplace
-                        <span class="text-error">
+                        <span class="text-xs text-error">
                             @error('birth_place')
                                 {{ $message }}
                             @enderror
@@ -103,7 +103,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Occupation
-                        <span class="text-error">
+                        <span class="text-xs text-error">
                             @error('occupation')
                                 {{ $message }}
                             @enderror
@@ -120,7 +120,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Civil Status
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('civil_status')
                                 {{ $message }}
                             @enderror
@@ -140,7 +140,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Contact No
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('contact_no')
                                 {{ $message }}
                             @enderror
@@ -154,7 +154,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Email
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('email')
                                 {{ $message }}
                             @enderror
@@ -171,7 +171,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Region
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('region_id')
                                 {{ $message }}
                             @enderror
@@ -189,7 +189,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Province
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('province_id')
                                 {{ $message }}
                             @enderror
@@ -208,7 +208,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Municipality
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('municipality_id')
                                 {{ $message }}
                             @enderror
@@ -231,7 +231,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Address
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('address')
                                 {{ $message }}
                             @enderror
@@ -247,7 +247,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Name of Spouse (if any):
-                        <span class="text-error">
+                        <span class="text-xs text-error">
                             @error('spouse')
                                 {{ $message }}
                             @enderror
@@ -300,7 +300,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Name
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('child_name')
                                 {{ $message }}
                             @enderror
@@ -315,7 +315,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Date of Birth
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('child_dob')
                                 {{ $message }}
                             @enderror
@@ -330,7 +330,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">School
-                        <span class="text-error">
+                        <span class="text-xs text-error">
                             @error('child_school')
                                 {{ $message }}
                             @enderror
@@ -386,7 +386,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Name
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('exp_name')
                                 {{ $message }}
                             @enderror
@@ -400,7 +400,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Contact
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('exp_contact')
                                 {{ $message }}
                             @enderror
@@ -415,7 +415,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Position
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('exp_position')
                                 {{ $message }}
                             @enderror
@@ -430,7 +430,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Salary
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('exp_salary')
                                 {{ $message }}
                             @enderror
@@ -445,7 +445,7 @@
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Start Date
-                        <span class="text-error">*
+                        <span class="text-xs text-error">*
                             @error('exp_from')
                                 {{ $message }}
                             @enderror
@@ -460,7 +460,7 @@
                 <label class="label">
                     <span class="label-text">End Date <span class="text-xs text-error">Defaults to "present" if not
                             set.</span>
-                        <span class="text-error">
+                        <span class="text-xs text-error">
                             @error('exp_to')
                                 {{ $message }}
                             @enderror
@@ -510,7 +510,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Name<span class="text-error">*</span></span>
+                    <span class="label-text">Name
+                        <span class="text-xs text-error">*
+                            @error('ref_name')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="ref_name" type="text" class="w-full input input-sm input-bordered" />
@@ -518,7 +524,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Relationship<span class="text-error">*</span></span>
+                    <span class="label-text">Relationship
+                        <span class="text-xs text-error">*
+                            @error('ref_rel')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="ref_rel" type="text" class="w-full input input-sm input-bordered" />
@@ -526,7 +538,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Contact #<span class="text-error">*</span></span>
+                    <span class="label-text">Contact #
+                        <span class="text-xs text-error">*
+                            @error('ref_contact')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="ref_contact" type="text"
@@ -543,7 +561,7 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date of Cooking Show<span class="text-error">*</span></span>
+                    <span class="label-text">Date of Cooking Show<span class="text-xs text-error">*</span></span>
                 </label>
                 <label class="">
                     <input wire:model.defer="cs_date" type="date" class="w-full input input-sm input-bordered" />
@@ -551,7 +569,7 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Amount Invested<span class="text-error">*</span></span>
+                    <span class="label-text">Amount Invested<span class="text-xs text-error">*</span></span>
                 </label>
                 <label class="">
                     <input wire:model.defer="amount_invested" type="number"
@@ -560,7 +578,7 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Sign-up Date<span class="text-error">*</span></span>
+                    <span class="label-text">Sign-up Date<span class="text-xs text-error">*</span></span>
                 </label>
                 <label class="">
                     <input wire:model.defer="sign_up_date" type="date"
@@ -569,7 +587,7 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Team Leader<span class="text-error">*</span></span>
+                    <span class="label-text">Team Leader<span class="text-xs text-error">*</span></span>
                 </label>
                 <label class="">
                     <select wire:model="team_leader" class="w-full text-sm select select-sm select-bordered">
@@ -582,7 +600,7 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Team Builder<span class="text-error">*</span></span>
+                    <span class="label-text">Team Builder<span class="text-xs text-error">*</span></span>
                 </label>
                 <label class="">
                     <select wire:model="team_builder" class="w-full text-sm select select-sm select-bordered">
@@ -595,7 +613,7 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Distributor<span class="text-error">*</span></span>
+                    <span class="label-text">Distributor<span class="text-xs text-error">*</span></span>
                 </label>
                 <label class="">
                     <select wire:model="distributor" class="w-full text-sm select select-sm select-bordered">
@@ -617,6 +635,7 @@
                     <tr>
                         <th>Level</th>
                         <th>Date Promoted</th>
+                        <th class="text-center">Delete</th>
                     </tr>
                 </thead>
                 <tbody class="border">
@@ -624,6 +643,10 @@
                         <tr>
                             <td>{{ $promotion->sspl->level }}</td>
                             <td>{{ $promotion->date_promoted }}</td>
+                            <td class="text-center"><a class="btn btn-xs btn-warning"
+                                    onclick="delete_history(`{{ $promotion->id }}`, `{{ $promotion->sspl->level }}`)"><i
+                                        class="las la-trash"></i></a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -636,7 +659,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Spirit of Success Program Level<span class="text-error">*</span></span>
+                    <span class="label-text">Spirit of Success Program Level
+                        <span class="text-xs text-error">*
+                            @error('sspl_id')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <select wire:model.defer="sspl_id" class="w-full text-sm select select-sm select-bordered">
@@ -649,7 +678,13 @@
             </div>
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Date Promoted<span class="text-error">*</span></span>
+                    <span class="label-text">Date Promoted
+                        <span class="text-xs text-error">*
+                            @error('date_promoted')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
                 </label>
                 <label class="">
                     <input wire:model.defer="date_promoted" type="date"
@@ -806,6 +841,22 @@
                     Livewire.emit('update_reference', id)
                 } else if (result.isDenied) {
                     Livewire.emit('remove_reference', id)
+                }
+            });
+        }
+
+        function delete_history(id, sspl) {
+            Swal.fire({
+                title: '<h5> Delete Promotion History: ' + sspl + ' </h5>',
+                showCancelButton: true,
+                showConfirmButton: false,
+                showDenyButton: true,
+                denyButtonText: `Delete`,
+                didOpen: () => {}
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isDenied) {
+                    Livewire.emit('delete_history', id)
                 }
             });
         }

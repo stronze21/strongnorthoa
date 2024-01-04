@@ -20,7 +20,7 @@ class LifechangerProfile extends Component
 {
     use LivewireAlert;
 
-    protected $listeners = ['update_child', 'remove_child', 'update_experience', 'remove_experience', 'update_reference', 'remove_reference'];
+    protected $listeners = ['update_child', 'remove_child', 'update_experience', 'remove_experience', 'update_reference', 'remove_reference', 'delete_history'];
 
     public $user_id;
     public $f_name, $m_name, $l_name, $birthdate;
@@ -349,6 +349,13 @@ class LifechangerProfile extends Component
 
     public function add_promotion()
     {
+        $validate = $this->validate([
+            'sspl_id' => ['required', 'string', 'max:1'],
+            'date_promoted' => ['required', 'date', 'beforeOrEqual:' . date('Y-m-d')],
+        ], [
+            'ref_name.required' => 'Reference name is required...',
+        ]);
+
         $promotion = UserLifechangerPromotion::firstOrCreate([
             'user_id' => $this->user_id,
             'sspl_id' => $this->sspl_id,
@@ -358,5 +365,12 @@ class LifechangerProfile extends Component
 
         $this->reset('sspl_id', 'date_promoted');
         $this->alert('success', 'Added new promotion history successfully!');
+    }
+
+    public function delete_history($history_id)
+    {
+        $history = UserLifechangerPromotion::find($history_id);
+        $history->delete();
+        $this->alert('warning', 'Promotion history removed!');
     }
 }

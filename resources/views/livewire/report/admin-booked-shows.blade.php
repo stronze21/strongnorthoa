@@ -18,7 +18,9 @@
 <div class="flex flex-col px-3 py-5 mx-auto">
     <div class="flex justify-between">
         <div>
-            <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">Add Cooking Show</a>
+            @if (Auth::user()->cur_level and Auth::user()->cur_level->sspl)
+                <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">Add Cooking Show</a>
+            @endif
         </div>
         <div class="flex space-x-3">
             <button onclick="ExportToExcel('xlsx')" class="btn btn-sm btn-info"><i class="las la-lg la-file-excel"></i>
