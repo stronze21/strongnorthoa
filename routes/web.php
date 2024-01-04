@@ -9,6 +9,7 @@ use App\Http\Livewire\Orders\AgreementView;
 use App\Http\Livewire\Profile\AssociateForm;
 use App\Http\Livewire\Profile\LifechangerProfile;
 use App\Http\Livewire\Profile\Masterlist;
+use App\Http\Livewire\QrCodes;
 use App\Http\Livewire\Report\AdminBookedShows;
 use App\Http\Livewire\Report\AdminCookedShows;
 use App\Http\Livewire\Reports\GeneralDashboard;
@@ -68,4 +69,6 @@ Route::middleware([
 
     Route::get('signaturepad/{oa_id}', [SignaturePadController::class, 'index'])->name('signaturepad');
     Route::post('signaturepad', [SignaturePadController::class, 'upload'])->name('signaturepad.upload');
+
+    Route::get('qr-codes', QrCodes::class)->name('qrs');
 });

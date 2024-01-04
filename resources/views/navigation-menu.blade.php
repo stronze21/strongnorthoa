@@ -40,6 +40,12 @@
                     <x-jet-nav-link class="ml-2" href="{{ route('contests.list') }}" :active="request()->routeIs('contests.list')">
                         <i class="mr-1 las la-lg la-project-diagram"></i> {{ __('Contests') }}
                     </x-jet-nav-link>
+
+                    @role('admin')
+                        <x-jet-nav-link class="ml-2" href="{{ route('qrs') }}" :active="request()->routeIs('qrs')">
+                            <i class="mr-1 las la-lg la-qrcode"></i> {{ __('QR Codes') }}
+                        </x-jet-nav-link>
+                    @endrole
                 </div>
             </div>
 
