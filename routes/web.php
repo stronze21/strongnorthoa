@@ -40,7 +40,6 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-
     Route::get('/', GeneralDashboard::class)->name('gen.dashboard');
     Route::get('/lifechanger-profile/{userID?}', LifechangerProfile::class)->name('lc.profile');
     Route::get('/lifechanger-profile/assoc-form/{userID}', AssociateForm::class)->name('lc.assoc.form');
