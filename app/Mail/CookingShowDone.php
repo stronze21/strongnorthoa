@@ -28,6 +28,6 @@ class CookingShowDone extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.post-cs-questionaire');
+        return $this->view('emails.post-cs-questionaire')->subject('Post Cooking Show Demo Questionaire');
     }
 }

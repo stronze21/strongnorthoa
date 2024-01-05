@@ -20,7 +20,6 @@ class ViewShow extends Component
 
     public function render()
     {
-        // Mail::to('joshua070915@gmail.com')->send(new CookingShowDone());
 
         return view('livewire.shows.view-show');
     }
@@ -77,6 +76,10 @@ class ViewShow extends Component
 
         if ($this->show->result == 'Closed') {
             $this->create_oa();
+        }
+
+        if ($this->show->result == 'Closed' or $this->show->result == 'For Follow Up') {
+            Mail::to($this->show->host_email)->send(new CookingShowDone());
         }
 
         $this->alert('success', 'Result updated!');

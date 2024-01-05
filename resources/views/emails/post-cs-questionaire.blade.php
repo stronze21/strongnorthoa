@@ -40,9 +40,9 @@
 </head>
 
 <body class="w-full">
-    <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLSdoIeROYWqBc2b3R8uosRRl90toKcaVIlB-kBrMpg5ZnMMgkA/viewform?usp=sf_link"
-        frameborder="0" class="w-full h-screen"></iframe>
+    Thank you for attending the Cooking Demo. Please take time to answer this
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdoIeROYWqBc2b3R8uosRRl90toKcaVIlB-kBrMpg5ZnMMgkA/viewform?usp=sf_link"
+        target="_blank" class="btn btn-primary">Post Cooking Demo Questionaire</a> from Saladmaster. Thank you!
 </body>
 
 </html>
