@@ -11,14 +11,15 @@ use App\Http\Controllers\BookedShowsController;
 class AdminCookedShows extends Component
 {
     use WithPagination;
-    public $from_date, $to_date;
+    public $from_date, $to_date, $search;
 
     public function render()
     {
         $from = Carbon::parse($this->from_date)->startOfDay()->format('Y-m-d');
         $to = Carbon::parse($this->to_date)->endOfDay()->format('Y-m-d');
 
-        $shows = CookingShow::whereRaw('(result = "Closed" OR result = "For Follow Up")')
+        $shows = CookingShow::where('host', 'LIKE', '%' . $this->search . '%')
+            ->whereRaw('(result = "Closed" OR result = "For Follow Up")')
             ->whereBetween('date', [$from, $to])
             ->orderBy('date', 'DESC')
             ->orderBy('time', 'ASC')
