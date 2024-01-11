@@ -14,7 +14,6 @@ class BookedShowsController extends Controller
         foreach ($expired_shows as $show) {
             $interval = Carbon::parse($show->date . ' ' . $show->time)->diff(now());
             if ($interval->h >= 12 and !$interval->invert) {
-                dd($interval);
                 $show->result = 'Expired';
                 $show->save();
             }
