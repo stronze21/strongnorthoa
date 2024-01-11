@@ -212,6 +212,6 @@
         </div>
     </div>
     <div class="flex justify-center mt-3">
-        <button class="btn btn-primary" wire:click="save()">Submit</button>
+        <button class="btn btn-primary" wire:click="save()" wire:loading.attr='disabled'>Submit</button>
     </div>
 </div>
