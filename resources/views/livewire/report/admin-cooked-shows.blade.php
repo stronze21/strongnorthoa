@@ -22,9 +22,22 @@
                 <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">Add Cooking Show</a>
             @endif
         </div>
-        <div class="flex space-x-2">
+        <div class="flex space-x-3">
             <button onclick="ExportToExcel('xlsx')" class="btn btn-sm btn-info"><i class="las la-lg la-file-excel"></i>
                 Export</button>
+            <div class="form-control">
+                <label class="input-group input-group-sm">
+                    <span>Items per page</span>
+                    <select class="text-sm select select-bordered select-sm" wire:model="page_no">
+                        <option value="20">20</option>
+                        <option value="40">40</option>
+                        <option value="60">60</option>
+                        <option value="80">80</option>
+                        <option value="100">100</option>
+                        <option value="999">All</option>
+                    </select>
+                </label>
+            </div>
             <div class="form-control">
                 <label class="input-group input-group-sm">
                     <span>From</span>
@@ -84,7 +97,7 @@
             </tbody>
         </table>
         <div class="mt-2">
-            {{ $shows->links() }}
+            {{ $page_no == 999 ? '' : $shows->links() }}
         </div>
     </div>
 </div>

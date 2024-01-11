@@ -11,7 +11,7 @@ use App\Http\Controllers\BookedShowsController;
 class AdminCookedShows extends Component
 {
     use WithPagination;
-    public $from_date, $to_date, $search;
+    public $from_date, $to_date, $search, $page_no = 20;
 
     public function render()
     {
@@ -22,8 +22,13 @@ class AdminCookedShows extends Component
             ->whereRaw('(result = "Closed" OR result = "For Follow Up")')
             ->whereBetween('date', [$from, $to])
             ->orderBy('date', 'DESC')
-            ->orderBy('time', 'ASC')
-            ->paginate(20);
+            ->orderBy('time', 'ASC');
+
+        if ($this->page_no != 999) {
+            $shows = $shows->paginate($this->page_no);
+        } else {
+            $shows = $shows->get();
+        }
 
         return view('livewire.report.admin-cooked-shows', [
             'shows' => $shows,
