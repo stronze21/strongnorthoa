@@ -50,7 +50,7 @@ class LifechangerProfile extends Component
         $provinces = Province::where('region_id', $this->region_id)->get();
         $municipalities = Municipality::where('province_id', $this->province_id)->get();
         $lcs = User::all();
-        $distribs = UserLifechangerPromotion::where('sspl_id', '4')->with('user')->get();
+        $distribs = UserLifechangerPromotion::where('sspl_id', '4')->has('user')->get();
         $levels = Sspl::all();
 
         $dependents = UserDependent::where('user_id', $this->user_id)->get();
