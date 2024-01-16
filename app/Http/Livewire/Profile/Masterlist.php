@@ -23,8 +23,8 @@ class Masterlist extends Component
     public function render()
     {
         $users = User::where('full_name', 'LIKE', $this->search . '%')
-        ->where('email', 'LIKE', $this->search . '%')
-        ->paginate(15);
+            ->orWhere('email', 'LIKE', $this->search . '%')
+            ->paginate(15);
         return view('livewire.profile.masterlist', [
             'users' => $users,
         ]);
