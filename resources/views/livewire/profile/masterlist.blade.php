@@ -163,8 +163,8 @@
                 Are you sure you want to delete this user? [{{ $selected_user_email }}]
             </div>
             <div class="modal-action">
-                <label for="delete_user" class="btn btn-secondary">Cancel</label>
-                <button class="btn btn-error" wire:click="delete_user()">Delete</button>
+                <label id="close_mod" for="delete_user" class="btn btn-secondary">Cancel</label>
+                <button class="btn btn-error" wire:click="delete_user()" onclick="close_mod()">Delete</button>
             </div>
         </div>
     </div>
@@ -175,6 +175,10 @@
         function select(user_id, email) {
             @this.set('user_id', user_id);
             @this.set('selected_user_email', email);
+        }
+
+        function close_mod() {
+            $('#close_mod').click();
         }
     </script>
 @endpush
