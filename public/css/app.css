@@ -4208,10 +4208,6 @@ input.tab:checked + .tab-content,
   height: 2.25rem;
 }
 
-.h-screen {
-  height: 100vh;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -4555,10 +4551,6 @@ input.tab:checked + .tab-content,
   white-space: nowrap;
 }
 
-.break-all {
-  word-break: break-all;
-}
-
 .rounded {
   border-radius: 0.25rem;
 }
@@ -4615,10 +4607,6 @@ input.tab:checked + .tab-content,
   border-left-width: 4px;
 }
 
-.border-r {
-  border-right-width: 1px;
-}
-
 .border-t {
   border-top-width: 1px;
 }
@@ -4638,11 +4626,6 @@ input.tab:checked + .tab-content,
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
-.border-gray-400 {
-  --tw-border-opacity: 1;
-  border-color: rgb(156 163 175 / var(--tw-border-opacity));
-}
-
 .border-indigo-400 {
   --tw-border-opacity: 1;
   border-color: rgb(129 140 248 / var(--tw-border-opacity));
@@ -4650,6 +4633,11 @@ input.tab:checked + .tab-content,
 
 .border-transparent {
   border-color: transparent;
+}
+
+.bg-accent {
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
 }
 
 .bg-base-200 {
@@ -4737,19 +4725,9 @@ input.tab:checked + .tab-content,
   background-color: var(--fallback-su,oklch(var(--su)/var(--tw-bg-opacity)));
 }
 
-.bg-warning {
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-bg-opacity)));
-}
-
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-accent {
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
 }
 
 .bg-opacity-25 {
@@ -5007,6 +4985,10 @@ input.tab:checked + .tab-content,
   text-transform: uppercase;
 }
 
+.lowercase {
+  text-transform: lowercase;
+}
+
 .capitalize {
   text-transform: capitalize;
 }
@@ -5025,10 +5007,6 @@ input.tab:checked + .tab-content,
 
 .leading-tight {
   line-height: 1.25;
-}
-
-.tracking-wider {
-  letter-spacing: 0.05em;
 }
 
 .tracking-widest {
@@ -5128,11 +5106,6 @@ input.tab:checked + .tab-content,
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-success {
-  --tw-text-opacity: 1;
-  color: var(--fallback-su,oklch(var(--su)/var(--tw-text-opacity)));
 }
 
 .underline {

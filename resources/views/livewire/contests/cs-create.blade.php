@@ -111,8 +111,9 @@
                         class="text-error">*</span></span>
             </label>
             <select wire:model="level_restriction" class="text-sm select select-sm select-bordered">
-                <option value="all">--All--</option>
+                <option value="open">--Open--</option>
                 <option value="specific">--Specify Lifechanger/s--</option>
+                <option value="tb">--For Team Builders--</option>
                 @foreach ($sspls as $sspl)
                     <option value="{{ $sspl->id }}">{{ $sspl->level }}</option>
                 @endforeach

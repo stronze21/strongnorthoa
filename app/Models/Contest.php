@@ -21,6 +21,7 @@ class Contest extends Model
         'strict',
         'restriction',
         'sspl_id',
+        'for_team_builders',
     ];
 
     public function cs()

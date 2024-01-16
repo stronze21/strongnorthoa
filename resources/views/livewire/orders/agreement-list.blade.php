@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-screen-2xl sm:px-6 lg:px-8">
             <div class="pb-4">
                 <label class="btn btn-primary" for="my-modal-5">Create OA</label>
             </div>

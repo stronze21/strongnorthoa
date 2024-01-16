@@ -27,6 +27,8 @@
                     <span>{{ $contest->description }}</span>
                     <span>Contest Duration: {{ $contest->start_date }} to {{ $contest->end_date }}</span>
                     <span>Days Remaining: {{ $dt->diffInDays($contest->end_date) }}</span>
+                    <span>Restriction: <span class="uppercase">{{ $contest->restriction }}
+                            {{ $contest->restriction == 'level' ? ': ' . $contest->sspl->level : '' }}</span></span>
                 </div>
                 <div class="flex flex-col">
                     <span>Required Shows: {{ $contest->shows }}</span>
@@ -51,7 +53,8 @@
                         @foreach ($data as $row)
                             <tr>
                                 <td class="uppercase">{{ $loop->iteration }}</td>
-                                <td class="uppercase">{{ $row->lifechanger }}</td>
+                                <td class="uppercase">
+                                    {{ $contest->for_team_builders ? $row->team_builder : $row->lifechanger }}</td>
                                 <td class="text-center">
                                     <div class="flex flex-col justify-center">
                                         <span>{{ $row->shows }}/{{ $contest->shows }}</span>

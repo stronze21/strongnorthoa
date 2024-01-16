@@ -14,13 +14,13 @@ class CsList extends Component
 
     protected $listeners = ['showCreate'];
 
-    public $title, $description, $start_date, $end_date, $shows = 0, $sales = 0, $sets = 0, $strict = 0;
+    public $title, $description, $start_date, $end_date, $shows = 0, $sales = 0, $sets = 0, $strict = 0, $for_team_builders = false;
 
     public function render()
     {
         $data = Contest::paginate(20);
 
-        return view('livewire.contests.cs-list',[
+        return view('livewire.contests.cs-list', [
             'data' => $data
         ]);
     }
@@ -42,6 +42,7 @@ class CsList extends Component
             'sales' => 'nullable|numeric',
             'sets' => 'nullable|numeric',
             'strict' => 'nullable',
+            'for_team_builders' => 'nullable',
         ]);
     }
 

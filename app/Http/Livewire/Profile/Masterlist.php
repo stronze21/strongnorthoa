@@ -13,8 +13,7 @@ class Masterlist extends Component
     use LivewireAlert;
     use WithPagination;
 
-    public $f_name, $m_name, $l_name, $email, $search;
-
+    public $f_name, $m_name, $l_name, $email, $search, $selected_user_email, $user_id;
 
     public function updatingSearch()
     {
@@ -53,5 +52,12 @@ class Masterlist extends Component
         ]);
         $this->reset();
         $this->alert('success', 'New user created!');
+    }
+
+    public function delete_user()
+    {
+        $user = User::find($this->user_id);
+        $user->delete();
+        $this->alert('warning', 'User deleted!');
     }
 }

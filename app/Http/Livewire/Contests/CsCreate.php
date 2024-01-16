@@ -13,7 +13,7 @@ class CsCreate extends Component
 {
     use LivewireAlert;
 
-    public $date, $title, $description, $start_date, $end_date, $shows, $sales, $sets, $strict = 0, $level_restriction = 'all', $lifechangers = [];
+    public $date, $title, $description, $start_date, $end_date, $shows, $sales, $sets, $strict = 0, $level_restriction = 'open', $lifechangers = [];
 
     public function render()
     {
@@ -29,10 +29,16 @@ class CsCreate extends Component
     public function save()
     {
         $sspl_id = null;
+        $for_team_builders = false;
+
         switch ($this->level_restriction) {
-            case 'all':
+            case 'open':
             case 'specific':
                 $restriction = $this->level_restriction;
+                break;
+            case 'tb':
+                $restriction = 'team builders';
+                $for_team_builders = true;
                 break;
 
             default:
@@ -50,6 +56,7 @@ class CsCreate extends Component
             'strict' => $this->strict,
             'restriction' => $restriction,
             'sspl_id' => $sspl_id,
+            'for_team_builders' => $for_team_builders,
         ]);
 
         if ($restriction == 'specific') {

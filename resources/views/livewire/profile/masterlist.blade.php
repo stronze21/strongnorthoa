@@ -44,30 +44,45 @@
                     <th>Status</th>
                     <th>Current Level</th>
                     <th>Date Promoted</th>
+                    <th class='text-center'>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($users as $user)
-                    <tr class="border cursor-pointer hover" wire:key='view-lc-{{ $user->user_id }}'
-                        wire:click='view_lc("{{ $user->user_id }}")'>
+                    <tr class="border hover">
                         <td>{{ $user->user_id }}</td>
-                        <td class="capitalize">{{ $user->full_name }}</td>
+                        <td class="uppercase whitespace-nowrap">{{ $user->full_name }}<br><span
+                                class="text-xs lowercase">{{ $user->email }}</span></td>
                         @if ($user->profile)
-                            <td>{{ $user->profile->birth_date ?? 'Not Set' }}</td>
+                            <td class="whitespace-nowrap">{{ $user->profile->birth_date ?? 'Not Set' }}</td>
                             <td>{{ $user->municipality ? $user->municipality->municipality_name : 'Not Set' }}</td>
                             <td>{{ $user->province ? $user->province->province_name : 'Not Set' }}</td>
-                            <td>{{ $user->profile->sign_up_date }}</td>
-                            <td>{{ $user->profile->builder ? $user->profile->builder->fullname() : '' }}</td>
-                            <td>{{ $user->profile->leader ? $user->profile->leader->fullname() : '' }}</td>
-                            <td>{{ $user->profile->distrib ? $user->profile->distrib->fullname() : '' }}</td>
-                            <td>{{ $user->profile->cs_date }}</td>
-                            <td>{{ $user->profile->amount_invested }}</td>
+                            <td class="whitespace-nowrap">{{ $user->profile->sign_up_date }}</td>
+                            <td class="uppercase">
+                                {{ $user->profile->builder ? $user->profile->builder->fullname() : '' }}</td>
+                            <td class="uppercase">
+                                {{ $user->profile->leader ? $user->profile->leader->fullname() : '' }}</td>
+                            <td class="uppercase">
+                                {{ $user->profile->distrib ? $user->profile->distrib->fullname() : '' }}</td>
+                            <td class="whitespace-nowrap">{{ $user->profile->cs_date }}</td>
+                            <td class="whitespace-nowrap">{{ $user->profile->amount_invested }}</td>
                             <td>{{ $user->email_verified_at ? 'Active' : 'Inactive' }}</td>
                             <td>{{ $user->cur_level ? $user->cur_level->sspl->level : 'N/A' }}</td>
-                            <td>{{ $user->cur_level ? $user->cur_level->sspl->date_promoted : 'N/A' }}</td>
+                            <td class="whitespace-nowrap">
+                                {{ $user->cur_level ? $user->cur_level->sspl->date_promoted : 'N/A' }}</td>
                         @else
                             <td colspan="12" class="uppercase text-error">Profile not set</td>
                         @endif
+                        <td class="text-center">
+                            <div class="flex justify-center space-x-2">
+                                <button class="btn btn-sm btn-primary" wire:key='view-lc-{{ $user->user_id }}'
+                                    wire:click='view_lc("{{ $user->user_id }}")'><i
+                                        class="las la-lg la-eye"></i></button>
+                                <label class="btn btn-sm btn-error" for="delete_user"
+                                    onclick="select(`{{ $user->user_id }}`, `{{ $user->email }}`)"><i
+                                        class="las la-lg la-trash"></i></label>
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr>
@@ -83,7 +98,6 @@
 
 
     {{-- ADD User MODAL --}}
-
     <input type="checkbox" id="add_user" class="modal-toggle" />
     <div class="modal">
         <div class="modal-box">
@@ -139,4 +153,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Put this part before </body> tag -->
+    <input type="checkbox" id="delete_user" class="modal-toggle" />
+    <div class="modal">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold">Delete User</h3>
+            <div class="w-full py-4">
+                Are you sure you want to delete this user? [{{ $selected_user_email }}]
+            </div>
+            <div class="modal-action">
+                <label for="delete_user" class="btn btn-secondary">Cancel</label>
+                <button class="btn btn-error" wire:click="delete_user()">Delete</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+@push('scripts')
+    <script>
+        function select(user_id, email) {
+            @this.set('user_id', user_id);
+            @this.set('selected_user_email', email);
+        }
+    </script>
+@endpush
