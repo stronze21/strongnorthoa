@@ -2,19 +2,20 @@
 
 namespace App\Http\Livewire\Profile;
 
-use App\Models\User;
-use App\Models\Region;
-use Livewire\Component;
-use App\Models\Province;
 use App\Models\Municipality;
+use App\Models\Province;
+use App\Models\Region;
 use App\Models\Sspl;
+use App\Models\User;
 use App\Models\UserCharacterReference;
 use App\Models\UserDependent;
 use App\Models\UserLifechangerProfile;
 use App\Models\UserLifechangerPromotion;
 use App\Models\UserWorkExperience;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\Component;
 
 class LifechangerProfile extends Component
 {
@@ -372,5 +373,14 @@ class LifechangerProfile extends Component
         $history = UserLifechangerPromotion::find($history_id);
         $history->delete();
         $this->alert('warning', 'Promotion history removed!');
+    }
+
+    public function reset_password()
+    {
+        $user = User::find($this->user_id);
+        $user->pw = Hash::make('strongnorth');
+        $user->save();
+
+        $this->alert('success', 'Password Reset to strongnorth');
     }
 }

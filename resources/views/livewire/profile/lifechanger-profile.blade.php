@@ -162,8 +162,7 @@
                     </span>
                 </label>
                 <label class="">
-                    <input wire:model.defer="email" type="email" class="w-full input input-sm input-bordered"
-                        readonly />
+                    <input wire:model.defer="email" type="email" class="w-full input input-sm input-bordered" />
                 </label>
             </div>
         </div>
@@ -259,7 +258,8 @@
                 </label>
             </div>
         </div>
-        <div class="flex justify-end mt-4">
+        <div class="flex justify-between mt-4">
+            <button class="mr-2 btn btn-error" wire:click="reset_password()">Reset Password</button>
             <button class="btn btn-primary" wire:click="save()">Save</button>
         </div>
     </div>
