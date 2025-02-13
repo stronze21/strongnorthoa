@@ -3630,6 +3630,17 @@ input.tab:checked + .tab-content,
   outline-color: var(--fallback-bc,oklch(var(--bc)/0.2));
 }
 
+.textarea-ghost {
+  --tw-bg-opacity: 0.05;
+}
+
+.textarea-ghost:focus {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
+  box-shadow: none;
+}
+
 .textarea-disabled,
   .textarea:disabled,
   .textarea[disabled] {
