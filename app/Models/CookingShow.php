@@ -69,7 +69,7 @@ class CookingShow extends Model
                     <span>' . $this->result . '</span>
                 </div>
             </div>';
-        } elseif ($this->result == 'Booked') {
+        } elseif ($this->result == 'Booked' OR $this->result == 'Reschedule') {
             $result = '
             <div class="shadow-lg badge badge-ghost">
                 <div>

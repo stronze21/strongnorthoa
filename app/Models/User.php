@@ -48,6 +48,9 @@ class User extends Authenticatable
         'province_id',
         'municipality',
         'current_level',
+        'profile_photo_path',
+        'contact_no',
+        'address'
     ];
 
     /**
@@ -128,4 +131,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserLifechangerPromotion::class, 'user_id', 'user_id')->latest('date_promoted');
     }
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->profile_photo_path
+            ? asset('storage/' . $this->profile_photo_path) // Retrieve from storage
+            : asset('default-avatar.png'); // Fallback image
+    }
+
 }

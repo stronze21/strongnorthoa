@@ -16,7 +16,7 @@ class ViewShow extends Component
     use LivewireAlert;
 
     public $open_modal = false;
-    public $cs_id, $show, $result, $amount_sold = 0;
+    public $cs_id, $show, $result, $amount_sold = 0, $date, $time;
 
     public function render()
     {
@@ -30,6 +30,8 @@ class ViewShow extends Component
         $this->cs_id = $cs_id;
         $this->amount_sold = $this->show->amount_sold;
         $this->result = $this->show->result;
+        $this->date = $this->show->date;
+        $this->time = $this->show->time;
     }
 
     public function create_oa()
@@ -71,6 +73,10 @@ class ViewShow extends Component
     {
         $this->show->result = $this->result;
         $this->show->amount_sold = $this->amount_sold;
+        $this->show->orig_date = $this->show->date;
+        $this->show->orig_time = $this->show->time;
+        $this->show->date = $this->date;
+        $this->show->time = $this->time;
         $this->show->save();
         $this->open_modal = false;
 

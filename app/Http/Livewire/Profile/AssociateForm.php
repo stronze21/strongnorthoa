@@ -22,9 +22,14 @@ class AssociateForm extends Component
         $dependents = UserDependent::where('user_id', $this->user_id)->get();
         $works = UserWorkExperience::where('user_id', $this->user_id)->get();
         $references = UserCharacterReference::where('user_id', $this->user_id)->get();
-        $promotions = UserLifechangerPromotion::where('user_id', $this->user_id)->orderBy('date_promoted', 'DESC')->get();
-
-        return view('livewire.profile.associate-form', compact('user', 'dependents', 'works', 'references', 'promotions'));
+        $promotions = UserLifechangerPromotion::where('user_id', $this->user_id)->whereRelation('sspl', 'type', 'lifechanger')->orderBy('date_promoted', 'DESC')->get();
+        if(count($promotions) < 1){
+            $sspl = UserLifechangerPromotion::where('user_id', $this->user_id)->whereRelation('sspl', 'type', 'partner')->orderBy('date_promoted', 'DESC')->first();
+            $type = $sspl->sspl->level . ' Partner';
+        }else{
+            $type = $promotions[0]->sspl->level;
+        }
+        return view('livewire.profile.associate-form', compact('user', 'dependents', 'works', 'references', 'promotions', 'type'));
     }
 
     public function mount($userID)

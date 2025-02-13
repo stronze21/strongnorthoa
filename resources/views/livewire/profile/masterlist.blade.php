@@ -14,7 +14,9 @@
 <div class="flex flex-col px-3 py-5 mx-auto ">
     <div class="flex justify-between">
         <div>
-            <label class="my-2 btn btn-sm btn-warning ms-2" for="add_user">New User Account</label>
+            {{-- <label class="my-2 btn btn-sm btn-warning ms-2" for="add_user">New User Account</label> --}}
+            <a href="{{ route('lc.create') }}" class="my-2 btn btn-sm btn-warning ms-2">New User Account</a>
+            <a href="{{ route('lc.create') }}" class="my-2 btn btn-sm btn-primary ms-2">Register</a>
         </div>
         <div>
             <div class="form-control">

@@ -10,13 +10,14 @@ class BookedShowsController extends Controller
 {
     public static function expire_shows()
     {
-        $expired_shows = CookingShow::where('result', 'Booked')->latest('date')->get();
-        foreach ($expired_shows as $show) {
-            $interval = Carbon::parse($show->date . ' ' . $show->time)->diff(now());
-            if ($interval->h >= 12 and !$interval->invert) {
-                $show->result = 'Expired';
-                $show->save();
-            }
-        }
+        return;
+        // $expired_shows = CookingShow::where('result', 'Booked')->latest('date')->get();
+        // foreach ($expired_shows as $show) {
+        //     $interval = Carbon::parse($show->date . ' ' . $show->time)->diff(now());
+        //     if ($interval->h >= 12 and !$interval->invert) {
+        //         $show->result = 'Expired';
+        //         $show->save();
+        //     }
+        // }
     }
 }

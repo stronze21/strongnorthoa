@@ -2,28 +2,29 @@
 
 namespace App\Http\Livewire\Profile;
 
-use App\Models\Municipality;
-use App\Models\Province;
-use App\Models\Region;
 use App\Models\Sspl;
 use App\Models\User;
-use App\Models\UserCharacterReference;
+use App\Models\Region;
+use Livewire\Component;
+use App\Models\Province;
+use App\Models\Municipality;
 use App\Models\UserDependent;
+use App\Models\UserWorkExperience;
+use Illuminate\Support\Facades\Hash;
+use App\Models\UserCharacterReference;
 use App\Models\UserLifechangerProfile;
 use App\Models\UserLifechangerPromotion;
-use App\Models\UserWorkExperience;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Component;
+use Livewire\WithFileUploads;
 
-class LifechangerProfile extends Component
+class RegisterLc extends Component
 {
     use LivewireAlert;
+    use WithFileUploads;
 
     protected $listeners = ['update_child', 'remove_child', 'update_experience', 'remove_experience', 'update_reference', 'remove_reference', 'delete_history'];
 
-    public $user_id;
+    public $user_id, $profile_photo, $photoPath;
     public $f_name, $m_name, $l_name, $birthdate;
     public $region_id, $province_id, $municipality_id, $address;
     public $contact_no, $occupation, $email, $civil_status, $birth_place, $birth_date, $spouse;
@@ -44,6 +45,41 @@ class LifechangerProfile extends Component
         $this->reset('municipality_id');
     }
 
+    public function mount($userID = null){
+        if($userID){
+            $user = User::find($userID);
+            $this->user_id = $userID;
+            $this->f_name = $user->f_name;
+            $this->m_name = $user->m_name;
+            $this->l_name = $user->l_name;
+            $this->region_id = $user->region_id ?? '3';
+            $this->province_id = $user->province_id ?? '2';
+            $this->municipality_id = $user->municipality_id ?? '20';
+            $this->address = $user->address;
+            $this->contact_no = $user->contact_no;
+            $this->email = $user->email;
+            $this->photoPath = $user->profile_photo_url;
+
+            $profile = $user->profile;
+            if ($profile) {
+                $this->occupation = $profile->occupation;
+                $this->spouse = $profile->spouse;
+                $this->birth_date = $profile->birth_date;
+                $this->birth_place = $profile->birth_place;
+                $this->civil_status = $profile->civil_status;
+                $this->occupation = $profile->occupation;
+                $this->team_builder = $profile->team_builder;
+                $this->distributor = $profile->distributor;
+                $this->sspl_id = $profile->current_level;
+                $this->cs_date = $profile->cs_date;
+                $this->amount_invested = $profile->amount_invested;
+                $this->sign_up_date = $profile->sign_up_date;
+                $this->team_leader = $profile->team_leader;
+                $this->team_builder = $profile->team_builder;
+                $this->distributor = $profile->distributor;
+            }
+        }
+    }
     public function render()
     {
         $user = User::find($this->user_id);
@@ -53,51 +89,14 @@ class LifechangerProfile extends Component
         $lcs = User::all();
         $distribs = UserLifechangerPromotion::where('sspl_id', '4')->has('user')->get();
         $levels = Sspl::all();
+        $dependents = UserDependent::where('user_id', $this->user_id)->get() ?? [];
+        $works = UserWorkExperience::where('user_id', $this->user_id)->get() ?? [];
+        $references = UserCharacterReference::where('user_id', $this->user_id)->get() ?? [];
+        $promotions = UserLifechangerPromotion::where('user_id', $this->user_id)->orderBy('date_promoted', 'DESC')->get() ?? [];
 
-        $dependents = UserDependent::where('user_id', $this->user_id)->get();
-        $works = UserWorkExperience::where('user_id', $this->user_id)->get();
-        $references = UserCharacterReference::where('user_id', $this->user_id)->get();
-        $promotions = UserLifechangerPromotion::where('user_id', $this->user_id)->orderBy('date_promoted', 'DESC')->get();
-
-        return view(
-            'livewire.profile.lifechanger-profile',
-            compact('user', 'distribs', 'regions', 'provinces', 'municipalities', 'lcs', 'levels', 'dependents', 'works', 'references', 'promotions')
-        );
-    }
-
-    public function mount($userID = null)
-    {
-        $user_id = $userID ?? Auth::user()->user_id;
-        $user = User::find($user_id);
-        $this->user_id = $user_id;
-        $this->f_name = $user->f_name;
-        $this->m_name = $user->m_name;
-        $this->l_name = $user->l_name;
-        $this->region_id = $user->region_id ?? '3';
-        $this->province_id = $user->province_id ?? '2';
-        $this->municipality_id = $user->municipality_id ?? '20';
-        $this->address = $user->address;
-        $this->contact_no = $user->contact_no;
-        $this->email = $user->email;
-
-        $profile = $user->profile;
-        if ($profile) {
-            $this->occupation = $profile->occupation;
-            $this->spouse = $profile->spouse;
-            $this->birth_date = $profile->birth_date;
-            $this->birth_place = $profile->birth_place;
-            $this->civil_status = $profile->civil_status;
-            $this->occupation = $profile->occupation;
-            $this->team_builder = $profile->team_builder;
-            $this->distributor = $profile->distributor;
-            $this->sspl_id = $profile->current_level;
-            $this->cs_date = $profile->cs_date;
-            $this->amount_invested = $profile->amount_invested;
-            $this->sign_up_date = $profile->sign_up_date;
-            $this->team_leader = $profile->team_leader;
-            $this->team_builder = $profile->team_builder;
-            $this->distributor = $profile->distributor;
-        }
+        return view('livewire.profile.register-lc',
+        compact('user', 'distribs', 'regions', 'provinces', 'municipalities', 'lcs', 'levels', 'dependents', 'works', 'references', 'promotions')
+    );
     }
 
     public function save()
@@ -117,6 +116,7 @@ class LifechangerProfile extends Component
             'address' => ['required', 'string', 'max:255'],
             'contact_no' => ['required', 'string', 'max:13'],
             'email' => ['required', 'string', 'max:255'],
+            'profile_photo' => ['nullable', 'image', 'max:25000'],
         ], [
             'f_name.required' => 'First name required...',
             'l_name.required' => 'Last name required...',
@@ -127,18 +127,41 @@ class LifechangerProfile extends Component
             'address.required' => 'Addres required...',
         ]);
 
-        $user = User::find($this->user_id);
-        $user->f_name = $this->f_name;
-        $user->m_name = $this->m_name;
-        $user->l_name = $this->l_name;
-        $user->birth_date = $this->birthdate;
-        $user->region_id = $this->region_id;
-        $user->province_id = $this->province_id;
-        $user->municipality_id = $this->municipality_id;
-        $user->address = $this->address;
-        $user->contact_no = $this->contact_no;
-        $user->email = $this->email;
-        $user->save();
+        // Handle file upload
+        $photoPath = $this->profile_photo ? $this->profile_photo->store('profile-photos', 'public') : null;
+
+        if(!$this->user_id){
+            $user = User::create([
+                'full_name' => $this->l_name . ', ' . $this->f_name . ' ' . $this->m_name,
+                'l_name' => $this->l_name,
+                'f_name' => $this->f_name,
+                'm_name' => $this->m_name,
+                'email' => $this->email,
+                'pw' => Hash::make('strongnorth'),
+                'birth_date' => $this->birthdate,
+                'region_id' => $this->region_id,
+                'province_id' => $this->province_id,
+                'municipality_id' => $this->municipality_id,
+                'address' => $this->address,
+                'contact_no' => $this->contact_no,
+                'profile_photo_path' => $photoPath,
+            ]);
+        }else{
+            $user = User::find($this->user_id);
+            $user->f_name = $this->f_name;
+            $user->m_name = $this->m_name;
+            $user->l_name = $this->l_name;
+            $user->birth_date = $this->birthdate;
+            $user->region_id = $this->region_id;
+            $user->province_id = $this->province_id;
+            $user->municipality_id = $this->municipality_id;
+            $user->address = $this->address;
+            $user->contact_no = $this->contact_no;
+            $user->email = $this->email;
+            $user->profile_photo_path = $photoPath;
+            $user->save();
+        }
+
 
         $profile = UserLifechangerProfile::firstOrCreate([
             'user_id' => $user->user_id
@@ -150,6 +173,8 @@ class LifechangerProfile extends Component
         $profile->birth_place = $this->birth_place;
         $profile->civil_status = $this->civil_status;
         $profile->save();
+
+        $this->user_id = $user->id;
 
         $this->alert('success', 'Profile saved successfully!');
     }
@@ -174,6 +199,7 @@ class LifechangerProfile extends Component
         ]);
         $promotion->date_promoted = $this->sign_up_date;
         $promotion->save();
+
 
         $this->alert('success', 'Profile saved successfully!');
     }
@@ -373,14 +399,5 @@ class LifechangerProfile extends Component
         $history = UserLifechangerPromotion::find($history_id);
         $history->delete();
         $this->alert('warning', 'Promotion history removed!');
-    }
-
-    public function reset_password()
-    {
-        $user = User::find($this->user_id);
-        $user->pw = Hash::make('strongnorth');
-        $user->save();
-
-        $this->alert('success', 'Password Reset to strongnorth');
     }
 }

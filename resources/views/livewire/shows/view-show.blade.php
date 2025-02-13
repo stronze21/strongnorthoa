@@ -21,7 +21,7 @@
                 <div class="flex flex-col col-span-2 mx-5">
                     <div class="flex justify-between mb-3">
                         <div>
-                            @if($show->result != 'Expired')
+                            @if($show->result != 'Expired' OR true)
                                 <label class="btn btn-sm btn-primary" for="update_status">Update Status</label>
                             @endif
                         </div>
@@ -197,7 +197,7 @@
             <div class="w-full py-4">
                 <div class="w-full mb-2 form-control">
                     <span>Select Status</span>
-                    <select class="w-full select-bordered select" wire:model.defer='result'>
+                    <select class="w-full select-bordered select" wire:model='result'>
                             <option value="For Follow Up">For Follow Up</option>
                             <option value="Booked">Booked</option>
                             <option value="Closed">Closed</option>
@@ -205,14 +205,35 @@
                             <option value="Cancelled">Cancelled</option>
                     </select>
                 </div>
+                @if($result == 'Reschedule')
+                <div class="form-control mb-2">
+                    <label class="label">
+                        <span class="label-text">Date<span class="text-error">*</span></span>
+                    </label>
+                    <label class="">
+                        <input wire:model.defer="date" type="date" min="{{ date('Y-m-d') }}"
+                            class="w-full input input-sm input-bordered" />
+                    </label>
+                </div>
+                <div class="form-control mb-2">
+                    <label class="label">
+                        <span class="label-text">Time<span class="text-error">*</span></span>
+                    </label>
+                    <label class="">
+                        <input wire:model.defer="time" type="time" value="{{ date('H:i') }}"
+                            class="w-full input input-sm input-bordered" />
+                    </label>
+                </div>
+                @else
                 <div class="w-full mb-2 form-control">
                     <span>Amount Sold</span>
                     <input type="number" step="0.01" class="w-full select-bordered select" wire:model.defer='amount_sold'>
                 </div>
+                @endif
             </div>
             <div class="modal-action">
                 <label for="update_status" class="btn btn-error">Cancel</label>
-                <button class="btn btn-primary" wire:click="update_result">Submit</button>
+                <button class="btn btn-primary" wire:loading.attr="disabled" wire:click="update_result">Submit</button>
             </div>
         </div>
     </div>

@@ -14,9 +14,17 @@
         <button class="btn btn-sm btn-primary" id="btnPrint" onclick="printMe()">Print</button>
     </div>
     <div class="flex flex-col mx-auto text-sm" id="print">
-        <div class="mx-auto text-center">
-            <img src="{{ asset('storage/header_logo.png') }}" alt="header" class="w-1/2 mx-auto">
-            <span class="text-sm">AUTHORZED SALADMASTER DEALERSHP IN THE PHILIPPINES</span>
+        <div class="grid grid-cols-3">
+            <div class="avatar">
+                <div class="w-32 rounded">
+                    <img class="w-32 h-32" src="{{ $user->profile_photo_url }}" />
+                </div>
+            </div>
+            <div class="mx-auto text-center">
+                <img src="{{ asset('storage/header_logo.png') }}" alt="header" class="mx-auto">
+                <span class="text-sm">AUTHORZED SALADMASTER DEALERSHP IN THE PHILIPPINES</span>
+            </div>
+            <div></div>
         </div>
         <div class="flex mt-5">
             <div class="flex-1">
@@ -208,7 +216,7 @@
         </div>
 
         <div style="page-break-before: always;" class="mt-5 text-center">
-            <span class="text-3xl">ASSOCIATE AGREEMENT</span>
+            <span class="text-3xl uppercase">{{ $type }} AGREEMENT</span>
             <article class="space-y-4 text-justify text-md">
                 <p>
                     THIS AGREEMENT, made this
@@ -222,7 +230,7 @@
                     Valdez Center, Barangay 1 San Nicolas, Ilocos Norte (hereinafter called “Dealer”) and
                     <span class="underline">{{ $user->fullname() }}</span> with his address at
                     <span class="underline">{{ $user->full_address() }}</span>
-                    (herein after called “the Associate”)
+                    (herein after called “the {{ $type }}”)
                 </p>
                 <p>
                     WHEREAS, Dealer is aware of the necessity of complying with the consumer protection laws and
@@ -237,54 +245,66 @@
                     to consumers through direct sales in the convenience of the consumer’s homes; and
                 </p>
                 <p>
-                    WHEREAS, the Associate holds himself out as willing and able to practice such selling methods and is
-                    desirous of contracting with Dealer and an Associate;
+                    WHEREAS, the {{ $type }} holds himself out as willing and able to practice such selling
+                    methods and is
+                    desirous of contracting with Dealer and an {{ $type }};
                 </p>
                 <p>
                     NOW, THEREFORE, for good and valuable consideration, the receipt and adequacy of which is mutually
                     acknowledged, the parties hereto mutually agree as follows:
                 </p>
                 <p>
-                    1. The Associate may, at his option, (i) make payment for said Products by paying cash, or (ii) sell
+                    1. The {{ $type }} may, at his option, (i) make payment for said Products by paying cash,
+                    or (ii) sell
                     and
-                    assign, with recourse, to Dealer any sale contract taken by the Associate upon the resale of such
-                    products, in which event the Associate will receive cash or credit on account of the purchase price
+                    assign, with recourse, to Dealer any sale contract taken by the {{ $type }} upon the resale
+                    of such
+                    products, in which event the {{ $type }} will receive cash or credit on account of the
+                    purchase price
                     of
                     said Products to the extent of the balance upon the sale contract, provided however, that dealer
                     shall
                     have the right to reject any conditional sale contract not in conformity with the payment schedules
                     accepted to Dealer or when, in Dealer’s sole independent judgement of the credit risk is
                     undesirable.
-                    The Associate shall pay the full price of all Saladmaster products within one day from the date of
+                    The {{ $type }} shall pay the full price of all Saladmaster products within one day from
+                    the date of
                     purchase.
                 </p>
                 <p>
-                    2. The Dealer agrees to lend Associate a Training Manual and promotional material, which shall
+                    2. The Dealer agrees to lend {{ $type }} a Training Manual and promotional material, which
+                    shall
                     remain
                     the property of the Dealer, and upon termination of the contract shall be returned to the Dealer.
                 </p>
                 <p>
-                    3. The relationship between Dealer and Associate is that of vendor and vendee is governed wholly and
+                    3. The relationship between Dealer and {{ $type }} is that of vendor and vendee is governed
+                    wholly and
                     exclusively by this Agreement, which supersedes all prior agreements, if any, between the parties,
                     and
                     constitutes the entire agreement between the parties. It may be modified only by a writing signed by
-                    both parties. All work and duties to be performed by him as an independent contractor, and Associate
+                    both parties. All work and duties to be performed by him as an independent contractor, and
+                    {{ $type }}
                     is
                     not, and shall not be treated as, an employee for any purpose whatsoever.
                 </p>
                 <p>
-                    4. Associate expressly acknowledge that he is not, and will not be as treated as, an employee of the
-                    Dealer, and that Associate alone, is solely responsible for the payment of any self-employment or
+                    4. {{ $type }} expressly acknowledge that he is not, and will not be as treated as, an
+                    employee of the
+                    Dealer, and that {{ $type }} alone, is solely responsible for the payment of any
+                    self-employment or
                     income
                     taxes which may be due to Government or any Local Government by virtue of earnings made as an
                     independent contractor under this management.
                 </p>
                 <p>
-                    5. The associate acknowledges that the Saladmaster trademarks, trade names and emblems are the
+                    5. The {{ $type }} acknowledges that the Saladmaster trademarks, trade names and emblems
+                    are the
                     property
                     of Saladmaster, Inc., and that it is expressly understood that no license to use said marks, names
                     or
-                    emblems is granted herein to Associate. Upon termination of this Agreement, the Associate is
+                    emblems is granted herein to {{ $type }}. Upon termination of this Agreement, the
+                    {{ $type }} is
                     affiliated
                     with anyone who is authorized to sell Saladmaster Products.
                 </p>
@@ -295,7 +315,7 @@
                     notice
                     in writing to the other party. This Agreement shall automatically terminate in the event Dealer’s
                     Authorized Direct Dealer Agreement by and between Dealer and Saladmaster, Inc., terminates. Upon
-                    termination the Associate agrees to pay any balance due to Dealer within ten days of such
+                    termination the {{ $type }} agrees to pay any balance due to Dealer within ten days of such
                     termination.
                 </p>
                 <p>
@@ -309,7 +329,7 @@
             </article>
             <div class="text-center mt-14 columns-2">
                 <p>___________________________________________</p>
-                <p>Associate (Signature over printed Name) </p>
+                <p>{{ $type }} (Signature over printed Name) </p>
                 <p class="mt-2">___________________________________________</p>
                 <p>Home Address </p>
                 <p>___________________________________________</p>

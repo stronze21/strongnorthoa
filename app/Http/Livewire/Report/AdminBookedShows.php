@@ -13,7 +13,7 @@ class AdminBookedShows extends Component
 {
     use WithPagination;
 
-    public $from_date, $to_date;
+    public $from_date, $to_date, $search;
 
     public function render()
     {
@@ -22,6 +22,10 @@ class AdminBookedShows extends Component
 
         $shows = CookingShow::where('result', '<>', 'Closed')
             ->where('result', '<>', 'For Follow Up')
+            ->where(function($query){
+                $query->where('host', 'LIKE', '%' . $this->search . '%')
+                ->orWhere('lifechanger', 'LIKE', '%' . $this->search . '%');
+                })
             ->whereBetween('date', [$from, $to])
             ->orderBy('date', 'DESC')
             ->orderBy('time', 'ASC')
