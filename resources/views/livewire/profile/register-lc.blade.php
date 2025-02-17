@@ -230,8 +230,6 @@
                     </select>
                 </label>
             </div>
-        </div>
-        <div class="grid grid-cols-1 gap-4">
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Address
@@ -246,8 +244,20 @@
                     <input wire:model.defer="address" type="text" class="w-full input input-sm input-bordered">
                 </label>
             </div>
-        </div>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">TIN No.
+                        <span class="text-xs text-error">*
+                            @error('tin')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </span>
+                </label>
+                <label class="">
+                    <input wire:model.defer="tin" type="text" class="w-full input input-sm input-bordered">
+                </label>
+            </div>
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">Name of Spouse (if any):

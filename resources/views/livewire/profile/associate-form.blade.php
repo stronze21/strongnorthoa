@@ -26,7 +26,7 @@
             </div>
             <div class="flex justify-end">
                 <span class="text-xs textarea-ghost">CTRLN:
-                    #{{ $user->created_at->format('Ymd-') . $user->user_id }}</span>
+                    #{{ $user->updated_at->format('Ymd-') . $user->user_id }}</span>
             </div>
         </div>
         <div class="flex mt-5">

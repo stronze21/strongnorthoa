@@ -86,4 +86,9 @@ class CookingShow extends Model
         }
         return $result;
     }
+
+    public function partner_user()
+    {
+        return $this->belongsTo(User::class, 'partner_id', 'user_id');
+    }
 }

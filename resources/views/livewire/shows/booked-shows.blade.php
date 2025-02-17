@@ -39,6 +39,7 @@
                     <th class="w-min">Contact No</th>
                     <th class="w-min">Host Email</th>
                     <th class="w-2/12">Lifechanger</th>
+                    <th class="w-2/12">Partner</th>
                     <th class="w-2/12">Presenter</th>
                     <th class="w-min">Result</th>
                 </tr>
@@ -54,6 +55,7 @@
                         <td>{{ $show->contact_no }}</td>
                         <td>{{ $show->host_email }}</td>
                         <td class="capitalize">{{ $show->lifechanger }}</td>
+                        <td class="capitalize">{{ $show->partner_id ? $show->partner_user->fullname() : '' }}</td>
                         <td class="capitalize">{{ $show->presenter }}</td>
                         <td class="capitalize">{!! $show->current_result() !!}</td>
                     </tr>

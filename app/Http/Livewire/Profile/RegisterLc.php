@@ -33,7 +33,7 @@ class RegisterLc extends Component
 
     public $child_name, $child_dob, $child_school;
     public $exp_name, $exp_contact, $exp_salary, $exp_position, $exp_from, $exp_to;
-    public $ref_name, $ref_rel, $ref_contact;
+    public $ref_name, $ref_rel, $ref_contact, $tin;
 
     public function updatedRegionId()
     {
@@ -58,6 +58,7 @@ class RegisterLc extends Component
             $this->address = $user->address;
             $this->contact_no = $user->contact_no;
             $this->email = $user->email;
+            $this->tin = $user->tin;
             $this->photoPath = $user->profile_photo_url;
 
             $profile = $user->profile;
@@ -76,7 +77,7 @@ class RegisterLc extends Component
                 $this->sign_up_date = $profile->sign_up_date;
                 $this->team_leader = $profile->team_leader;
                 $this->team_builder = $profile->team_builder;
-                $this->distributor = $profile->distributor;
+                $this->tin = $profile->tin;
             }
         }
     }
@@ -117,6 +118,7 @@ class RegisterLc extends Component
             'contact_no' => ['required', 'string', 'max:13'],
             'email' => ['required', 'string', 'max:255'],
             'profile_photo' => ['nullable', 'image', 'max:25000'],
+            'tin' => ['required', 'string', 'max:50'],
         ], [
             'f_name.required' => 'First name required...',
             'l_name.required' => 'Last name required...',
@@ -172,6 +174,7 @@ class RegisterLc extends Component
         $profile->birth_date = $this->birth_date;
         $profile->birth_place = $this->birth_place;
         $profile->civil_status = $this->civil_status;
+        $profile->tin = $this->tin;
         $profile->save();
 
         $this->user_id = $user->id;
@@ -191,6 +194,7 @@ class RegisterLc extends Component
         $profile->team_leader = $this->team_leader;
         $profile->team_builder = $this->team_builder;
         $profile->distributor = $this->distributor;
+        $profile->tin = $this->tin;
         $profile->save();
 
         $promotion = UserLifechangerPromotion::firstOrCreate([

@@ -11,6 +11,7 @@ use App\Http\Livewire\Profile\LifechangerProfile;
 use App\Http\Livewire\Profile\Masterlist;
 use App\Http\Livewire\Profile\RegisterLc;
 use App\Http\Livewire\QrCodes;
+use App\Http\Livewire\References\SsplCrud;
 use App\Http\Livewire\Report\AdminBookedShows;
 use App\Http\Livewire\Report\AdminCookedShows;
 use App\Http\Livewire\Reports\GeneralDashboard;
@@ -64,6 +65,7 @@ Route::middleware([
         Route::get('/booked-shows', AdminBookedShows::class)->name('booked');
         Route::get('/cooked-shows', AdminCookedShows::class)->name('cooked');
     });
+    Route::get('/sspl', SsplCrud::class)->name('levels.index');
 
     Route::get('/contests', CsList::class)->middleware('auth')->name('contests.list');
     Route::get('/contests/view/{contest_id}', CsView::class)->middleware('auth')->name('contests.view');

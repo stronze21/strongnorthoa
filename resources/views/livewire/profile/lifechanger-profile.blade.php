@@ -31,7 +31,8 @@
             </div>
         @endif --}}
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div class="form-control">
                 <label class="label">
                     <span class="label-text">First Name<span class="text-xs text-error">*
@@ -69,6 +70,18 @@
                 <label class="">
                     <input wire:model.defer="l_name" type="text" class="w-full input input-sm input-bordered" />
                 </label>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Photo
+                        <span class="text-xs text-error">*
+                            @error('profile_photo')
+                                {{ $message }}
+                            @enderror
+                        </span></span>
+                </label>
+                <input wire:model.defer="profile_photo" type="file"
+                    class="w-full file-input file-input-sm file-input-bordered" />
             </div>
         </div>
 

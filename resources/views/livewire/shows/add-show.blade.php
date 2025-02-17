@@ -170,6 +170,21 @@
         </div>
         <div class="form-control">
             <label class="label">
+                <span class="label-text">Partner<span class="text-error">*</span></span>
+            </label>
+            <label class="">
+                <select wire:model.defer="partner_id" class="w-full text-sm select select-bordered select-sm">
+                    <option value="">N/A</option>
+                    @foreach ($partners as $partner)
+                        <option value="{{ $partner->user_id }}">
+                            {{ $partner->fullname() . ' [' . $partner->cur_level->sspl->level . ']' }}
+                        </option>
+                    @endforeach
+                </select>
+            </label>
+        </div>
+        <div class="form-control">
+            <label class="label">
                 <span class="label-text">Presenter<span class="text-error">*</span></span>
             </label>
             <label class="">

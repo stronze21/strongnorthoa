@@ -39,7 +39,12 @@
                         <td> {{ date('M j, Y gA', strtotime($qr->created_at)) }}</td>
                         <td>{{ $qr->title }}</td>
                         <td>{{ $qr->content }}</td>
-                        <td> {!! QrCode::format('svg')->eyeColor(2, 237, 41, 57, 225, 48, 57)->style('dot')->eye('circle')->generate($qr->code) !!}</td>
+                        <td> <img
+                                src="data:image/png;base64,{{ base64_encode(
+                                    QrCode::format('png')->eyeColor(2, 237, 41, 57, 225, 48, 57)->style('dot')->eye('circle')->generate($qr->code),
+                                ) }}"
+                                alt="QR Code">
+                        </td>
                     </tr>
                 @empty
                     <tr>

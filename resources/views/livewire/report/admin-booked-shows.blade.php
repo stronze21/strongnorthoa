@@ -56,7 +56,8 @@
                     <th>Address</th>
                     <th>Contact No</th>
                     <th>Host Email</th>
-                    <th>Lifechanger</ths=>
+                    <th>Lifechanger</th>
+                    <th>Partner</th>
                     <th>Presenter</th>
                     <th>Result</th>
                 </tr>
@@ -73,6 +74,8 @@
                         <td class="whitespace-nowrap">{{ $show->contact_no }}</td>
                         <td class="whitespace-nowrap">{{ $show->host_email }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->lifechanger }}</td>
+                        <td class="capitalize whitespace-nowrap">
+                            {{ $show->partner_id ? $show->partner_user->fullname() : '' }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->presenter }}</td>
                         <td class="capitalize whitespace-nowrap">{!! $show->current_result() !!}</td>
                     </tr>

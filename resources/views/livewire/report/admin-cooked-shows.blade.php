@@ -57,37 +57,97 @@
                         wire:model.lazy="search" />
                 </label>
             </div>
+
+            <!-- Column Toggle Dropdown -->
+            <div class="relative dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-sm btn-secondary">Columns</label>
+                <ul tabindex="0"
+                    class="z-50 p-2 bg-white border border-gray-300 rounded-lg shadow dropdown-content menu w-52">
+                    @foreach ($columns as $key => $visible)
+                        <li class="px-2 py-1">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="checkbox checkbox-sm"
+                                    wire:model="columns.{{ $key }}">
+                                <span>{{ ucwords(str_replace('_', ' ', $key)) }}</span>
+                            </label>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
     </div>
     <div class="flex flex-col justify-center w-full p-5 mt-2 overflow-x-auto bg-white rounded-md">
         <table class="table w-full table-compact table-zebra table-bordered" id="table">
             <thead>
                 <tr>
-                    <td>Date</td>
-                    <th>Type</th>
-                    <th>Host</th>
-                    <th>Address</th>
-                    <th>Contact No</th>
-                    <th>Host Email</th>
-                    <th>Lifechanger</th>
-                    <th>Presenter</th>
-                    <th>Result</th>
+                    @if ($columns['date'])
+                        <td>Date</td>
+                    @endif
+                    @if ($columns['type'])
+                        <th>Type</th>
+                    @endif
+                    @if ($columns['host'])
+                        <th>Host</th>
+                    @endif
+                    @if ($columns['address'])
+                        <th>Address</th>
+                    @endif
+                    @if ($columns['contact_no'])
+                        <th>Contact No</th>
+                    @endif
+                    @if ($columns['host_email'])
+                        <th>Host Email</th>
+                    @endif
+                    @if ($columns['lifechanger'])
+                        <th>Lifechanger</th>
+                    @endif
+                    @if ($columns['partner'])
+                        <th>Partner</th>
+                    @endif
+                    @if ($columns['presenter'])
+                        <th>Presenter</th>
+                    @endif
+                    @if ($columns['result'])
+                        <th>Result</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @forelse ($shows as $show)
                     <tr onclick="window.location='{{ route('cs.view', $show->cs_id) }}'"
                         class="border cursor-pointer hover">
-                        <td class="whitespace-nowrap">
-                            {{ date('M j, Y gA', strtotime($show->date . ' ' . $show->time)) }}</td>
-                        <td>{{ $show->type }}</td>
-                        <td class="capitalize whitespace-nowrap">{{ $show->host_fullname() }}</td>
-                        <td class="text-xs capitalize">{{ $show->full_address() }}</td>
-                        <td class="whitespace-nowrap">{{ $show->contact_no }}</td>
-                        <td class="whitespace-nowrap">{{ $show->host_email }}</td>
-                        <td class="capitalize whitespace-nowrap">{{ $show->lifechanger }}</td>
-                        <td class="capitalize whitespace-nowrap">{{ $show->presenter }}</td>
-                        <td class="capitalize whitespace-nowrap">{!! $show->current_result() !!}</td>
+                        @if ($columns['date'])
+                            <td class="whitespace-nowrap">
+                                {{ date('M j, Y gA', strtotime($show->date . ' ' . $show->time)) }}</td>
+                        @endif
+                        @if ($columns['type'])
+                            <td>{{ $show->type }}</td>
+                        @endif
+                        @if ($columns['host'])
+                            <td class="capitalize whitespace-nowrap">{{ $show->host_fullname() }}</td>
+                        @endif
+                        @if ($columns['address'])
+                            <td class="text-xs capitalize">{{ $show->full_address() }}</td>
+                        @endif
+                        @if ($columns['contact_no'])
+                            <td class="whitespace-nowrap">{{ $show->contact_no }}</td>
+                        @endif
+                        @if ($columns['host_email'])
+                            <td class="whitespace-nowrap">{{ $show->host_email }}</td>
+                        @endif
+                        @if ($columns['lifechanger'])
+                            <td class="capitalize whitespace-nowrap">{{ $show->lifechanger }}</td>
+                        @endif
+                        @if ($columns['partner'])
+                            <td class="capitalize whitespace-nowrap">
+                                {{ $show->partner_id ? $show->partner_user->fullname() : '' }}</td>
+                        @endif
+                        @if ($columns['presenter'])
+                            <td class="capitalize whitespace-nowrap">{{ $show->presenter }}</td>
+                        @endif
+                        @if ($columns['result'])
+                            <td class="capitalize whitespace-nowrap">{!! $show->current_result() !!}</td>
+                        @endif
                     </tr>
                 @empty
                     <tr>

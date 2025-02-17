@@ -13,6 +13,19 @@ class AdminCookedShows extends Component
     use WithPagination;
     public $from_date, $to_date, $search, $page_no = 20;
 
+    public $columns = [
+        'date' => true,
+        'type' => true,
+        'host' => true,
+        'address' => true,
+        'contact_no' => true,
+        'host_email' => true,
+        'lifechanger' => true,
+        'partner' => true,
+        'presenter' => true,
+        'result' => true,
+    ];
+
     public function render()
     {
         $from = Carbon::parse($this->from_date)->startOfDay()->format('Y-m-d');

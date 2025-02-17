@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
-use App\Models\Municipality;
-use App\Models\Province;
+use Carbon\Carbon;
 use App\Models\Region;
-use App\Models\UserLifechangerProfile;
-use App\Models\UserLifechangerPromotion;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
+use App\Models\Province;
+use App\Models\Municipality;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\UserLifechangerProfile;
+use Laravel\Jetstream\HasProfilePhoto;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\UserLifechangerPromotion;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 // implements MustVerifyEmail
@@ -76,6 +77,7 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
+
     /**
      * The attributes that should be cast.
      *
@@ -83,6 +85,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
@@ -131,11 +135,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserLifechangerPromotion::class, 'user_id', 'user_id')->latest('date_promoted');
     }
+
     public function getProfilePhotoUrlAttribute()
     {
         return $this->profile_photo_path
             ? asset('storage/' . $this->profile_photo_path) // Retrieve from storage
             : asset('default-avatar.png'); // Fallback image
     }
-
 }

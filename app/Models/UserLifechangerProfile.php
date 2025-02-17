@@ -24,6 +24,7 @@ class UserLifechangerProfile extends Model
         'team_builder',
         'distributor',
         'spouse',
+        'tin',
     ];
 
     public function age_signup()

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Sspl extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['level', 'type'];
 }

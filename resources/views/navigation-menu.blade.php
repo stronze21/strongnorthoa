@@ -31,9 +31,9 @@
                         </x-jet-nav-link>
                     @endrole
 
-                    <x-jet-nav-link class="ml-2" href="{{ route('oa.list') }}" :active="request()->routeIs('oa.*')">
+                    {{-- <x-jet-nav-link class="ml-2" href="{{ route('oa.list') }}" :active="request()->routeIs('oa.*')">
                         <i class="mr-1 las la-lg la-file-invoice"></i> {{ __('Order Agreements') }}
-                    </x-jet-nav-link>
+                    </x-jet-nav-link> --}}
 
                     @role('admin')
                         <x-jet-nav-link class="ml-2" href="{{ route('lc.masterlist') }}" :active="request()->routeIs('lc.masterlist')">
@@ -121,6 +121,10 @@
 
                             <x-jet-dropdown-link href="{{ route('lc.profile') }}">
                                 {{ __('Lifechanger Profile') }}
+                            </x-jet-dropdown-link>
+
+                            <x-jet-dropdown-link href="{{ route('levels.index') }}">
+                                {{ __('SSPL Library') }}
                             </x-jet-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
