@@ -23,11 +23,14 @@
                             <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('Cooking Shows') }}
                         </x-jet-nav-link>
                     @else
-                        <x-jet-nav-link class="ml-2" href="{{ route('admin.booked') }}" :active="request()->routeIs('admin.booked')">
+                        {{-- <x-jet-nav-link class="ml-2" href="{{ route('admin.booked') }}" :active="request()->routeIs('admin.booked')">
                             <i class="mr-1 las la-lg la-user-alt"></i> {{ __('Booked Shows') }}
                         </x-jet-nav-link>
                         <x-jet-nav-link class="ml-2" href="{{ route('admin.cooked') }}" :active="request()->routeIs('admin.cooked')">
                             <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('Cooking Shows') }}
+                        </x-jet-nav-link> --}}
+                        <x-jet-nav-link class="ml-2" href="{{ route('admin.all') }}" :active="request()->routeIs('admin.cooked')">
+                            <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('All Cooking Shows') }}
                         </x-jet-nav-link>
                     @endrole
 

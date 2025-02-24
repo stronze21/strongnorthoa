@@ -14,6 +14,7 @@ use App\Http\Livewire\QrCodes;
 use App\Http\Livewire\References\SsplCrud;
 use App\Http\Livewire\Report\AdminBookedShows;
 use App\Http\Livewire\Report\AdminCookedShows;
+use App\Http\Livewire\Report\AllCookingShows;
 use App\Http\Livewire\Reports\GeneralDashboard;
 use App\Http\Livewire\Reports\UserDashboard;
 use App\Http\Livewire\Shows\AddShow;
@@ -64,6 +65,7 @@ Route::middleware([
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::get('/booked-shows', AdminBookedShows::class)->name('booked');
         Route::get('/cooked-shows', AdminCookedShows::class)->name('cooked');
+        Route::get('/all', AllCookingShows::class)->name('all');
     });
     Route::get('/sspl', SsplCrud::class)->name('levels.index');
 
