@@ -108,127 +108,128 @@
     </div>
 </div>
 
-@script
+@push('scripts')
     <script>
-        $(document).ready(function() {
-            // Initialize DataTable with advanced features
-            var table = $('#cooking-shows-table').DataTable({
-                dom: 'Bfrtip',
-                buttons: [{
-                        extend: 'copy',
-                        className: 'btn btn-sm btn-info',
-                        text: '<i class="las la-copy"></i> Copy'
-                    },
-                    {
-                        extend: 'csv',
-                        className: 'btn btn-sm btn-info',
-                        text: '<i class="las la-file-csv"></i> CSV'
-                    },
-                    {
-                        extend: 'excel',
-                        className: 'btn btn-sm btn-info',
-                        text: '<i class="las la-file-excel"></i> Excel'
-                    },
-                    {
-                        extend: 'pdf',
-                        className: 'btn btn-sm btn-info',
-                        text: '<i class="las la-file-pdf"></i> PDF'
-                    },
-                    {
-                        extend: 'print',
-                        className: 'btn btn-sm btn-info',
-                        text: '<i class="las la-print"></i> Print'
-                    },
-                    {
-                        extend: 'colvis',
-                        className: 'btn btn-sm btn-secondary',
-                        text: 'Columns'
-                    }
-                ],
-                "lengthMenu": [
-                    [10, 25, 50, 100, -1],
-                    [10, 25, 50, 100, "All"]
-                ],
-                "pageLength": 25,
-                "orderCellsTop": true,
-                "fixedHeader": true,
-                "responsive": true
-            });
+        // Initialize DataTable with advanced features
+        var table = $('#cooking-shows-table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [{
+                    extend: 'copy',
+                    className: 'btn btn-sm btn-info',
+                    text: '<i class="las la-copy"></i> Copy'
+                },
+                {
+                    extend: 'csv',
+                    className: 'btn btn-sm btn-info',
+                    text: '<i class="las la-file-csv"></i> CSV'
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn btn-sm btn-info',
+                    text: '<i class="las la-file-excel"></i> Excel'
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn btn-sm btn-info',
+                    text: '<i class="las la-file-pdf"></i> PDF'
+                },
+                {
+                    extend: 'print',
+                    className: 'btn btn-sm btn-info',
+                    text: '<i class="las la-print"></i> Print'
+                },
+                {
+                    extend: 'colvis',
+                    className: 'btn btn-sm btn-secondary',
+                    text: 'Columns'
+                }
+            ],
+            "lengthMenu": [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, "All"]
+            ],
+            "pageLength": 25,
+            "orderCellsTop": true,
+            "fixedHeader": true,
+            "responsive": true
+        });
 
-            // Move export buttons to custom div
-            table.buttons().container().appendTo('#export-buttons');
+        // Move export buttons to custom div
+        table.buttons().container().appendTo('#export-buttons');
 
-            // Make rows clickable to view details
-            $('#cooking-shows-table tbody').on('click', 'tr', function() {
-                window.location = $(this).data('href');
-            });
+        // Make rows clickable to view details
+        $('#cooking-shows-table tbody').on('click', 'tr', function() {
+            window.location = $(this).data('href');
+        });
 
-            // Custom date range filter
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    var fromDate = $('#date-from').val();
-                    var toDate = $('#date-to').val();
+        // Custom date range filter
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var fromDate = $('#date-from').val();
+                var toDate = $('#date-to').val();
 
-                    if (!fromDate && !toDate) {
-                        return true;
-                    }
-
-                    var dateString = data[0]; // Get date from first column
-                    var dateParts = dateString.split(',');
-                    var month = dateParts[0].split(' ')[0];
-                    var day = dateParts[0].split(' ')[1];
-                    var year = dateParts[1].trim().split(' ')[0];
-
-                    // Convert to YYYY-MM-DD format for comparison
-                    var months = {
-                        'Jan': '01',
-                        'Feb': '02',
-                        'Mar': '03',
-                        'Apr': '04',
-                        'May': '05',
-                        'Jun': '06',
-                        'Jul': '07',
-                        'Aug': '08',
-                        'Sep': '09',
-                        'Oct': '10',
-                        'Nov': '11',
-                        'Dec': '12'
-                    };
-
-                    var dateValue = year + '-' + months[month] + '-' + day.padStart(2, '0');
-
-                    if (fromDate && toDate) {
-                        return dateValue >= fromDate && dateValue <= toDate;
-                    } else if (fromDate) {
-                        return dateValue >= fromDate;
-                    } else if (toDate) {
-                        return dateValue <= toDate;
-                    }
-
+                if (!fromDate && !toDate) {
                     return true;
                 }
-            );
 
-            // Show type filter
-            $('#show-type-filter').on('change', function() {
-                var type = $(this).val();
+                var dateString = data[0]; // Get date from first column
+                var dateParts = dateString.split(',');
+                var month = dateParts[0].split(' ')[0];
+                var day = dateParts[0].split(' ')[1];
+                var year = dateParts[1].trim().split(' ')[0];
 
-                if (type === '') {
-                    table.column(9).search('').draw(); // Clear filter
-                } else {
-                    table.column(9).search(type).draw();
+                // Convert to YYYY-MM-DD format for comparison
+                var months = {
+                    'Jan': '01',
+                    'Feb': '02',
+                    'Mar': '03',
+                    'Apr': '04',
+                    'May': '05',
+                    'Jun': '06',
+                    'Jul': '07',
+                    'Aug': '08',
+                    'Sep': '09',
+                    'Oct': '10',
+                    'Nov': '11',
+                    'Dec': '12'
+                };
+
+                var dateValue = year + '-' + months[month] + '-' + day.padStart(2, '0');
+
+                if (fromDate && toDate) {
+                    return dateValue >= fromDate && dateValue <= toDate;
+                } else if (fromDate) {
+                    return dateValue >= fromDate;
+                } else if (toDate) {
+                    return dateValue <= toDate;
                 }
-            });
 
-            // Apply filters when date inputs change
-            $('#date-from, #date-to').on('change', function() {
-                table.draw();
-            });
+                return true;
+            }
+        );
 
-            // Initialize Livewire hooks to refresh DataTable when Livewire updates
-            document.addEventListener('livewire:update', function() {
+        // Show type filter
+        $('#show-type-filter').on('change', function() {
+            var type = $(this).val();
+
+            if (type === '') {
+                table.column(9).search('').draw(); // Clear filter
+            } else {
+                table.column(9).search(type).draw();
+            }
+        });
+
+        // Apply filters when date inputs change
+        $('#date-from, #date-to').on('change', function() {
+            table.draw();
+        });
+
+        // Livewire hook to reinitialize DataTable when component updates
+        document.addEventListener('livewire:load', function() {
+            Livewire.hook('message.processed', (message, component) => {
+                // Initialize or reinitialize DataTable after Livewire updates
                 table.clear().rows.add($('#cooking-shows-table tbody tr')).draw();
             });
         });
     </script>
-@endscript
+@endpush
