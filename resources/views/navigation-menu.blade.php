@@ -12,6 +12,9 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden sm:-my-px sm:ml-10 sm:flex">
+                    <x-jet-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
+                        <i class="mr-1 las la-lg la-home"></i> {{ __('Home') }}
+                    </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('gen.dashboard') }}" :active="request()->routeIs('gen.dashboard')">
                         <i class="mr-1 las la-lg la-tachometer-alt"></i> {{ __('Dashboard') }}
                     </x-jet-nav-link>

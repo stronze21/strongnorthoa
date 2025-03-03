@@ -1,28 +1,33 @@
 <?php
 
-use App\Http\Controllers\SignaturePadController;
-use App\Http\Livewire\Contests\CsCreate;
+use App\Http\Livewire\Contest\ContestList;
+use App\Http\Livewire\CookingShow\CookingShowList;
+use App\Http\Livewire\QrCodes;
+use App\Http\Livewire\Shows\AddShow;
+use App\Http\Livewire\User\LifechangerList;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\Shows\ViewShow;
+use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Contests\CsList;
 use App\Http\Livewire\Contests\CsView;
+use App\Http\Livewire\Contests\CsCreate;
+use App\Http\Livewire\Shows\BookedShows;
+use App\Http\Livewire\Shows\CookedShows;
+use App\Http\Livewire\Profile\Masterlist;
+use App\Http\Livewire\Profile\RegisterLc;
+use App\Http\Livewire\References\SsplCrud;
 use App\Http\Livewire\Orders\AgreementList;
 use App\Http\Livewire\Orders\AgreementView;
 use App\Http\Livewire\Profile\AssociateForm;
-use App\Http\Livewire\Profile\LifechangerProfile;
-use App\Http\Livewire\Profile\Masterlist;
-use App\Http\Livewire\Profile\RegisterLc;
-use App\Http\Livewire\QrCodes;
-use App\Http\Livewire\References\SsplCrud;
+use App\Http\Livewire\Reports\UserDashboard;
+use App\Http\Livewire\Report\AllCookingShows;
 use App\Http\Livewire\Report\AdminBookedShows;
 use App\Http\Livewire\Report\AdminCookedShows;
-use App\Http\Livewire\Report\AllCookingShows;
+use App\Http\Livewire\Dashboard\AdminDashboard;
 use App\Http\Livewire\Reports\GeneralDashboard;
-use App\Http\Livewire\Reports\UserDashboard;
-use App\Http\Livewire\Shows\AddShow;
-use App\Http\Livewire\Shows\BookedShows;
-use App\Http\Livewire\Shows\CookedShows;
-use App\Http\Livewire\Shows\ViewShow;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SignaturePadController;
+use App\Http\Livewire\Profile\LifechangerProfile;
+use App\Http\Livewire\CookingShow\MyCookingShowsList;
 
 
 
@@ -63,6 +68,7 @@ Route::middleware([
     });
 
     Route::prefix('/admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
         Route::get('/booked-shows', AdminBookedShows::class)->name('booked');
         Route::get('/cooked-shows', AdminCookedShows::class)->name('cooked');
         Route::get('/all', AllCookingShows::class)->name('all');
@@ -78,4 +84,12 @@ Route::middleware([
 
     Route::get('qr-codes', QrCodes::class)->name('qrs');
     Route::view('post-show', 'emails.post-cs-questionaire');
+
+
+    Route::get('/claude/lifechangers', LifechangerList::class)->name('lifechangers');
+    Route::get('/claude/contests', ContestList::class)->name('contests');
+    Route::get('/claude/cooking-shows', CookingShowList::class)->name('cooking-shows');
+    // Common Routes (for all authenticated users)
+    Route::get('/my-cooking-shows', MyCookingShowsList::class)->name('my-cooking-shows');
+
 });
