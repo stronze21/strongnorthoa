@@ -40,7 +40,10 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'full_name', 'email', 'password', 'pw',
+        'full_name',
+        'email',
+        'password',
+        'pw',
         'f_name',
         'l_name',
         'm_name',
@@ -87,6 +90,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'birth_date' => 'date',
     ];
 
     /**
@@ -97,6 +101,24 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    // Ensure created_at is never null when accessed
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value) : Carbon::now();
+    }
+
+    // Ensure updated_at is never null when accessed
+    public function getUpdatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value) : Carbon::now();
+    }
+
+    // Ensure birth_date handling
+    public function getBirthDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value) : null;
+    }
 
     public function region()
     {
@@ -122,12 +144,19 @@ class User extends Authenticatable
     {
         $fullname = $this->l_name ? $this->l_name . ', ' . $this->f_name . ' ' . $this->m_name : $this->full_name;
 
-        return $fullname;
+        return $fullname ?: 'Unknown User';
     }
 
     public function full_address()
     {
-        $address = $this->address . ', ' . $this->municipality->municipality_name . ', ' . $this->province->province_name;
+        if (!$this->address || !$this->municipality || !$this->province) {
+            return 'No address provided';
+        }
+
+        $address = $this->address . ', ' .
+            ($this->municipality ? $this->municipality->municipality_name : '') . ', ' .
+            ($this->province ? $this->province->province_name : '');
+
         return $address;
     }
 

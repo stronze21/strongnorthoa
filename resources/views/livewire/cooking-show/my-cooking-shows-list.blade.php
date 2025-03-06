@@ -1,7 +1,7 @@
-<div>
+<div class="p-6">
     <div class="flex flex-col items-start justify-between mb-6 md:flex-row md:items-center">
         <h1 class="text-2xl font-bold">My Cooking Shows</h1>
-        <a href="{{ route('my-cooking-shows.create') }}" class="btn btn-primary">
+        <a href="{{ route('cs.add') }}" class="btn btn-primary">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"
                     d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
@@ -159,7 +159,7 @@
                                 </td>
                                 <td>
                                     <div class="flex space-x-1">
-                                        <a href="{{ route('my-cooking-shows.details', $show->cs_id) }}"
+                                        <a href="{{ route('cs.view', $show->cs_id) }}"
                                             class="btn btn-square btn-ghost btn-xs">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -167,14 +167,6 @@
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </a>
-                                        <a href="{{ route('my-cooking-shows.edit', $show->cs_id) }}"
-                                            class="btn btn-square btn-ghost btn-xs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                             </svg>
                                         </a>
                                     </div>

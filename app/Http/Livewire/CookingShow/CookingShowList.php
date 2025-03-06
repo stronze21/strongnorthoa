@@ -32,7 +32,6 @@ class CookingShowList extends Component
     public function mount()
     {
         // Check if user has permission to view all cooking shows
-        $this->authorize('viewAny', CookingShow::class);
     }
 
     public function updatingSearch()

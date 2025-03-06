@@ -12,224 +12,644 @@
 </x-slot>
 
 @push('head')
-    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+    <style>
+        /* Custom mobile-first styles */
+        .filters-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-item {
+            width: 100%;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .show-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .show-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .show-card-body {
+            padding: 0.75rem;
+        }
+
+        .show-card-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0.5rem 0.75rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .data-row {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+        }
+
+        .data-row i {
+            width: 1.5rem;
+            color: #6c757d;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Desktop optimizations */
+        @media (min-width: 768px) {
+            .filters-row {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .filter-item {
+                width: auto;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .table-container {
+                display: block;
+            }
+        }
+    </style>
 @endpush
 
-<div class="flex flex-col px-3 py-5 mx-auto">
-    <div class="flex justify-between mb-4">
+<div class="px-2 py-3 mx-auto md:px-4">
+    <!-- Action bar -->
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <!-- Left side - Action buttons -->
         <div>
             @if (Auth::user()->cur_level and Auth::user()->cur_level->sspl)
-                <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">Add Cooking Show</a>
+                <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">
+                    <i class="las la-plus"></i> <span class="hidden sm:inline">Add Show</span>
+                </a>
             @endif
         </div>
-        <div class="flex space-x-3">
-            <div id="export-buttons" class="flex space-x-2">
-                <!-- Export buttons will be inserted here by DataTables -->
-            </div>
-            <div class="form-control">
-                <label class="input-group input-group-sm">
-                    <span>From</span>
-                    <input type="date" id="date-from" class="input input-bordered input-sm"
-                        wire:model.lazy="from_date" />
+
+        <!-- Right side - View toggle -->
+        <div class="btn-group btn-group-sm">
+            <button id="card-view-btn" class="btn btn-active">
+                <i class="las la-th-large"></i> <span class="hidden sm:inline">Cards</span>
+            </button>
+            <button id="table-view-btn" class="btn">
+                <i class="las la-table"></i> <span class="hidden sm:inline">Table</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick date presets -->
+    <div class="mb-3">
+        <label class="block mb-1 text-sm font-bold">Quick date range:</label>
+        <div class="flex flex-wrap gap-1">
+            <button wire:click="setDateRange('today')" class="btn btn-xs">Today</button>
+            <button wire:click="setDateRange('this_week')" class="btn btn-xs">This Week</button>
+            <button wire:click="setDateRange('this_month')" class="btn btn-xs">This Month</button>
+            <button wire:click="setDateRange('last_month')" class="btn btn-xs">Last Month</button>
+            <button wire:click="resetFilters" class="btn btn-xs btn-outline">Reset</button>
+        </div>
+    </div>
+
+    <!-- Filters section -->
+    <div class="p-3 mb-4 rounded-lg bg-base-200">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold">Filters</h3>
+            <button class="btn btn-xs" id="toggle-filters">
+                <i class="las la-filter"></i> <span class="hidden sm:inline">Toggle Filters</span>
+            </button>
+        </div>
+
+        <div id="filters-container" class="filters-row">
+            <div class="filter-item form-control">
+                <label class="label">
+                    <span class="label-text">Search</span>
                 </label>
+                <input type="text" placeholder="Name, Email, Address..." class="w-full input input-bordered input-sm"
+                    wire:model.debounce.300ms="search" />
             </div>
-            <div class="form-control">
-                <label class="input-group input-group-sm">
-                    <span>To</span>
-                    <input type="date" id="date-to" class="input input-bordered input-sm"
-                        wire:model.lazy="to_date" />
+
+            <div class="filter-item form-control">
+                <label class="label">
+                    <span class="label-text">From Date</span>
                 </label>
+                <input type="date" id="date-from" class="w-full input input-bordered input-sm"
+                    wire:model.lazy="from_date" />
             </div>
-            <div class="form-control">
-                <label class="input-group input-group-sm">
-                    <span>Show</span>
-                    <select id="show-type-filter" class="text-sm select select-bordered select-sm">
-                        <option value="">All Types</option>
-                        <option value="Booked">Booked</option>
-                        <option value="Canceled">Canceled</option>
-                        <option value="Rescheduled">Rescheduled</option>
-                        <option value="Closed">Closed</option>
-                        <option value="For Follow Up">For Follow Up</option>
-                    </select>
+
+            <div class="filter-item form-control">
+                <label class="label">
+                    <span class="label-text">To Date</span>
                 </label>
+                <input type="date" id="date-to" class="w-full input input-bordered input-sm"
+                    wire:model.lazy="to_date" />
+            </div>
+
+            <div class="filter-item form-control">
+                <label class="label">
+                    <span class="label-text">Status</span>
+                </label>
+                <select class="w-full text-sm select select-bordered select-sm" wire:model="show_type">
+                    <option value="">All</option>
+                    <option value="Booked">Booked</option>
+                    <option value="Canceled">Canceled</option>
+                    <option value="Rescheduled">Rescheduled</option>
+                    <option value="Closed">Closed</option>
+                    <option value="For Follow Up">For Follow Up</option>
+                </select>
+            </div>
+
+            <div class="filter-item form-control">
+                <label class="label">
+                    <span class="label-text">Results Per Page</span>
+                </label>
+                <select id="page-size" class="w-full text-sm select select-bordered select-sm" wire:model="page_no">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
             </div>
         </div>
     </div>
 
-    <div class="flex flex-col justify-center w-full p-5 mt-2 overflow-x-auto bg-white rounded-md">
-        <table id="cooking-shows-table" class="table w-full table-zebra table-bordered table-compact">
+    <!-- Export buttons -->
+    <div class="mb-3">
+        <label class="block mb-1 text-sm font-bold">Export options:</label>
+        <div id="export-buttons" class="export-buttons">
+            <!-- Export buttons will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="mb-4 stat-grid">
+        <div class="p-3 rounded-lg shadow-md stat bg-base-100">
+            <div class="stat-figure text-primary">
+                <i class="las la-calendar-check la-2x"></i>
+            </div>
+            <div class="text-xs stat-title">Booked</div>
+            <div class="text-2xl stat-value text-primary">{{ $shows->where('result', 'Booked')->count() }}</div>
+        </div>
+
+        <div class="p-3 rounded-lg shadow-md stat bg-base-100">
+            <div class="stat-figure text-success">
+                <i class="las la-check-circle la-2x"></i>
+            </div>
+            <div class="text-xs stat-title">Closed</div>
+            <div class="text-2xl stat-value text-success">{{ $shows->where('result', 'Closed')->count() }}</div>
+        </div>
+
+        <div class="p-3 rounded-lg shadow-md stat bg-base-100">
+            <div class="stat-figure text-warning">
+                <i class="las la-exclamation-circle la-2x"></i>
+            </div>
+            <div class="text-xs stat-title">Follow Up</div>
+            <div class="text-2xl stat-value text-warning">{{ $shows->where('result', 'For Follow Up')->count() }}</div>
+        </div>
+
+        <div class="p-3 rounded-lg shadow-md stat bg-base-100">
+            <div class="stat-figure text-error">
+                <i class="las la-times-circle la-2x"></i>
+            </div>
+            <div class="text-xs stat-title">Canceled</div>
+            <div class="text-2xl stat-value text-error">{{ $shows->where('result', 'Canceled')->count() }}</div>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div wire:loading.flex wire:target="search, from_date, to_date, show_type, page_no, setDateRange, resetFilters"
+        class="justify-center hidden w-full my-4">
+        <div class="loading loading-spinner loading-lg"></div>
+    </div>
+
+    <!-- Card View (Default for mobile) -->
+    <div id="card-view" class="space-y-4">
+        @forelse ($shows as $show)
+            <div class="show-card bg-base-100">
+                <div class="show-card-header">
+                    <h3 class="font-bold">{{ $show->host_fullname() }}</h3>
+                    <div>{!! $show->current_result() !!}</div>
+                </div>
+                <div class="show-card-body">
+                    <div class="data-row">
+                        <i class="las la-calendar"></i>
+                        <span>{{ $show->date->format('F j, Y') . ' ' . $show->time->format('h:i a') }}</span>
+                    </div>
+                    <div class="data-row">
+                        <i class="las la-map-marker"></i>
+                        <span>{{ $show->full_address() }}</span>
+                    </div>
+                    <div class="data-row">
+                        <i class="las la-phone"></i>
+                        <span>{{ $show->contact_no }}</span>
+                    </div>
+                    <div class="data-row">
+                        <i class="las la-envelope"></i>
+                        <span>{{ $show->host_email }}</span>
+                    </div>
+                    <div class="data-row">
+                        <i class="las la-user"></i>
+                        <span>Lifechanger: {{ $show->lifechanger }}</span>
+                    </div>
+                    @if ($show->partner_id)
+                        <div class="data-row">
+                            <i class="las la-users"></i>
+                            <span>Partner: {{ $show->partner_user->fullname() }}</span>
+                        </div>
+                    @endif
+                    <div class="data-row">
+                        <i class="las la-chalkboard-teacher"></i>
+                        <span>Presenter: {{ $show->presenter }}</span>
+                    </div>
+                </div>
+                <div class="show-card-footer">
+                    <div class="flex gap-1">
+                        <a href="{{ route('cs.view', $show->cs_id) }}" class="btn btn-xs btn-info">
+                            <i class="las la-eye"></i> View
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="p-8 text-center rounded-lg shadow bg-base-100">
+                <i class="mb-2 text-gray-400 las la-calendar-times la-3x"></i>
+                <p class="mb-2 text-lg">No cooking shows found</p>
+                <p class="mb-4 text-sm text-gray-500">Try changing your filters or adding a new show</p>
+                <button wire:click="resetFilters" class="btn btn-sm btn-ghost">Reset Filters</button>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Table View (Hidden on mobile by default) -->
+    <div id="table-view" class="hidden overflow-x-auto bg-white rounded-md shadow-lg">
+        <table id="cooking-shows-table" class="table w-full table-zebra table-compact">
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Type</th>
                     <th>Host</th>
                     <th>Address</th>
-                    <th>Contact No</th>
-                    <th>Host Email</th>
+                    <th>Contact</th>
+                    <th>Email</th>
                     <th>Lifechanger</th>
                     <th>Partner</th>
                     <th>Presenter</th>
-                    <th>Result</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($shows as $show)
-                    <tr data-href="{{ route('cs.view', $show->cs_id) }}" class="border cursor-pointer hover">
+                    <tr class="border hover">
                         <td class="whitespace-nowrap">
-                            {{ date('M j, Y gA', strtotime($show->date . ' ' . $show->time)) }}</td>
+                            {{ date('M j, Y g:i A', strtotime($show->date . ' ' . $show->time)) }}
+                        </td>
                         <td>{{ $show->type }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->host_fullname() }}</td>
-                        <td class="text-xs capitalize">{{ $show->full_address() }}</td>
+                        <td class="text-xs">{{ $show->full_address() }}</td>
                         <td class="whitespace-nowrap">{{ $show->contact_no }}</td>
                         <td class="whitespace-nowrap">{{ $show->host_email }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->lifechanger }}</td>
                         <td class="capitalize whitespace-nowrap">
                             {{ $show->partner_id ? $show->partner_user->fullname() : '' }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->presenter }}</td>
-                        <td class="capitalize whitespace-nowrap" data-result="{{ $show->result }}">
-                            {!! $show->current_result() !!}</td>
+                        <td class="capitalize whitespace-nowrap">
+                            {!! $show->current_result() !!}
+                        </td>
+                        <td class="whitespace-nowrap">
+                            <div class="flex gap-1">
+                                <a href="{{ route('cs.view', $show->cs_id) }}" class="btn btn-xs btn-info">
+                                    <i class="las la-eye"></i>
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <th class="text-center" colspan="10">No record found!</th>
+                        <td class="text-center" colspan="11">No record found!</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination Links -->
+    <div class="mt-4">
+        {{ $shows->links() }}
+    </div>
 </div>
 
 @push('scripts')
     <script>
-        // Initialize DataTable with advanced features
-        var table = $('#cooking-shows-table').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
-                    extend: 'copy',
-                    className: 'btn btn-sm btn-info',
-                    text: '<i class="las la-copy"></i> Copy'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn btn-sm btn-info',
-                    text: '<i class="las la-file-csv"></i> CSV'
-                },
-                {
-                    extend: 'excel',
-                    className: 'btn btn-sm btn-info',
-                    text: '<i class="las la-file-excel"></i> Excel'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn btn-sm btn-info',
-                    text: '<i class="las la-file-pdf"></i> PDF'
-                },
-                {
-                    extend: 'print',
-                    className: 'btn btn-sm btn-info',
-                    text: '<i class="las la-print"></i> Print'
-                },
-                {
-                    extend: 'colvis',
-                    className: 'btn btn-sm btn-secondary',
-                    text: 'Columns'
-                }
-            ],
-            "lengthMenu": [
-                [10, 25, 50, 100, -1],
-                [10, 25, 50, 100, "All"]
-            ],
-            "pageLength": 25,
-            "orderCellsTop": true,
-            "fixedHeader": true,
-            "responsive": true
-        });
+        // Wait for document ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up view toggling
+            setupViewToggle();
 
-        // Move export buttons to custom div
-        table.buttons().container().appendTo('#export-buttons');
+            // Set up export buttons manually
+            setupExportButtons();
 
-        // Make rows clickable to view details
-        $('#cooking-shows-table tbody').on('click', 'tr', function() {
-            window.location = $(this).data('href');
-        });
-
-        // Custom date range filter
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                var fromDate = $('#date-from').val();
-                var toDate = $('#date-to').val();
-
-                if (!fromDate && !toDate) {
-                    return true;
-                }
-
-                var dateString = data[0]; // Get date from first column
-                var dateParts = dateString.split(',');
-                var month = dateParts[0].split(' ')[0];
-                var day = dateParts[0].split(' ')[1];
-                var year = dateParts[1].trim().split(' ')[0];
-
-                // Convert to YYYY-MM-DD format for comparison
-                var months = {
-                    'Jan': '01',
-                    'Feb': '02',
-                    'Mar': '03',
-                    'Apr': '04',
-                    'May': '05',
-                    'Jun': '06',
-                    'Jul': '07',
-                    'Aug': '08',
-                    'Sep': '09',
-                    'Oct': '10',
-                    'Nov': '11',
-                    'Dec': '12'
-                };
-
-                var dateValue = year + '-' + months[month] + '-' + day.padStart(2, '0');
-
-                if (fromDate && toDate) {
-                    return dateValue >= fromDate && dateValue <= toDate;
-                } else if (fromDate) {
-                    return dateValue >= fromDate;
-                } else if (toDate) {
-                    return dateValue <= toDate;
-                }
-
-                return true;
-            }
-        );
-
-        // Show type filter
-        $('#show-type-filter').on('change', function() {
-            var type = $(this).val();
-
-            if (type === '') {
-                table.column(9).search('').draw(); // Clear filter
-            } else {
-                table.column(9).search(type).draw();
-            }
-        });
-
-        // Apply filters when date inputs change
-        $('#date-from, #date-to').on('change', function() {
-            table.draw();
-        });
-
-        // Livewire hook to reinitialize DataTable when component updates
-        document.addEventListener('livewire:load', function() {
-            Livewire.hook('message.processed', (message, component) => {
-                // Initialize or reinitialize DataTable after Livewire updates
-                table.clear().rows.add($('#cooking-shows-table tbody tr')).draw();
+            // Set up toggle filters functionality
+            $('#toggle-filters').on('click', function() {
+                $('#filters-container').slideToggle();
             });
         });
+
+        // Toggle between table and card views
+        function setupViewToggle() {
+            $('#table-view-btn').on('click', function() {
+                $(this).addClass('btn-active');
+                $('#card-view-btn').removeClass('btn-active');
+                $('#table-view').show();
+                $('#card-view').hide();
+                localStorage.setItem('cookingShowsViewMode', 'table');
+            });
+
+            $('#card-view-btn').on('click', function() {
+                $(this).addClass('btn-active');
+                $('#table-view-btn').removeClass('btn-active');
+                $('#table-view').hide();
+                $('#card-view').show();
+                localStorage.setItem('cookingShowsViewMode', 'card');
+            });
+
+            // Check if user has a saved preference
+            const savedViewMode = localStorage.getItem('cookingShowsViewMode');
+            if (savedViewMode === 'table') {
+                $('#table-view-btn').click();
+            }
+        }
+
+        // Set up manual export buttons
+        function setupExportButtons() {
+            // Clear existing buttons
+            $('#export-buttons').empty();
+
+            // Add copy button
+            $('<button class="btn btn-xs"><i class="las la-copy"></i> Copy</button>')
+                .appendTo('#export-buttons')
+                .on('click', function() {
+                    copyTableToClipboard();
+                });
+
+            // Add CSV button
+            $('<button class="btn btn-xs"><i class="las la-file-csv"></i> CSV</button>')
+                .appendTo('#export-buttons')
+                .on('click', function() {
+                    exportTableToCSV('cooking-shows.csv');
+                });
+
+            // Add Excel button
+            $('<button class="btn btn-xs"><i class="las la-file-excel"></i> Excel</button>')
+                .appendTo('#export-buttons')
+                .on('click', function() {
+                    exportTableToExcel('cooking-shows.xls');
+                });
+
+            // Add Print button
+            $('<button class="btn btn-xs"><i class="las la-print"></i> Print</button>')
+                .appendTo('#export-buttons')
+                .on('click', function() {
+                    printTable();
+                });
+        }
+
+        // Copy table data to clipboard
+        function copyTableToClipboard() {
+            let tableData = gatherDataForExport();
+            let textVersion = tableData.map(row => row.join('\t')).join('\n');
+
+            // Create temporary textarea element
+            let textarea = document.createElement('textarea');
+            textarea.value = textVersion;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            // Show toast or alert
+            showNotification('Table data copied to clipboard');
+        }
+
+        // Export table to CSV
+        function exportTableToCSV(filename) {
+            let tableData = gatherDataForExport();
+
+            // Convert to CSV format
+            let csv = tableData.map(row => {
+                return row.map(cell => {
+                    // Escape quotes and wrap in quotes
+                    return '"' + (cell + '').replace(/"/g, '""') + '"';
+                }).join(',');
+            }).join('\n');
+
+            // Download CSV file
+            downloadFile(csv, filename, 'text/csv');
+        }
+
+        // Export table to Excel
+        function exportTableToExcel(filename) {
+            let tableData = gatherDataForExport();
+
+            // Convert to CSV for Excel
+            let csv = tableData.map(row => {
+                return row.map(cell => {
+                    return '"' + (cell + '').replace(/"/g, '""') + '"';
+                }).join(',');
+            }).join('\n');
+
+            // Download as xls file
+            downloadFile(csv, filename, 'application/vnd.ms-excel');
+        }
+
+        // Print table
+        function printTable() {
+            // Get current view mode
+            const isCardView = $('#card-view').is(':visible');
+
+            let contentToPrint;
+            let title = 'Cooking Shows Report';
+
+            if (isCardView) {
+                // Print card view
+                contentToPrint = document.getElementById('card-view').cloneNode(true);
+            } else {
+                // Print table view
+                contentToPrint = document.getElementById('cooking-shows-table').cloneNode(true);
+            }
+
+            // Open print window
+            let printWindow = window.open('', '_blank');
+
+            printWindow.document.write(`
+        <html>
+        <head>
+            <title>${title}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                h1 { text-align: center; margin-bottom: 20px; }
+                table { border-collapse: collapse; width: 100%; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                .show-card { border: 1px solid #ddd; margin-bottom: 15px; border-radius: 5px; overflow: hidden; }
+                .show-card-header { background-color: #f2f2f2; padding: 10px; border-bottom: 1px solid #ddd; }
+                .show-card-body { padding: 10px; }
+                .data-row { margin-bottom: 5px; }
+                @media print {
+                    h1 { margin-top: 0; }
+                    .btn, button { display: none !important; }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>${title}</h1>
+            <div>${contentToPrint.outerHTML}</div>
+            <div style="text-align: center; margin-top: 20px; font-size: 12px;">
+                Generated on ${new Date().toLocaleString()}
+            </div>
+        </body>
+        </html>
+    `);
+
+            printWindow.document.close();
+            printWindow.focus();
+
+            setTimeout(function() {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Gather data for export (works for both card and table view)
+        function gatherDataForExport() {
+            let tableData = [];
+            let headers = [];
+
+            // Check which view is active
+            const isCardView = $('#card-view').is(':visible');
+
+            if (isCardView) {
+                // For card view, manually extract data
+                headers = ['Date', 'Host', 'Address', 'Contact', 'Email', 'Lifechanger', 'Partner', 'Presenter', 'Status'];
+                tableData.push(headers);
+
+                // Get all cards
+                const cards = document.querySelectorAll('.show-card');
+                cards.forEach(card => {
+                    let rowData = [];
+                    // Date
+                    rowData.push(card.querySelector('.data-row:nth-child(1)').textContent.trim());
+                    // Host
+                    rowData.push(card.querySelector('.show-card-header h3').textContent.trim());
+                    // Address
+                    rowData.push(card.querySelector('.data-row:nth-child(2)').textContent.trim());
+                    // Contact
+                    rowData.push(card.querySelector('.data-row:nth-child(3)').textContent.trim());
+                    // Email
+                    rowData.push(card.querySelector('.data-row:nth-child(4)').textContent.trim());
+                    // Lifechanger
+                    rowData.push(card.querySelector('.data-row:nth-child(5)').textContent.trim().replace(
+                        'Lifechanger: ', ''));
+                    // Partner (may not exist)
+                    const partnerEl = card.querySelector('.data-row:nth-child(6)');
+                    rowData.push(partnerEl && partnerEl.textContent.includes('Partner:') ?
+                        partnerEl.textContent.trim().replace('Partner: ', '') : '');
+                    // Presenter
+                    const presenterIndex = card.querySelector('.data-row:nth-child(6)') &&
+                        card.querySelector('.data-row:nth-child(6)').textContent.includes('Partner:') ? 7 : 6;
+                    rowData.push(card.querySelector(`.data-row:nth-child(${presenterIndex})`).textContent.trim()
+                        .replace('Presenter: ', ''));
+                    // Status
+                    rowData.push(card.querySelector('.show-card-header div span').textContent.trim());
+
+                    tableData.push(rowData);
+                });
+            } else {
+                // For table view, extract from HTML table
+                const table = document.getElementById('cooking-shows-table');
+
+                // Extract headers
+                const headerRow = table.querySelector('thead tr');
+                const headerCells = headerRow.querySelectorAll('th');
+                headerCells.forEach(cell => {
+                    headers.push(cell.textContent.trim());
+                });
+                tableData.push(headers);
+
+                // Extract data rows
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    let rowData = [];
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach(cell => {
+                        rowData.push(cell.textContent.trim());
+                    });
+                    tableData.push(rowData);
+                });
+            }
+
+            return tableData;
+        }
+
+        // Helper function to download a file
+        function downloadFile(content, filename, mimeType) {
+            let blob = new Blob([content], {
+                type: mimeType
+            });
+            let link = document.createElement('a');
+
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Show a notification
+        function showNotification(message) {
+            // Check if we can use toast from DaisyUI
+            if (typeof window.toast === 'function') {
+                window.toast(message);
+            } else {
+                // Fallback to simple alert
+                alert(message);
+            }
+        }
+
+        // Handle Livewire updates if Livewire is present
+        if (typeof Livewire !== 'undefined') {
+            Livewire.hook('message.processed', function() {
+                // Refresh export buttons
+                setupExportButtons();
+            });
+        }
     </script>
 @endpush

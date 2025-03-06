@@ -15,16 +15,19 @@
                     <x-jet-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                         <i class="mr-1 las la-lg la-home"></i> {{ __('Home') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('gen.dashboard') }}" :active="request()->routeIs('gen.dashboard')">
+                    {{-- <x-jet-nav-link href="{{ route('gen.dashboard') }}" :active="request()->routeIs('gen.dashboard')">
                         <i class="mr-1 las la-lg la-tachometer-alt"></i> {{ __('Dashboard') }}
-                    </x-jet-nav-link>
+                    </x-jet-nav-link> --}}
                     @role('user')
-                        <x-jet-nav-link class="ml-2" href="{{ route('cs.booked') }}" :active="request()->routeIs('cs.booked')">
+                        <x-jet-nav-link class="ml-2" href="{{ route('my-cooking-shows') }}" :active="request()->routeIs('my-cooking-shows')">
+                            <i class="mr-1 las la-lg la-user-alt"></i> {{ __('My Cooking Shows') }}
+                        </x-jet-nav-link>
+                        {{-- <x-jet-nav-link class="ml-2" href="{{ route('cs.booked') }}" :active="request()->routeIs('cs.booked')">
                             <i class="mr-1 las la-lg la-user-alt"></i> {{ __('Booked Shows') }}
                         </x-jet-nav-link>
                         <x-jet-nav-link class="ml-2" href="{{ route('cs.cooked') }}" :active="request()->routeIs('cs.cooked')">
                             <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('Cooking Shows') }}
-                        </x-jet-nav-link>
+                        </x-jet-nav-link> --}}
                     @else
                         {{-- <x-jet-nav-link class="ml-2" href="{{ route('admin.booked') }}" :active="request()->routeIs('admin.booked')">
                             <i class="mr-1 las la-lg la-user-alt"></i> {{ __('Booked Shows') }}

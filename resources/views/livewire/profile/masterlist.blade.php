@@ -111,7 +111,7 @@
                     @foreach ($users as $user)
                         <tr>
                             @if ($columns['id'])
-                                <td>{{ $user->id }}</td>
+                                <td>{{ $user->user_id }}</td>
                             @endif
                             @if ($columns['lifechanger'])
                                 <td>{{ $user->full_name }}</td>

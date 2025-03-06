@@ -31,7 +31,6 @@ class LifechangerList extends Component
     public function mount()
     {
         // Check if user has permission to view all lifechangers
-        $this->authorize('viewAny', User::class);
     }
 
     public function updatingSearch()
@@ -56,7 +55,7 @@ class LifechangerList extends Component
 
         $query = User::query()
             ->with(['profile', 'region', 'province'])
-            ->role('lifechanger')
+            ->role('user')
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('full_name', 'like', '%' . $this->search . '%')

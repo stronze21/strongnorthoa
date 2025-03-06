@@ -1,8 +1,9 @@
+<!-- resources/views/livewire/dashboard/user-dashboard.blade.php -->
 <div>
-    <!-- Welcome Card -->
+    <!-- Welcome Card with Date Filter -->
     <div class="mb-6 shadow-xl card bg-base-100">
         <div class="card-body">
-            <div class="flex flex-col items-start justify-between md:flex-row md:items-center">
+            <div class="flex flex-col items-start justify-between mb-4 md:flex-row md:items-center">
                 <div>
                     <h2 class="text-2xl card-title">Welcome, {{ auth()->user()->fullname() }}!</h2>
                     <p class="text-base-content/70">
@@ -17,6 +18,52 @@
                     </div>
                 </div>
             </div>
+
+            <div class="divider">Dashboard Statistics</div>
+
+            <!-- Date Filter -->
+            <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-4">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Date Range</span>
+                    </label>
+                    <select wire:model="selectedDateRange" class="w-full select select-bordered">
+                        @foreach ($dateRanges as $value => $label)
+                            <option value="{{ $value }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Start Date</span>
+                    </label>
+                    <input type="date" wire:model="startDate" class="input input-bordered"
+                        {{ $selectedDateRange != 'custom' ? 'disabled' : '' }} />
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">End Date</span>
+                    </label>
+                    <input type="date" wire:model="endDate" class="input input-bordered"
+                        {{ $selectedDateRange != 'custom' ? 'disabled' : '' }} />
+                </div>
+
+                <div class="flex items-end form-control">
+                    <div class="p-2 alert alert-info">
+                        <div class="flex-1 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                class="w-4 h-4 mr-2 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>{{ \Carbon\Carbon::parse($startDate)->format('M d, Y') }} to
+                                {{ \Carbon\Carbon::parse($endDate)->format('M d, Y') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -24,6 +71,13 @@
     <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
         <div class="shadow stats bg-success text-success-content">
             <div class="stat">
+                <div class="stat-figure text-success-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
                 <div class="stat-title">Closed Shows</div>
                 <div class="stat-value">{{ $cookingShowStats['closed'] }}</div>
                 <div class="stat-desc">
@@ -35,6 +89,13 @@
 
         <div class="shadow stats bg-ghost text-ghost-content">
             <div class="stat">
+                <div class="stat-figure text-ghost-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
                 <div class="stat-title">Booked Shows</div>
                 <div class="stat-value">{{ $cookingShowStats['booked'] }}</div>
                 <div class="stat-desc">
@@ -46,6 +107,13 @@
 
         <div class="shadow stats bg-warning text-warning-content">
             <div class="stat">
+                <div class="stat-figure text-warning-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
                 <div class="stat-title">Follow-up Shows</div>
                 <div class="stat-value">{{ $cookingShowStats['followup'] }}</div>
                 <div class="stat-desc">
@@ -57,9 +125,16 @@
 
         <div class="shadow stats bg-primary text-primary-content">
             <div class="stat">
+                <div class="stat-figure text-primary-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
                 <div class="stat-title">Contests</div>
                 <div class="stat-value">{{ count($myContests) }}</div>
-                <div class="stat-desc">Participating</div>
+                <div class="stat-desc">In selected period</div>
             </div>
         </div>
     </div>
@@ -108,7 +183,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>No cooking shows found. Start by booking your first show!</span>
+                                <span>No cooking shows found in selected date range</span>
                             </div>
                         </div>
                     @endif
@@ -164,7 +239,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>You're not participating in any contests yet.</span>
+                                <span>You're not participating in any contests during the selected period.</span>
                             </div>
                         </div>
                     @endif
@@ -218,7 +293,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>No upcoming contests at the moment.</span>
+                                <span>No upcoming contests available.</span>
                             </div>
                         </div>
                     @endif
@@ -264,7 +339,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>No contest achievements yet. Join contests to earn achievements!</span>
+                                <span>No contest achievements in the selected date range.</span>
                             </div>
                         </div>
                     @endif
@@ -272,3 +347,4 @@
             </div>
         </div>
     </div>
+</div>
