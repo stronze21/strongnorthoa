@@ -39,20 +39,12 @@ class CookingShow extends Model
         'contest_id',
         'partner_id',
         'status',
-        'reminder_sent',
-        'feedback_received',
-        'products_sold',
-        'attendance',
     ];
 
     // Set default values for attributes
     protected $attributes = [
         'result' => 'Booked',
         'type' => 'Regular',
-        'reminder_sent' => false,
-        'feedback_received' => false,
-        'products_sold' => 0,
-        'attendance' => 0,
     ];
 
     // Ensure dates are properly cast
@@ -61,10 +53,6 @@ class CookingShow extends Model
         'updated_at' => 'datetime',
         'date' => 'date',
         'time' => 'datetime',
-        'reminder_sent' => 'boolean',
-        'feedback_received' => 'boolean',
-        'products_sold' => 'integer',
-        'attendance' => 'integer',
     ];
 
     // Make sure created_at is never null when accessed
@@ -163,16 +151,6 @@ class CookingShow extends Model
     public function partner_user()
     {
         return $this->belongsTo(User::class, 'partner_id', 'user_id');
-    }
-
-    public function attendees()
-    {
-        return $this->hasMany(Attendee::class, 'cs_id', 'cs_id');
-    }
-
-    public function products()
-    {
-        return $this->hasMany(ProductSale::class, 'cs_id', 'cs_id');
     }
 
     // Helper methods
@@ -291,15 +269,6 @@ class CookingShow extends Model
         $this->date = $newDate;
         $this->time = $newTime;
         $this->result = 'Rescheduled';
-        $this->save();
-        return $this;
-    }
-
-    public function sendReminder()
-    {
-        // Logic for sending reminder would be implemented here
-        // or in a dedicated service class
-        $this->reminder_sent = true;
         $this->save();
         return $this;
     }

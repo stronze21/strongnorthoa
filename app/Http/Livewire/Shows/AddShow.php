@@ -11,17 +11,46 @@ use Livewire\Component;
 
 class AddShow extends Component
 {
-
     use LivewireAlert;
 
     protected $listeners = ['reroute'];
 
+    // Step management
+    public $currentStep = 1;
+    public $totalSteps = 3;
+
+    // Form fields
     public $date, $time, $type;
     public $host, $host_surename, $spouse, $address, $address_2, $city_town, $province, $contact_no, $occupation, $host_email, $social_media;
     public $lifechanger, $presenter, $partner_id, $partner_type, $team_builder, $distributor, $sspl;
     public $reason1, $reason2;
     public $min_date;
     public $partners = [];
+
+    // Define rules for all steps - this is required by Livewire
+    protected $rules = [
+        'date' => 'required|date|date_format:Y-m-d',
+        'time' => 'required',
+        'type' => 'required|string',
+        'host' => 'required|string',
+        'host_surename' => 'required|string',
+        'spouse' => 'nullable|string',
+        'address' => 'required|string',
+        'address_2' => 'nullable|string',
+        'city_town' => 'required|string',
+        'province' => 'required|string',
+        'contact_no' => 'required|string',
+        'occupation' => 'nullable|string',
+        'host_email' => 'required|email',
+        'social_media' => 'nullable|string',
+        'lifechanger' => 'required|string',
+        'presenter' => 'required|string',
+        'partner_id' => 'nullable|string',
+        'partner_type' => 'nullable|string',
+        'team_builder' => 'required|string',
+        'distributor' => 'required|string',
+        'sspl' => 'required|string',
+    ];
 
     public function render()
     {
@@ -33,7 +62,7 @@ class AddShow extends Component
         $this->min_date = date('Y-m-d');
         $this->date = $this->min_date;
         $this->time = date('H:i');
-        $this->type = 'Conventional';
+        $this->type = 'Face to Face';
         $this->host = null;
         $this->spouse = null;
         $this->address = null;
@@ -60,31 +89,82 @@ class AddShow extends Component
         $this->reason2 = null;
     }
 
+    // Step Navigation Methods
+    public function nextStep()
+    {
+        $this->validateCurrentStep();
+
+        if ($this->currentStep < $this->totalSteps) {
+            $this->currentStep++;
+        }
+    }
+
+    public function previousStep()
+    {
+        if ($this->currentStep > 1) {
+            $this->currentStep--;
+        }
+    }
+
+    // Get rules for current step only
+    protected function getStepRules()
+    {
+        $stepRules = [
+            1 => [
+                'date' => 'required|date|date_format:Y-m-d|after_or_equal:' . $this->min_date,
+                'time' => 'required',
+                'type' => 'required|string',
+                'host' => 'required|string',
+                'host_surename' => 'required|string',
+                'spouse' => 'nullable|string',
+            ],
+            2 => [
+                'address' => 'required|string',
+                'address_2' => 'nullable|string',
+                'city_town' => 'required|string',
+                'province' => 'required|string',
+                'contact_no' => 'required|string',
+                'occupation' => 'nullable|string',
+            ],
+            3 => [
+                'host_email' => 'required|email',
+                'social_media' => 'nullable|string',
+                'lifechanger' => 'required|string',
+                'presenter' => 'required|string',
+                'partner_id' => 'nullable|string',
+                'partner_type' => 'nullable|string',
+                'team_builder' => 'required|string',
+                'distributor' => 'required|string',
+                'sspl' => 'required|string',
+            ],
+        ];
+
+        return $stepRules[$this->currentStep] ?? [];
+    }
+
+    // Validate current step
+    public function validateCurrentStep()
+    {
+        $stepRules = $this->getStepRules();
+        $this->validate($stepRules);
+    }
+
+    public function updated($propertyName)
+    {
+        // Validate field as it's updated
+        $stepRules = $this->getStepRules();
+        if (array_key_exists($propertyName, $stepRules)) {
+            $this->validateOnly($propertyName, [$propertyName => $stepRules[$propertyName]]);
+        }
+    }
+
     public function save()
     {
-        $this->validate([
-            'date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:' . $this->min_date],
-            'time' => ['required'],
-            'type' => ['required', 'string'],
-            'host' => ['required', 'string'],
-            'host_surename' => ['required', 'string'],
-            'spouse' => ['nullable', 'string'],
-            'address' => ['required', 'string'],
-            'address_2' => ['nullable', 'string'],
-            'city_town' => ['required', 'string'],
-            'province' => ['required', 'string'],
-            'contact_no' => ['required', 'string'],
-            'occupation' => ['nullable', 'string'],
-            'host_email' => ['required', 'email'],
-            'social_media' => ['nullable', 'string'],
-            'lifechanger' => ['required', 'string'],
-            'presenter' => ['required', 'string'],
-            'partner_id' => ['nullable', 'string'],
-            'partner_type' => ['nullable', 'string'],
-            'team_builder' => ['required', 'string'],
-            'distributor' => ['required', 'string', 'string'],
-            'sspl' => ['required', 'string'],
-        ]);
+        // Validate the final step
+        $this->validateCurrentStep();
+
+        // Final validation of all fields using the main rules
+        $this->validate();
 
         if($this->partner_id){
             $this->partner_type = User::find($this->partner_id)->cur_level->sspl->level;
@@ -132,6 +212,6 @@ class AddShow extends Component
 
     public function reroute()
     {
-        $this->redirect(route('cs.booked'));
+        $this->redirect(route('my-cooking-shows'));
     }
 }

@@ -40,6 +40,9 @@ class UserDashboard extends Component
 
     public function mount()
     {
+        if(Auth::user()->hasRole('admin')){
+            redirect()->route('admin.dashboard');
+        }
         $user = Auth::user();
         $this->userProfile = $user->profile;
 

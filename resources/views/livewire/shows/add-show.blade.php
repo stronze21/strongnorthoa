@@ -1,232 +1,302 @@
 <x-slot name="header">
-    <div class="text-sm breadcrumbs">
-        <ul>
-            <li class="font-bold">
-                <i class="mr-1 las la-stroopwafel la-lg"></i> Cooking Shows
-            </li>
-            <li>
-                <i class="mr-1 las la-plus la-lg"></i> Add Cooking Show
-            </li>
-        </ul>
+    <div class="p-4 mb-4 rounded-lg shadow-md bg-gradient-to-r from-indigo-600 to-purple-600">
+        <div class="text-sm text-white breadcrumbs">
+            <ul>
+                <li class="font-bold transition-colors duration-200 hover:text-indigo-200">
+                    <a href="#" class="flex items-center">
+                        <i class="mr-2 las la-stroopwafel la-lg"></i> Cooking Shows
+                    </a>
+                </li>
+                <li class="text-indigo-100">
+                    <span class="flex items-center">
+                        <i class="mr-2 las la-plus la-lg"></i> Add Cooking Show
+                    </span>
+                </li>
+            </ul>
+        </div>
     </div>
 </x-slot>
 
+<div class="max-w-lg px-4 py-6 mx-auto sm:px-6 md:max-w-4xl lg:max-w-6xl">
+    <div class="overflow-hidden bg-white shadow-xl rounded-xl">
+        <!-- Form Header with Progress -->
+        <div class="p-4 border-b border-gray-100 bg-gray-50">
+            <h2 class="flex items-center text-lg font-bold text-gray-800">
+                <i class="mr-2 text-indigo-600 las la-calendar-plus la-lg"></i> Book a New Cooking Show
+            </h2>
 
-<div class="flex flex-col max-w-6xl px-3 py-5 mx-auto mt-5 bg-white rounded-lg">
-
-    @if ($errors->any())
-        <div class="mb-3 rounded-lg shadow-lg alert alert-error">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 w-6 h-6 stroke-current" fill="none"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{{ $errors->first() }}</span>
+            <!-- Progress Indicator -->
+            <div class="px-2 mt-4">
+                <div class="flex justify-between mb-1">
+                    <div class="text-xs font-medium text-indigo-700">Step {{ $currentStep }} of 3</div>
+                    <div class="text-xs font-medium text-gray-500">{{ round(($currentStep / 3) * 100) }}%</div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
+                        style="width: {{ ($currentStep / 3) * 100 }}%"></div>
+                </div>
             </div>
         </div>
-    @endif
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Date<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="date" type="date" min="{{ date('Y-m-d') }}"
-                    class="w-full input input-sm input-bordered" />
-            </label>
+        <!-- Error Messages -->
+        @if ($errors->any())
+            <div class="p-4 mx-4 mt-4 border-l-4 border-red-500 rounded-md bg-red-50">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3 text-red-500" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-medium text-red-700">{{ $errors->first() }}</span>
+                </div>
+            </div>
+        @endif
+
+        <div class="p-4 md:p-6">
+            <!-- Step 1: Basic Information -->
+            @if ($currentStep == 1)
+                <div class="space-y-6">
+                    <h3 class="flex items-center font-semibold text-indigo-700 text-md">
+                        <i class="mr-1 las la-info-circle"></i> Basic Information
+                    </h3>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Date<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="date" type="date" min="{{ date('Y-m-d') }}"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Time<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="time" type="time" value="{{ date('H:i') }}"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Show Type<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <select wire:model.defer="type"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm select select-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="Face to Face">Face to Face</option>
+                            <option value="Virtual">Virtual</option>
+                        </select>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            First Name<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="host" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Last Name<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="host_surename" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Spouse First Name
+                        </label>
+                        <input wire:model.defer="spouse" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+                </div>
+            @endif
+
+            <!-- Step 2: Contact Information -->
+            @if ($currentStep == 2)
+                <div class="space-y-6">
+                    <h3 class="flex items-center font-semibold text-indigo-700 text-md">
+                        <i class="mr-1 las la-address-book"></i> Contact Information
+                    </h3>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Address Line 1<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="address" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Address Line 2
+                        </label>
+                        <input wire:model.defer="address_2" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            City/Town<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="city_town" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Province<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="province" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Contact Number<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="contact_no" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Occupation<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="occupation" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+                </div>
+            @endif
+
+            <!-- Step 3: Additional Information -->
+            @if ($currentStep == 3)
+                <div class="space-y-6">
+                    <h3 class="flex items-center font-semibold text-indigo-700 text-md">
+                        <i class="mr-1 las la-users"></i> Additional Information
+                    </h3>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Email Address<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="host_email" type="email"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Social Media Name<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="social_media" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Lifechanger<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="lifechanger" type="text"
+                            class="w-full bg-white bg-gray-100 border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            readonly />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Partner<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <select wire:model.defer="partner_id"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm select select-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="">N/A</option>
+                            @foreach ($partners as $partner)
+                                <option value="{{ $partner->user_id }}">
+                                    {{ $partner->fullname() . ' [' . $partner->cur_level->sspl->level . ']' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Presenter<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="presenter" type="text"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Team Builder<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="team_builder" type="text"
+                            class="w-full bg-white bg-gray-100 border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            readonly />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Distributor<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <input wire:model.defer="distributor" type="text"
+                            class="w-full bg-white bg-gray-100 border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            readonly />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="block mb-1 text-sm font-medium text-gray-700">
+                            Spirit of Success Program Level<span class="ml-1 text-red-500">*</span>
+                        </label>
+                        <select wire:model.defer="sspl"
+                            class="w-full bg-white bg-gray-100 border-gray-300 rounded-md shadow-sm select select-bordered"
+                            readonly disabled>
+                            <option value="0">Not Set</option>
+                            <option value="Associate">Associate</option>
+                            <option value="Consultant">Consultant</option>
+                            <option value="Senior Consultant">Senior Consultant</option>
+                            <option value="Distributor">Distributor</option>
+                        </select>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-8">
+                @if ($currentStep > 1)
+                    <button wire:click="previousStep"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i class="mr-2 las la-arrow-left"></i> Previous
+                    </button>
+                @else
+                    <div></div>
+                @endif
+
+                @if ($currentStep < 3)
+                    <button wire:click="nextStep"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Next <i class="ml-2 las la-arrow-right"></i>
+                    </button>
+                @else
+                    <button wire:click="save" wire:loading.attr="disabled"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <span wire:loading.remove>
+                            <i class="mr-2 las la-calendar-check"></i> Book Show
+                        </span>
+                        <span wire:loading>
+                            <svg class="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Processing...
+                        </span>
+                    </button>
+                @endif
+            </div>
         </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Time<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="time" type="time" value="{{ date('H:i') }}"
-                    class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Show type<span class="text-error">*</span></span>
-            </label>
-            <select wire:model.defer="type" class="text-sm select select-sm select-bordered">
-                <option value="Face to Face">Face to Face</option>
-                <option value="Virtual">Virtual</option>
-            </select>
-        </div>
-        <div class="col-span-3 mb-3">
-            <hr>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">First Name of Host<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="host" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Last Name of Host<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="host_surename" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Spouse First Name</span>
-            </label>
-            <label class="">
-                <input wire:model.defer="spouse" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 gap-4">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Address Line 1<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="address" type="text" class="w-full input input-sm input-bordered">
-            </label>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 gap-4">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Address Line 2</span>
-            </label>
-            <label class="">
-                <input wire:model.defer="address_2" type="text" class="w-full input input-sm input-bordered">
-            </label>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">City/Town<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="city_town" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Province<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="province" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Host Contact No<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="contact_no" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Host Occupation<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="occupation" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Host Email<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="host_email" type="email" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Name of Host on Social Media<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="social_media" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="col-span-2">
-            <hr>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Lifechanger<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="lifechanger" type="text" class="w-full input input-sm input-bordered"
-                    readonly />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Partner<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <select wire:model.defer="partner_id" class="w-full text-sm select select-bordered select-sm">
-                    <option value="">N/A</option>
-                    @foreach ($partners as $partner)
-                        <option value="{{ $partner->user_id }}">
-                            {{ $partner->fullname() . ' [' . $partner->cur_level->sspl->level . ']' }}
-                        </option>
-                    @endforeach
-                </select>
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Presenter<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="presenter" type="text" class="w-full input input-sm input-bordered" />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Team Builder<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="team_builder" type="text" class="w-full input input-sm input-bordered"
-                    readonly />
-            </label>
-        </div>
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Distributor<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <input wire:model.defer="distributor" type="text" class="w-full input input-sm input-bordered"
-                    readonly />
-            </label>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 gap-4">
-        <div class="form-control">
-            <label class="label">
-                <span class="label-text">Spirit of Success Program Level<span class="text-error">*</span></span>
-            </label>
-            <label class="">
-                <select wire:model.defer="sspl" class="w-full select select-bordered" readonly disabled>
-                    <option value="0">Not Set</option>
-                    <option value="Associate">Associate</option>
-                    <option value="Consultant">Consultant</option>
-                    <option value="Senior Consultant">Senior Consultant</option>
-                    <option value="Distributor">Distributor</option>
-                </select>
-            </label>
-        </div>
-    </div>
-    <div class="flex justify-center mt-3">
-        <button class="btn btn-primary" wire:click="save()" wire:loading.attr='disabled'>Submit</button>
     </div>
 </div>
