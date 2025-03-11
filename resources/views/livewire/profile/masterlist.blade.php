@@ -160,7 +160,7 @@
                             @if ($columns['actions'])
                                 <td class="text-end">
                                     <div class="flex justify-end space-x-2">
-                                        @if ($user->cur_level and $user->profile->builder)
+                                        @if ($user->cur_level and $user->profile and $user->profile->builder)
                                             <a class="btn btn-sm btn-secondary"
                                                 wire:key='view-lc-form-{{ $user->user_id }}'
                                                 href="{{ route('lc.assoc.form', $user->user_id) }}"><i
