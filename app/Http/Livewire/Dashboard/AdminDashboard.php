@@ -2,12 +2,13 @@
 
 namespace App\Http\Livewire\Dashboard;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Contest;
-use App\Models\CookingShow;
 use Livewire\Component;
+use App\Models\CookingShow;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AdminDashboard extends Component
@@ -41,6 +42,9 @@ class AdminDashboard extends Component
 
     public function mount()
     {
+        if(Auth::user()->hasRole('user')){
+            redirect()->route('dashboard');
+        }
         $this->setDateRange($this->selectedDateRange);
         $this->loadDashboardData();
     }
