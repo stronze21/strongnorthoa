@@ -110,7 +110,7 @@ class Masterlist extends Component
         }
 
         return view('livewire.profile.masterlist', [
-            'users' => $users->paginate(15),
+            'users' => $users->get(),
         ]);
     }
 

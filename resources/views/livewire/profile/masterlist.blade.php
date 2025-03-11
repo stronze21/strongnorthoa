@@ -180,7 +180,7 @@
                 </tbody>
             </table>
             <div class="mt-2">
-                {{ $users->links() }}
+                {{-- {{ $users->links() }} --}}
             </div>
         </div>
 
