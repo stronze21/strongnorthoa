@@ -45,8 +45,9 @@ class RegisterLc extends Component
         $this->reset('municipality_id');
     }
 
-    public function mount($userID = null){
-        if($userID){
+    public function mount($userID = null)
+    {
+        if ($userID) {
             $user = User::find($userID);
             $this->user_id = $userID;
             $this->f_name = $user->f_name;
@@ -95,9 +96,10 @@ class RegisterLc extends Component
         $references = UserCharacterReference::where('user_id', $this->user_id)->get() ?? [];
         $promotions = UserLifechangerPromotion::where('user_id', $this->user_id)->orderBy('date_promoted', 'DESC')->get() ?? [];
 
-        return view('livewire.profile.register-lc',
-        compact('user', 'distribs', 'regions', 'provinces', 'municipalities', 'lcs', 'levels', 'dependents', 'works', 'references', 'promotions')
-    );
+        return view(
+            'livewire.profile.register-lc',
+            compact('user', 'distribs', 'regions', 'provinces', 'municipalities', 'lcs', 'levels', 'dependents', 'works', 'references', 'promotions')
+        );
     }
 
     public function save()
@@ -132,7 +134,7 @@ class RegisterLc extends Component
         // Handle file upload
         $photoPath = $this->profile_photo ? $this->profile_photo->store('profile-photos', 'public') : null;
 
-        if(!$this->user_id){
+        if (!$this->user_id) {
             $user = User::create([
                 'full_name' => $this->l_name . ', ' . $this->f_name . ' ' . $this->m_name,
                 'l_name' => $this->l_name,
@@ -148,7 +150,7 @@ class RegisterLc extends Component
                 'contact_no' => $this->contact_no,
                 'profile_photo_path' => $photoPath,
             ]);
-        }else{
+        } else {
             $user = User::find($this->user_id);
             $user->f_name = $this->f_name;
             $user->m_name = $this->m_name;
@@ -403,5 +405,14 @@ class RegisterLc extends Component
         $history = UserLifechangerPromotion::find($history_id);
         $history->delete();
         $this->alert('warning', 'Promotion history removed!');
+    }
+
+    public function reset_password()
+    {
+        $user = User::find($this->user_id);
+        $user->pw = Hash::make('strongnorth');
+        $user->save();
+
+        $this->alert('success', 'Password Reset to strongnorth');
     }
 }

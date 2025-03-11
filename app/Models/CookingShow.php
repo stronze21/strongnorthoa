@@ -95,7 +95,7 @@ class CookingShow extends Model
     public function getFullDateTimeAttribute()
     {
         if ($this->date && $this->time) {
-            return Carbon::parse($this->date . ' ' . $this->time)->format('M j, Y g:i A');
+            return Carbon::parse($this->date->format('Y-m-d') . ' ' . $this->time->format('H:i:s'))->format('M j, Y g:i A');
         }
         return null;
     }

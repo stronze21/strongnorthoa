@@ -19,7 +19,7 @@ use App\Http\Livewire\References\SsplCrud;
 use App\Http\Livewire\Orders\AgreementList;
 use App\Http\Livewire\Orders\AgreementView;
 use App\Http\Livewire\Profile\AssociateForm;
-use App\Http\Livewire\Reports\UserDashboard;
+use App\Http\Livewire\Dashboard\UserDashboard;
 use App\Http\Livewire\Report\AllCookingShows;
 use App\Http\Livewire\Report\AdminBookedShows;
 use App\Http\Livewire\Report\AdminCookedShows;
@@ -48,8 +48,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/', GeneralDashboard::class)->name('gen.dashboard');
-    Route::get('/dashboard', GeneralDashboard::class)->name('dashboard');
+    Route::get('/', UserDashboard::class)->name('gen.dashboard');
+    Route::get('/dashboard', UserDashboard::class)->name('dashboard');
     Route::get('/lifechanger-profile/update/{userID?}', LifechangerProfile::class)->name('lc.profile');
     Route::get('/lifechanger-profile/create/{userID?}', RegisterLc::class)->name('lc.create');
     Route::get('/lifechanger-profile/assoc-form/{userID}', AssociateForm::class)->name('lc.assoc.form');
@@ -91,5 +91,4 @@ Route::middleware([
     Route::get('/claude/cooking-shows', CookingShowList::class)->name('cooking-shows');
     // Common Routes (for all authenticated users)
     Route::get('/my-cooking-shows', MyCookingShowsList::class)->name('my-cooking-shows');
-
 });

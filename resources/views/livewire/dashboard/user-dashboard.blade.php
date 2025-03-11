@@ -1,5 +1,4 @@
-<!-- resources/views/livewire/dashboard/user-dashboard.blade.php -->
-<div>
+<div class="p-4">
     <!-- Welcome Card with Date Filter -->
     <div class="mb-6 shadow-xl card bg-base-100">
         <div class="card-body">
@@ -66,7 +65,43 @@
             </div>
         </div>
     </div>
+    <div class="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Total Downline Lifechangers Card -->
+        <div class="shadow-xl card bg-base-100">
+            <div class="card-body">
+                <h2 class="card-title text-primary">Total Lifechangers</h2>
+                <div class="text-3xl font-bold stat-value text-primary">{{ $totalDownlineLifechangers }}</div>
+                <p class="text-sm text-gray-500">Lifechangers in your network</p>
+            </div>
+        </div>
 
+        <!-- Team Leader Card -->
+        <div class="shadow-xl card bg-base-100">
+            <div class="card-body">
+                <h2 class="card-title text-secondary">Team Leader</h2>
+                <div class="text-3xl font-bold stat-value text-secondary">{{ $totalTeamLeaderLifechangers }}</div>
+                <p class="text-sm text-gray-500">Listed you as Team Leader</p>
+            </div>
+        </div>
+
+        <!-- Team Builder Card -->
+        <div class="shadow-xl card bg-base-100">
+            <div class="card-body">
+                <h2 class="card-title text-accent">Team Builder</h2>
+                <div class="text-3xl font-bold stat-value text-accent">{{ $totalTeamBuilderLifechangers }}</div>
+                <p class="text-sm text-gray-500">Listed you as Team Builder</p>
+            </div>
+        </div>
+
+        <!-- Distributor Card -->
+        <div class="shadow-xl card bg-base-100">
+            <div class="card-body">
+                <h2 class="card-title text-info">Distributor</h2>
+                <div class="text-3xl font-bold stat-value text-info">{{ $totalDistributorLifechangers }}</div>
+                <p class="text-sm text-gray-500">Listed you as Distributor</p>
+            </div>
+        </div>
+    </div>
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
         <div class="shadow stats bg-success text-success-content">
@@ -78,9 +113,9 @@
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <div class="stat-title">Closed Shows</div>
+                <div class="stat-title text-success-content">Closed Shows</div>
                 <div class="stat-value">{{ $cookingShowStats['closed'] }}</div>
-                <div class="stat-desc">
+                <div class="stat-desc text-success-content">
                     {{ $cookingShowStats['total'] > 0 ? round(($cookingShowStats['closed'] / $cookingShowStats['total']) * 100, 1) . '%' : '0%' }}
                     of total
                 </div>
@@ -96,9 +131,9 @@
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                 </div>
-                <div class="stat-title">Booked Shows</div>
+                <div class="stat-title text-ghost-content">Booked Shows</div>
                 <div class="stat-value">{{ $cookingShowStats['booked'] }}</div>
-                <div class="stat-desc">
+                <div class="stat-desc text-ghost-content">
                     {{ $cookingShowStats['total'] > 0 ? round(($cookingShowStats['booked'] / $cookingShowStats['total']) * 100, 1) . '%' : '0%' }}
                     of total
                 </div>
@@ -114,9 +149,9 @@
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
-                <div class="stat-title">Follow-up Shows</div>
+                <div class="stat-title text-warning-content">Follow-up Shows</div>
                 <div class="stat-value">{{ $cookingShowStats['followup'] }}</div>
-                <div class="stat-desc">
+                <div class="stat-desc text-warning-content">
                     {{ $cookingShowStats['total'] > 0 ? round(($cookingShowStats['followup'] / $cookingShowStats['total']) * 100, 1) . '%' : '0%' }}
                     of total
                 </div>
@@ -132,9 +167,9 @@
                             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                 </div>
-                <div class="stat-title">Contests</div>
+                <div class="stat-title text-primary-content">Contests</div>
                 <div class="stat-value">{{ count($myContests) }}</div>
-                <div class="stat-desc">In selected period</div>
+                <div class="stat-desc text-primary-content">In selected period</div>
             </div>
         </div>
     </div>
@@ -152,6 +187,7 @@
                         <table class="table w-full">
                             <thead>
                                 <tr>
+                                    <th>Date/Time</th>
                                     <th>Host</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -161,6 +197,10 @@
                                 @foreach ($myCookingShows as $show)
                                     <tr class="hover">
                                         <td>
+                                            <div class="font-bold">{{ $show->getFullDateTimeAttribute() }}</div>
+                                            <div class="text-sm opacity-50">{{ $show->type }}</div>
+                                        </td>
+                                        <td>
                                             <div class="font-bold">{{ $show->host_fullname() }}</div>
                                             <div class="text-sm opacity-50">{{ $show->full_address() }}</div>
                                         </td>
@@ -168,7 +208,7 @@
                                             {!! $show->current_result() !!}
                                         </td>
                                         <td class="text-right">
-                                            <a href="{{ route('my-cooking-shows.details', $show->cs_id) }}"
+                                            <a href="{{ route('cs.view', $show->cs_id) }}"
                                                 class="btn btn-ghost btn-xs">details</a>
                                         </td>
                                     </tr>
@@ -195,8 +235,7 @@
         <div class="shadow-xl card bg-base-100">
             <div class="card-body">
                 <h2 class="flex justify-between card-title">
-                    My Contests
-                    <a href="{{ route('my-contests') }}" class="btn btn-sm btn-primary">View All</a>
+                    <a href="{{ route('contests.list') }}" class="btn btn-sm btn-primary">View All</a>
                 </h2>
                 <div class="overflow-x-auto">
                     @if (count($myContests) > 0)
@@ -224,7 +263,7 @@
                                             </div>
                                         </td>
                                         <td class="text-right">
-                                            <a href="{{ route('my-contests.details', $contest->id) }}"
+                                            <a href="{{ route('contests.view', $contest->id) }}"
                                                 class="btn btn-ghost btn-xs">details</a>
                                         </td>
                                     </tr>
@@ -260,7 +299,6 @@
                                 <tr>
                                     <th>Title</th>
                                     <th>Period</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -277,9 +315,6 @@
                                                 <span class="badge badge-ghost badge-sm">End:
                                                     {{ \Carbon\Carbon::parse($contest->end_date)->format('M d, Y') }}</span>
                                             </div>
-                                        </td>
-                                        <td class="text-right">
-                                            <button class="btn btn-primary btn-xs">Join</button>
                                         </td>
                                     </tr>
                                 @endforeach

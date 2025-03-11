@@ -3,10 +3,11 @@
 namespace App\Http\Livewire\Dashboard;
 
 use App\Models\Contest;
+use Livewire\Component;
 use App\Models\CookingShow;
 use App\Models\ContestLifechanger;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use App\Models\UserLifechangerProfile;
 
 class UserDashboard extends Component
 {
@@ -16,6 +17,26 @@ class UserDashboard extends Component
     public $cookingShowStats;
     public $contestAchievements;
     public $userProfile;
+    public $totalDownlineLifechangers;
+    public $totalTeamLeaderLifechangers;
+    public $totalTeamBuilderLifechangers;
+    public $totalDistributorLifechangers;
+
+    // Date filter properties
+    public $startDate;
+    public $endDate;
+    public $selectedDateRange = 'current_month';
+    public $dateRanges = [
+        'today' => 'Today',
+        'yesterday' => 'Yesterday',
+        'current_week' => 'Current Week',
+        'last_week' => 'Last Week',
+        'current_month' => 'Current Month',
+        'last_month' => 'Last Month',
+        'current_year' => 'Current Year',
+        'last_year' => 'Last Year',
+        'custom' => 'Custom Range',
+    ];
 
     public function mount()
     {
@@ -63,6 +84,22 @@ class UserDashboard extends Component
                     'status' => 'Participant',
                 ];
             });
+
+
+        // Get total lifechangers who listed the current user as team_leader in their profile
+        $this->totalTeamLeaderLifechangers = UserLifechangerProfile::where('team_leader', $user->user_id)->count();
+
+        // Get total lifechangers who listed the current user as team_builder in their profile
+        $this->totalTeamBuilderLifechangers = UserLifechangerProfile::where('team_builder', $user->user_id)->count();
+
+        // Get total lifechangers who listed the current user as distributor in their profile
+        $this->totalDistributorLifechangers = UserLifechangerProfile::where('distributor', $user->user_id)->count();
+
+        // Total downline lifechangers (combined total of all roles)
+        $this->totalDownlineLifechangers = UserLifechangerProfile::where('team_leader', $user->user_id)
+            ->orWhere('team_builder', $user->user_id)
+            ->orWhere('distributor', $user->user_id)
+            ->count();
     }
 
     public function render()
