@@ -188,7 +188,7 @@ class CookingShow extends Model
         $badgeClass = $badgeClasses[$this->result] ?? 'badge-ghost';
 
         $result = '
-        <div class="shadow-lg badge ' . $badgeClass . '">
+        <div class="shadow-lg whitespace-nowrap badge ' . $badgeClass . '">
             <div>
                 <span>' . $this->result . '</span>
             </div>
