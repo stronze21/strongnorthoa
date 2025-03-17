@@ -48,7 +48,7 @@
     </div>
 
     <!-- Stats Overview -->
-    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
         <div class="shadow stats">
             <div class="stat">
                 <div class="stat-figure">
@@ -92,7 +92,61 @@
                 <div class="stat-desc">In selected date range</div>
             </div>
         </div>
+
+        <div class="shadow stats">
+            <div class="stat">
+                <div class="stat-figure">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="stat-title">Total Amount Closed</div>
+                <div class="stat-value">{{ number_format($totalAmountClosed, 2) }}</div>
+                <div class="stat-desc">In selected date range</div>
+            </div>
+        </div>
     </div>
+
+
+    <!-- Running Contests Alerts -->
+    @if (count($runningContests) > 0)
+        <div class="my-6">
+            <h2 class="mb-3 text-xl font-bold">Running Contests</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                @foreach ($runningContests as $contest)
+                    <div class="shadow-lg alert {{ $contest->days_remaining < 7 ? 'alert-warning' : 'alert-info' }}">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                class="flex-shrink-0 w-6 h-6 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="font-bold">{{ $contest->title }} <span
+                                        class="badge badge-sm">{{ $contest->serial() }}</span></h3>
+                                <div class="text-xs">{{ $contest->days_remaining }}
+                                    day{{ $contest->days_remaining !== 1 ? 's' : '' }} remaining (ends
+                                    {{ $contest->end_date->format('M d, Y') }})</div>
+                                <progress
+                                    class="w-full progress {{ $contest->days_remaining < 7 ? 'progress-warning' : 'progress-info' }}"
+                                    value="{{ $contest->progress_percentage }}" max="100"></progress>
+                                <div class="flex justify-between mt-1 text-xs">
+                                    <span>Started: {{ $contest->start_date->format('M d') }}</span>
+                                    <span>{{ $contest->progress_percentage }}% complete</span>
+                                    <span>Ends: {{ $contest->end_date->format('M d') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-none">
+                            <a href="{{ route('contests.view', $contest->id) }}" class="btn btn-sm">View</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
         <!-- Cooking Shows by Status -->
@@ -161,7 +215,8 @@
                                     <td>{{ $stat->count }}</td>
                                     <td>
                                         <div class="flex items-center">
-                                            <progress class="w-56 progress progress-accent" value="{{ $stat->count }}"
+                                            <progress class="w-56 progress progress-accent"
+                                                value="{{ $stat->count }}"
                                                 max="{{ $monthlyStats->max('count') > 0 ? $monthlyStats->max('count') : 1 }}"></progress>
                                         </div>
                                     </td>

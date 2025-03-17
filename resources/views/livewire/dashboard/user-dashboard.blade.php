@@ -50,6 +50,9 @@
                 </div>
 
                 <div class="flex items-end form-control">
+                    <label class="label">
+                        <span class="label-text">Date range</span>
+                    </label>
                     <div class="p-2 alert alert-info">
                         <div class="flex-1 text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -122,6 +125,20 @@
             </div>
         </div>
 
+        <div class="shadow stats bg-warning text-warning-content">
+            <div class="stat">
+                <div class="stat-figure text-warning-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="stat-title text-warning-content">Amount Closed</div>
+                <div class="stat-value">{{ number_format($totalAmountClosed, 2) }}</div>
+            </div>
+        </div>
+
         <div class="shadow stats bg-ghost text-ghost-content">
             <div class="stat">
                 <div class="stat-figure text-ghost-content">
@@ -140,7 +157,7 @@
             </div>
         </div>
 
-        <div class="shadow stats bg-warning text-warning-content">
+        {{-- <div class="shadow stats bg-warning text-warning-content">
             <div class="stat">
                 <div class="stat-figure text-warning-content">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
@@ -156,7 +173,7 @@
                     of total
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="shadow stats bg-primary text-primary-content">
             <div class="stat">
@@ -174,6 +191,43 @@
         </div>
     </div>
 
+    <!-- Running Contests Alerts -->
+    @if (count($runningContests) > 0)
+        <div class="my-6">
+            <h2 class="mb-3 text-xl font-bold">Running Contests</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                @foreach ($runningContests as $contest)
+                    <div class="shadow-lg alert {{ $contest->days_remaining < 7 ? 'alert-warning' : 'alert-info' }}">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                class="flex-shrink-0 w-6 h-6 stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="font-bold">{{ $contest->title }} <span
+                                        class="badge badge-sm">{{ $contest->serial() }}</span></h3>
+                                <div class="text-xs">{{ $contest->days_remaining }}
+                                    day{{ $contest->days_remaining !== 1 ? 's' : '' }} remaining (ends
+                                    {{ $contest->end_date->format('M d, Y') }})</div>
+                                <progress
+                                    class="w-full progress {{ $contest->days_remaining < 7 ? 'progress-warning' : 'progress-info' }}"
+                                    value="{{ $contest->progress_percentage }}" max="100"></progress>
+                                <div class="flex justify-between mt-1 text-xs">
+                                    <span>Started: {{ $contest->start_date->format('M d') }}</span>
+                                    <span>{{ $contest->progress_percentage }}% complete</span>
+                                    <span>Ends: {{ $contest->end_date->format('M d') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-none">
+                            <a href="{{ route('contests.view', $contest->id) }}" class="btn btn-sm">View</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
     <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
         <!-- My Cooking Shows -->
         <div class="shadow-xl card bg-base-100">

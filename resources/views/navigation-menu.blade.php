@@ -54,6 +54,9 @@
                         <x-jet-nav-link class="ml-2" href="{{ route('qrs') }}" :active="request()->routeIs('qrs')">
                             <i class="mr-1 las la-lg la-qrcode"></i> {{ __('QR Codes') }}
                         </x-jet-nav-link>
+                        <x-jet-nav-link class="ml-2" href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')">
+                            <i class="mr-1 las la-lg la-file-excel"></i> {{ __('Reports') }}
+                        </x-jet-nav-link>
                     @endrole
                 </div>
             </div>

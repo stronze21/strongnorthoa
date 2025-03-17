@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Dashboard;
+namespace App\Http\Livewire;
 
 use App\Models\User;
 use App\Models\Contest;

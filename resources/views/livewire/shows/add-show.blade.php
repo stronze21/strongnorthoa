@@ -139,18 +139,35 @@
 
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            City/Town<span class="ml-1 text-red-500">*</span>
+                            Province<span class="ml-1 text-red-500">*</span>
                         </label>
-                        <input wire:model.defer="city_town" type="text"
-                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <select wire:model="province_id"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm select select-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="">Select Province</option>
+                            @foreach ($provinces as $province)
+                                <option value="{{ $province->province_id }}">{{ $province->province_name }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            Province<span class="ml-1 text-red-500">*</span>
+                            City/Town<span class="ml-1 text-red-500">*</span>
                         </label>
-                        <input wire:model.defer="province" type="text"
-                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <select wire:model.defer="municipality_id"
+                            class="w-full bg-white border-gray-300 rounded-md shadow-sm select select-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            {{ !$province_id ? 'disabled' : '' }}>
+                            <option value="">Select City/Town</option>
+                            @if ($province_id)
+                                @foreach ($municipalities as $municipality)
+                                    <option value="{{ $municipality->municipality_id }}">
+                                        {{ $municipality->municipality_name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        @if (!$province_id)
+                            <p class="mt-1 text-xs text-gray-500">Please select a province first</p>
+                        @endif
                     </div>
 
                     <div class="form-control">
@@ -163,7 +180,7 @@
 
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            Occupation<span class="ml-1 text-red-500">*</span>
+                            Occupation
                         </label>
                         <input wire:model.defer="occupation" type="text"
                             class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -188,7 +205,7 @@
 
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            Social Media Name<span class="ml-1 text-red-500">*</span>
+                            Social Media Name
                         </label>
                         <input wire:model.defer="social_media" type="text"
                             class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -205,7 +222,7 @@
 
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            Partner<span class="ml-1 text-red-500">*</span>
+                            Partner
                         </label>
                         <select wire:model.defer="partner_id"
                             class="w-full bg-white border-gray-300 rounded-md shadow-sm select select-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">

@@ -312,13 +312,13 @@
         <table id="cooking-shows-table" class="table w-full table-zebra table-compact">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Type</th>
                     <th>Host</th>
                     <th>Address</th>
                     <th>Contact</th>
                     <th>Email</th>
                     <th>Lifechanger</th>
+                    <th>Date</th>
+                    <th>Type</th>
                     <th>Partner</th>
                     <th>Presenter</th>
                     <th>Status</th>
@@ -328,15 +328,15 @@
             <tbody>
                 @forelse ($shows as $show)
                     <tr class="border hover">
-                        <td class="whitespace-nowrap">
-                            {{ date('M j, Y g:i A', strtotime($show->date . ' ' . $show->time)) }}
-                        </td>
-                        <td>{{ $show->type }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->host_fullname() }}</td>
                         <td class="text-xs">{{ $show->full_address() }}</td>
                         <td class="whitespace-nowrap">{{ $show->contact_no }}</td>
                         <td class="whitespace-nowrap">{{ $show->host_email }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->lifechanger }}</td>
+                        <td class="whitespace-nowrap">
+                            {{ $show->date->format('M j, Y') . ' ' . $show->time->format('h:i a') }}
+                        </td>
+                        <td>{{ $show->type }}</td>
                         <td class="capitalize whitespace-nowrap">
                             {{ $show->partner_id ? $show->partner_user->fullname() : '' }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->presenter }}</td>

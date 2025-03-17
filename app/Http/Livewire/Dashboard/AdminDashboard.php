@@ -18,12 +18,13 @@ class AdminDashboard extends Component
     public $totalUsers;
     public $totalContests;
     public $totalCookingShows;
+    public $runningContests;
     public $recentUsers;
     public $recentContests;
     public $recentCookingShows;
     public $cookingShowsByStatus;
     public $monthlyStats;
-
+    public $totalAmountClosed;
     // Date filter properties
     public $startDate;
     public $endDate;
@@ -109,8 +110,22 @@ class AdminDashboard extends Component
 
     public function loadDashboardData()
     {
+        $now = Carbon::now();
+        $this->runningContests = Contest::where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->get()
+            ->map(function ($contest) use ($now) {
+                $daysRemaining = $now->diffInDays($contest->end_date);
+                $contest->days_remaining = $daysRemaining;
+                $contest->days_total = $contest->start_date->diffInDays($contest->end_date);
+                $contest->progress_percentage = round(($contest->days_total - $daysRemaining) / max(1, $contest->days_total) * 100);
+                return $contest;
+            });
         // User count is not filtered by date
         $this->totalUsers = User::count();
+        $this->totalAmountClosed = CookingShow::where('result', 'Closed')
+        ->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate])
+        ->sum('amount_sold');
 
         // Filter contests by date range
         $this->totalContests = Contest::whereBetween(DB::raw('DATE(start_date)'), [$this->startDate, $this->endDate])->orwhereBetween(DB::raw('DATE(end_date)'), [$this->startDate, $this->endDate])->count();

@@ -2,9 +2,10 @@
 
 namespace App\Http\Livewire\CookingShow;
 
-use App\Models\CookingShow;
+use Carbon\Carbon;
 use App\Models\Contest;
 use Livewire\Component;
+use App\Models\CookingShow;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class MyCookingShowsList extends Component
     public $search = '';
     public $statusFilter = '';
     public $contestFilter = '';
-    public $dateRange = '';
+    public $from_date, $to_date, $dateRange = '';
     public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
@@ -47,6 +48,9 @@ class MyCookingShowsList extends Component
 
     public function render()
     {
+        $from = $this->from_date ? Carbon::parse($this->from_date)->startOfDay()->format('Y-m-d') : null;
+        $to = $this->to_date ? Carbon::parse($this->to_date)->endOfDay()->format('Y-m-d') : null;
+
         $contests = Contest::all();
         $userId = Auth::id();
 
@@ -67,12 +71,9 @@ class MyCookingShowsList extends Component
             ->when($this->contestFilter, function ($query) {
                 $query->where('contest_id', $this->contestFilter);
             })
-            ->when($this->dateRange, function ($query) {
+            ->when($this->to_date, function ($query) use ($from, $to) {
                 // Parse date range and add to query
-                $dates = explode(' to ', $this->dateRange);
-                if (count($dates) === 2) {
-                    $query->whereBetween('created_at', [$dates[0], $dates[1]]);
-                }
+                $query->whereBetween('created_at', [$from, $to]);
             })
             ->orderBy($this->sortField, $this->sortDirection);
 

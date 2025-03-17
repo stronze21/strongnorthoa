@@ -91,4 +91,15 @@ Route::middleware([
     Route::get('/claude/cooking-shows', CookingShowList::class)->name('cooking-shows');
     // Common Routes (for all authenticated users)
     Route::get('/my-cooking-shows', MyCookingShowsList::class)->name('my-cooking-shows');
+
+    // Report Routes
+    Route::middleware(['auth'])->prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', 'App\Http\Controllers\ReportController@index')->name('index');
+        Route::get('/dashboard', 'App\Http\Controllers\ReportController@index')->name('dashboard');
+        Route::get('/shows', 'App\Http\Controllers\ReportController@showsReport')->name('shows');
+        Route::get('/lifechangers', 'App\Http\Controllers\ReportController@lifechangerReport')->name('lifechangers');
+        Route::get('/orders', 'App\Http\Controllers\ReportController@ordersReport')->name('orders');
+        Route::get('/contests', 'App\Http\Controllers\ReportController@contestReport')->name('contests');
+        Route::match(['get', 'post'], '/custom', 'App\Http\Controllers\ReportController@customReport')->name('custom');
+    });
 });

@@ -228,7 +228,7 @@
                     day wire:of
                     <span
                         class="underline">{{ Carbon\Carbon::parse($user->profile->sign_up_date)->format('F Y') }}</span>,
-                    by between StrongNorth Cookware Trading, with its principal place of business located at 9-10 VYV
+                    by between StrongNorth Enterprises OPC, with its principal place of business located at 9-10 VYV
                     Bldg.
                     Valdez Center, Barangay 1 San Nicolas, Ilocos Norte (hereinafter called “Dealer”) and
                     <span class="underline">{{ $user->fullname() }}</span> with his address at

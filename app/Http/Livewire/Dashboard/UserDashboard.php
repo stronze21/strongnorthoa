@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Dashboard;
 
+use Carbon\Carbon;
 use App\Models\Contest;
 use Livewire\Component;
 use App\Models\CookingShow;
@@ -11,6 +12,8 @@ use App\Models\UserLifechangerProfile;
 
 class UserDashboard extends Component
 {
+
+    public $runningContests;
     public $myCookingShows;
     public $myContests;
     public $upcomingContests;
@@ -21,7 +24,7 @@ class UserDashboard extends Component
     public $totalTeamLeaderLifechangers;
     public $totalTeamBuilderLifechangers;
     public $totalDistributorLifechangers;
-
+    public $totalAmountClosed;
     // Date filter properties
     public $startDate;
     public $endDate;
@@ -59,7 +62,9 @@ class UserDashboard extends Component
             'closed' => CookingShow::where('user_id', $user->user_id)->where('result', 'Closed')->count(),
             'followup' => CookingShow::where('user_id', $user->user_id)->where('result', 'For Follow Up')->count(),
         ];
-
+        $this->totalAmountClosed = CookingShow::where('user_id', $user->user_id)
+        ->where('result', 'Closed')
+        ->sum('amount_sold');
         // Get contests the user is participating in
         $contestIds = ContestLifechanger::where('user_id', $user->user_id)
             ->pluck('contest_id');
@@ -103,6 +108,19 @@ class UserDashboard extends Component
             ->orWhere('team_builder', $user->user_id)
             ->orWhere('distributor', $user->user_id)
             ->count();
+
+        // Get currently running contests
+        $now = Carbon::now();
+        $this->runningContests = Contest::where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->get()
+            ->map(function ($contest) use ($now) {
+                $daysRemaining = $now->diffInDays($contest->end_date);
+                $contest->days_remaining = $daysRemaining;
+                $contest->days_total = $contest->start_date->diffInDays($contest->end_date);
+                $contest->progress_percentage = round(($contest->days_total - $daysRemaining) / max(1, $contest->days_total) * 100);
+                return $contest;
+            });
     }
 
     public function render()

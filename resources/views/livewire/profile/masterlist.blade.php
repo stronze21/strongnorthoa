@@ -22,35 +22,6 @@
                         wire:model.lazy="search" />
                 </label>
             </div>
-            <!-- Filter Button -->
-            <button class="btn btn-sm btn-secondary" wire:click="$set('showFilters', true)">
-                <i class="las la-filter"></i> Filter
-            </button>
-
-            <!-- Column Toggle Dropdown -->
-            <div class="relative dropdown dropdown-end">
-                <label tabindex="0" class="btn btn-sm btn-secondary">Columns</label>
-                <ul tabindex="0"
-                    class="z-50 p-2 bg-white border border-gray-300 rounded-lg shadow dropdown-content menu w-52">
-                    @foreach ($columns as $key => $visible)
-                        <li class="px-2 py-1">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" class="checkbox checkbox-sm"
-                                    wire:model="columns.{{ $key }}">
-                                <span>{{ ucwords(str_replace('_', ' ', $key)) }}</span>
-                            </label>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-
-            <!-- Print and Export Buttons -->
-            <div class="space-x-2">
-                <button class="btn btn-sm btn-primary" onclick="printTable()">Print</button>
-                <button class="btn btn-sm btn-success" onclick="exportTableToExcel('printableTable')">Export to
-                    Excel</button>
-            </div>
         </div>
     </div>
     <div class="flex flex-col justify-center w-full p-5 mt-2 overflow-x-auto bg-white rounded-md">

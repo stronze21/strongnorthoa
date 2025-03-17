@@ -5,6 +5,8 @@ namespace App\Http\Livewire\Shows;
 use App\Models\CookingShow;
 use App\Models\Sspl;
 use App\Models\User;
+use App\Models\Province;
+use App\Models\Municipality;
 use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -27,6 +29,12 @@ class AddShow extends Component
     public $min_date;
     public $partners = [];
 
+    // Location data
+    public $provinces = [];
+    public $municipalities = [];
+    public $province_id = null;
+    public $municipality_id = null;
+
     // Define rules for all steps - this is required by Livewire
     protected $rules = [
         'date' => 'required|date|date_format:Y-m-d',
@@ -37,9 +45,9 @@ class AddShow extends Component
         'spouse' => 'nullable|string',
         'address' => 'required|string',
         'address_2' => 'nullable|string',
-        'city_town' => 'required|string',
-        'province' => 'required|string',
-        'contact_no' => 'required|string',
+        'province_id' => 'required',
+        'municipality_id' => 'required',
+        'contact_no' => 'required|string|unique:cooking_shows,contact_no',
         'occupation' => 'nullable|string',
         'host_email' => 'required|email',
         'social_media' => 'nullable|string',
@@ -54,7 +62,10 @@ class AddShow extends Component
 
     public function render()
     {
-        return view('livewire.shows.add-show');
+        return view('livewire.shows.add-show', [
+            'provinces' => $this->provinces,
+            'municipalities' => $this->municipalities,
+        ]);
     }
 
     public function mount()
@@ -77,16 +88,38 @@ class AddShow extends Component
         $this->team_builder = Auth::user()->profile->builder ? Auth::user()->profile->builder->fullname() : 'N/A';
         $this->distributor = Auth::user()->profile->distrib ? Auth::user()->profile->distrib->fullname() : 'N/A';
         $this->sspl = Auth::user()->cur_level ? Auth::user()->cur_level->sspl->level : '0';
-        $this->partners = User::whereHas('profile', function($query){
-            $query->where('team_leader', Auth::user()->id);
-        })->whereHas('cur_level', function($query){
+
+        // Load partners
+        $this->partners = User::whereHas('cur_level', function($query){
             $query->whereHas('sspl', function($query){
                 $query->where('type', 'partner');
-            } );
+            });
         })->get();
+
+        // Load provinces
+        $this->provinces = Province::orderBy('province_name')->get();
 
         $this->reason1 = null;
         $this->reason2 = null;
+    }
+
+    // When province changes, update municipalities
+    public function updatedProvinceId($value)
+    {
+        $this->municipality_id = null; // Reset municipality selection
+        $this->loadMunicipalities($value);
+    }
+
+    // Load municipalities based on selected province
+    public function loadMunicipalities($provinceId)
+    {
+        if ($provinceId) {
+            $this->municipalities = Municipality::where('province_id', $provinceId)
+                ->orderBy('municipality_name')
+                ->get();
+        } else {
+            $this->municipalities = [];
+        }
     }
 
     // Step Navigation Methods
@@ -121,9 +154,9 @@ class AddShow extends Component
             2 => [
                 'address' => 'required|string',
                 'address_2' => 'nullable|string',
-                'city_town' => 'required|string',
-                'province' => 'required|string',
-                'contact_no' => 'required|string',
+                'province_id' => 'required',
+                'municipality_id' => 'required',
+                'contact_no' => 'required|string|unique:cooking_shows,contact_no',
                 'occupation' => 'nullable|string',
             ],
             3 => [
@@ -170,6 +203,10 @@ class AddShow extends Component
             $this->partner_type = User::find($this->partner_id)->cur_level->sspl->level;
         }
 
+        // Get province and municipality names from IDs
+        $provinceName = Province::find($this->province_id)->province_name ?? '';
+        $municipalityName = Municipality::find($this->municipality_id)->municipality_name ?? '';
+
         $new_show = new CookingShow;
         $new_show->date = $this->date;
         $new_show->time = $this->time;
@@ -179,8 +216,8 @@ class AddShow extends Component
         $new_show->spouse = $this->spouse;
         $new_show->address = $this->address;
         $new_show->address_2 = $this->address_2;
-        $new_show->city_town = $this->city_town;
-        $new_show->province = $this->province;
+        $new_show->city_town = $municipalityName;
+        $new_show->province = $provinceName;
         $new_show->contact_no = $this->contact_no;
         $new_show->occupation = $this->occupation;
         $new_show->host_email = $this->host_email;
