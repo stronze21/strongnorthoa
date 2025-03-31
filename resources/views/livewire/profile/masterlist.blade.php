@@ -98,7 +98,7 @@
                             @endif
                             @if ($user->profile)
                                 @if ($columns['signup_date'])
-                                    <td>{{ $user->created_at }}</td>
+                                    <td>{{ $user->profile->sign_up_date }}</td>
                                 @endif
                                 @if ($columns['team_builder'])
                                     <td>{{ $user->team_builder }}</td>
