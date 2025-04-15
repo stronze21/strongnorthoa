@@ -49,6 +49,8 @@ class AllCookingShows extends Component
         if ($this->search) {
             $showsQuery->where(function ($query) {
                 $query->where('host', 'LIKE', '%' . $this->search . '%')
+                    ->orWhere('host_middlename', 'LIKE', '%' . $this->search . '%')
+                    ->orWhere('host_surename', 'LIKE', '%' . $this->search . '%')
                     ->orWhere('lifechanger', 'LIKE', '%' . $this->search . '%')
                     ->orWhere('presenter', 'LIKE', '%' . $this->search . '%')
                     ->orWhere('host_email', 'LIKE', '%' . $this->search . '%')

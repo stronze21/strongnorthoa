@@ -90,15 +90,26 @@
 
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            First Name<span class="ml-1 text-red-500">*</span>
+                            Host First Name<span class="ml-1 text-red-500">*</span>
                         </label>
                         <input wire:model.defer="host" type="text"
                             class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                     </div>
 
+                    <div class="w-full form-control">
+                        <label class="label">
+                            <span class="label-text">Host Middle Name</span>
+                        </label>
+                        <input type="text" wire:model="host_middlename" placeholder="Middle Name"
+                            class="input input-bordered w-full @error('host_middlename') input-error @enderror">
+                        @error('host_middlename')
+                            <span class="text-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
                     <div class="form-control">
                         <label class="block mb-1 text-sm font-medium text-gray-700">
-                            Last Name<span class="ml-1 text-red-500">*</span>
+                            Host Last Name<span class="ml-1 text-red-500">*</span>
                         </label>
                         <input wire:model.defer="host_surename" type="text"
                             class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -236,11 +247,17 @@
                     </div>
 
                     <div class="form-control">
-                        <label class="block mb-1 text-sm font-medium text-gray-700">
-                            Presenter<span class="ml-1 text-red-500">*</span>
+                        <label class="label">
+                            <span class="label-text">Presenter</span>
                         </label>
-                        <input wire:model.defer="presenter" type="text"
-                            class="w-full bg-white border-gray-300 rounded-md shadow-sm input input-bordered focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <select wire:model="presenter" class="w-full select select-bordered">
+                            @foreach ($lifechangers as $name)
+                                <option value="{{ $name }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                        @error('presenter')
+                            <span class="mt-1 text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-control">

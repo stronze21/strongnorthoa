@@ -31,10 +31,12 @@ class AdminCookedShows extends Component
         $from = Carbon::parse($this->from_date)->startOfDay()->format('Y-m-d');
         $to = Carbon::parse($this->to_date)->endOfDay()->format('Y-m-d');
 
-        $shows = CookingShow::where(function($query){
-                $query->where('host', 'LIKE', '%' . $this->search . '%')
+        $shows = CookingShow::where(function ($query) {
+            $query->where('host', 'LIKE', '%' . $this->search . '%')
+                ->orWhere('host_middlename', 'like', '%' . $this->search . '%')
+                ->orWhere('host_surename', 'like', '%' . $this->search . '%')
                 ->orWhere('lifechanger', 'LIKE', '%' . $this->search . '%');
-                })
+        })
             ->whereRaw('(result = "Closed" OR result = "For Follow Up")')
             ->whereBetween('date', [$from, $to])
             ->orderBy('date', 'DESC')

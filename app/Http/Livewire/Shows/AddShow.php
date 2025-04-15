@@ -23,11 +23,12 @@ class AddShow extends Component
 
     // Form fields
     public $date, $time, $type;
-    public $host, $host_surename, $spouse, $address, $address_2, $city_town, $province, $contact_no, $occupation, $host_email, $social_media;
+    public $host, $host_surename, $host_middlename, $spouse, $address, $address_2, $city_town, $province, $contact_no, $occupation, $host_email, $social_media;
     public $lifechanger, $presenter, $partner_id, $partner_type, $team_builder, $distributor, $sspl;
     public $reason1, $reason2;
     public $min_date;
     public $partners = [];
+    public $lifechangers = []; // Added for presenter dropdown selection
 
     // Location data
     public $provinces = [];
@@ -41,6 +42,7 @@ class AddShow extends Component
         'time' => 'required',
         'type' => 'required|string',
         'host' => 'required|string',
+        'host_middlename' => 'nullable|string',
         'host_surename' => 'required|string',
         'spouse' => 'nullable|string',
         'address' => 'required|string',
@@ -65,6 +67,7 @@ class AddShow extends Component
         return view('livewire.shows.add-show', [
             'provinces' => $this->provinces,
             'municipalities' => $this->municipalities,
+            'lifechangers' => $this->lifechangers,
         ]);
     }
 
@@ -82,7 +85,7 @@ class AddShow extends Component
         $this->host_email = null;
         $this->social_media = null;
         $this->lifechanger = Auth::user()->fullname();
-        $this->presenter = null;
+        $this->presenter = Auth::user()->fullname(); // Set the presenter to current user's full name
         $this->partner_id = null;
         $this->partner_type = null;
         $this->team_builder = Auth::user()->profile->builder ? Auth::user()->profile->builder->fullname() : 'N/A';
@@ -90,11 +93,24 @@ class AddShow extends Component
         $this->sspl = Auth::user()->cur_level ? Auth::user()->cur_level->sspl->level : '0';
 
         // Load partners
-        $this->partners = User::whereHas('cur_level', function($query){
-            $query->whereHas('sspl', function($query){
+        $this->partners = User::whereHas('cur_level', function ($query) {
+            $query->whereHas('sspl', function ($query) {
                 $query->where('type', 'partner');
             });
         })->get();
+
+        // Load lifechangers for presenter selection
+        $this->lifechangers = User::role('user')
+            ->select('user_id', 'f_name', 'l_name', 'm_name', 'full_name')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->user_id,
+                    'name' => $user->fullname()
+                ];
+            })
+            ->pluck('name', 'name')
+            ->toArray();
 
         // Load provinces
         $this->provinces = Province::orderBy('province_name')->get();
@@ -149,6 +165,7 @@ class AddShow extends Component
                 'type' => 'required|string',
                 'host' => 'required|string',
                 'host_surename' => 'required|string',
+                'host_middlename' => 'nullable|string',
                 'spouse' => 'nullable|string',
             ],
             2 => [
@@ -199,7 +216,7 @@ class AddShow extends Component
         // Final validation of all fields using the main rules
         $this->validate();
 
-        if($this->partner_id){
+        if ($this->partner_id) {
             $this->partner_type = User::find($this->partner_id)->cur_level->sspl->level;
         }
 
@@ -212,6 +229,7 @@ class AddShow extends Component
         $new_show->time = $this->time;
         $new_show->type = $this->type;
         $new_show->host = $this->host;
+        $new_show->host_middlename = $this->host_middlename;
         $new_show->host_surename = $this->host_surename;
         $new_show->spouse = $this->spouse;
         $new_show->address = $this->address;

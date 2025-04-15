@@ -22,10 +22,11 @@ class AdminBookedShows extends Component
 
         $shows = CookingShow::where('result', '<>', 'Closed')
             ->where('result', '<>', 'For Follow Up')
-            ->where(function($query){
+            ->where(function ($query) {
                 $query->where('host', 'LIKE', '%' . $this->search . '%')
-                ->orWhere('lifechanger', 'LIKE', '%' . $this->search . '%');
-                })
+                    ->orWhere('host_middlename', 'like', '%' . $this->search . '%')
+                    ->orWhere('lifechanger', 'LIKE', '%' . $this->search . '%');
+            })
             ->whereBetween('date', [$from, $to])
             ->orderBy('date', 'DESC')
             ->orderBy('time', 'ASC')

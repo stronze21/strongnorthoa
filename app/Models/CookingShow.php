@@ -19,7 +19,7 @@ class CookingShow extends Model
     protected $fillable = [
         'user_id',
         'host',
-        'host_lastname',
+        'host_middlename',
         'host_surename',
         'address',
         'address_2',
@@ -170,8 +170,9 @@ class CookingShow extends Model
     public function host_fullname()
     {
         $lastname = $this->host_lastname ? ' ' . $this->host_lastname : '';
+        $middlename = $this->host_middlename ? ' ' . $this->host_middlename : '';
         $surename = $this->host_surename ? $this->host_surename . ', ' : '';
-        return $surename . $this->host . $lastname;
+        return $surename . $this->host . $middlename . $lastname;
     }
 
     public function current_result()

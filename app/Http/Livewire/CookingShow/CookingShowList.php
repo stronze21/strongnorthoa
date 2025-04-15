@@ -57,6 +57,7 @@ class CookingShowList extends Component
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('host', 'like', '%' . $this->search . '%')
+                        ->orWhere('host_middlename', 'like', '%' . $this->search . '%')
                         ->orWhere('host_surename', 'like', '%' . $this->search . '%')
                         ->orWhere('address', 'like', '%' . $this->search . '%')
                         ->orWhere('city_town', 'like', '%' . $this->search . '%')
