@@ -49,7 +49,7 @@ class AddShow extends Component
         'address_2' => 'nullable|string',
         'province_id' => 'required',
         'municipality_id' => 'required',
-        'contact_no' => 'required|string|unique:cooking_shows,contact_no',
+        'contact_no' => 'nullable|string',
         'occupation' => 'nullable|string',
         'host_email' => 'required|email',
         'social_media' => 'nullable|string',
@@ -173,7 +173,7 @@ class AddShow extends Component
                 'address_2' => 'nullable|string',
                 'province_id' => 'required',
                 'municipality_id' => 'required',
-                'contact_no' => 'required|string|unique:cooking_shows,contact_no',
+                'contact_no' => 'nullable|string',
                 'occupation' => 'nullable|string',
             ],
             3 => [
