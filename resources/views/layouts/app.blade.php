@@ -21,6 +21,14 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    <style>
+        .app-pagebar { background: #fff; border-bottom: 1px solid #e2e8f0; }
+        .app-pagebar-inner { max-width: 1600px; margin: auto; padding: 7px 24px; min-height: 38px; display: flex; align-items: center; color: #526078; }
+        .app-pagebar .breadcrumbs { padding: 0; font-size: 12px; }
+        .app-pagebar .breadcrumbs a:hover { color: #4338ca; }
+        .app-pagebar a:focus-visible { outline: 2px solid #4338ca; outline-offset: 3px; }
+        @media (max-width: 640px) { .app-pagebar-inner { padding: 7px 16px; } }
+    </style>
     @stack('head')
 </head>
 
@@ -32,8 +40,8 @@
 
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-white shadow">
-                <div class="px-4 py-2 mx-auto sm:px-6 lg:px-8">
+            <header class="app-pagebar">
+                <div class="app-pagebar-inner">
                     {{ $header }}
                 </div>
             </header>

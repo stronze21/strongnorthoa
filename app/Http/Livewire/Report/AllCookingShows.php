@@ -72,7 +72,12 @@ class AllCookingShows extends Component
 
         // Apply show type filter if provided
         if ($this->show_type) {
-            $showsQuery->where('result', $this->show_type);
+            $variants = [
+                'Canceled' => ['Canceled', 'Cancelled'],
+                'Rescheduled' => ['Rescheduled', 'Reschedule'],
+                'For Follow Up' => ['For Follow Up', 'Follow Up'],
+            ];
+            $showsQuery->whereIn('result', $variants[$this->show_type] ?? [$this->show_type]);
         }
 
         // Apply lifechanger filter if provided
@@ -84,6 +89,9 @@ class AllCookingShows extends Component
         if ($this->selected_presenter) {
             $showsQuery->where('presenter', $this->selected_presenter);
         }
+
+        $statusCounts = (clone $showsQuery)->select('result')
+            ->selectRaw('COUNT(*) as aggregate')->groupBy('result')->pluck('aggregate', 'result');
 
         // Order by date and time
         $showsQuery->orderBy('date', 'DESC')->orderBy('time', 'ASC');
@@ -110,31 +118,13 @@ class AllCookingShows extends Component
                 ->toArray();
         }
 
-        // Get summary statistics
-        $totalShows = $shows->total();
-        $bookedShows = CookingShow::where('result', 'Booked')
-            ->when($from && $to, function ($q) use ($from, $to) {
-                return $q->whereBetween('date', [$from, $to]);
-            })
-            ->count();
-        $closedShows = CookingShow::where('result', 'Closed')
-            ->when($from && $to, function ($q) use ($from, $to) {
-                return $q->whereBetween('date', [$from, $to]);
-            })
-            ->count();
-        $canceledShows = CookingShow::where('result', 'Canceled')
-            ->when($from && $to, function ($q) use ($from, $to) {
-                return $q->whereBetween('date', [$from, $to]);
-            })
-            ->count();
-
         $this->loading = false;
-
         $stats = [
-            'total' => $totalShows,
-            'booked' => $bookedShows,
-            'closed' => $closedShows,
-            'canceled' => $canceledShows,
+            'total' => $shows->total(),
+            'booked' => $statusCounts->get('Booked', 0),
+            'closed' => $statusCounts->get('Closed', 0),
+            'follow_up' => $statusCounts->get('For Follow Up', 0) + $statusCounts->get('Follow Up', 0),
+            'canceled' => $statusCounts->get('Canceled', 0) + $statusCounts->get('Cancelled', 0),
         ];
 
         return view('livewire.report.all-cooking-shows', [

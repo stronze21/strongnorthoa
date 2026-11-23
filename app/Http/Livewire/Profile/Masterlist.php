@@ -21,6 +21,7 @@ class Masterlist extends Component
     public $f_name, $m_name, $l_name, $email, $search, $selected_user_email, $user_id;
 
     public $showFilters = false;
+    public $showDelete = false;
     public $filters = [
         'town' => '',
         'province' => '',
@@ -31,16 +32,16 @@ class Masterlist extends Component
     public $columns = [
         'id' => true,
         'lifechanger' => true,
-        'birthdate' => true,
+        'birthdate' => false,
         'town' => true,
         'province' => true,
         'signup_date' => true,
-        'team_builder' => true,
-        'team_leader' => true,
-        'distributor' => true,
-        'date_time_show' => true,
-        'amount_invested' => true,
-        'status' => true,
+        'team_builder' => false,
+        'team_leader' => false,
+        'distributor' => false,
+        'date_time_show' => false,
+        'amount_invested' => false,
+        'status' => false,
         'current_level' => true,
         'date_promoted' => true,
         'actions' => true,
@@ -76,10 +77,12 @@ class Masterlist extends Component
     public function render()
     {
 
-        $users = User::query()
+        $users = User::with(['municipality.province', 'profile', 'cur_level.sspl'])
             ->when($this->search, function ($query) {
-                $query->where('full_name', 'LIKE', '%' . $this->search . '%')
-                      ->orWhere('email', 'LIKE', '%' . $this->search . '%');
+                $query->where(function ($searchQuery) {
+                    $searchQuery->where('full_name', 'LIKE', '%' . $this->search . '%')
+                        ->orWhere('email', 'LIKE', '%' . $this->search . '%');
+                });
             })
             ->when($this->filters['status'], function ($query) {
                 $query->where('status', $this->filters['status']);
@@ -142,6 +145,7 @@ class Masterlist extends Component
             'province' => '',
             'status' => '',
             'current_level' => '',
+            'level_type' => '',
         ];
         $this->towns = [];
     }
@@ -173,10 +177,27 @@ class Masterlist extends Component
         $this->alert('success', 'New user created!');
     }
 
+    public function clearSearchAndFilters()
+    {
+        $this->search = '';
+        $this->resetFilters();
+    }
+
+    public function confirmDelete($userId)
+    {
+        $user = User::findOrFail($userId);
+        $this->user_id = $user->user_id;
+        $this->selected_user_email = $user->email;
+        $this->showDelete = true;
+    }
+
     public function delete_user()
     {
-        $user = User::find($this->user_id);
+        $user = User::findOrFail($this->user_id);
         $user->delete();
+        $this->showDelete = false;
+        $this->user_id = null;
+        $this->selected_user_email = null;
         $this->alert('warning', 'User deleted!');
     }
 

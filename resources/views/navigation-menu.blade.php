@@ -1,124 +1,81 @@
-<nav x-data="{ open: false }" class="border-b border-gray-100 bg-base-200">
+<nav x-data="{ open: false }" @keydown.escape.window="open = false" class="site-navigation" aria-label="Main navigation">
+    @php
+        $isUser = Auth::user()->hasRole('user');
+        $homeRoute = $isUser ? 'dashboard' : 'admin.dashboard';
+        $navigationLinks = [
+            ['label' => 'Home', 'route' => $homeRoute, 'icon' => 'la-home', 'active' => request()->routeIs($homeRoute, 'gen.dashboard')],
+            ['label' => $isUser ? 'My Cooking Shows' : 'All Cooking Shows', 'route' => $isUser ? 'my-cooking-shows' : 'admin.all', 'icon' => 'la-stroopwafel', 'active' => request()->routeIs('my-cooking-shows', 'admin.all', 'admin.booked', 'admin.cooked', 'cs.view', 'cs.add', 'cs.booked', 'cs.cooked')],
+            ['label' => 'Full Calendar', 'route' => 'cs.calendar', 'icon' => 'la-calendar-alt', 'active' => request()->routeIs('cs.calendar')],
+        ];
+        if (Auth::user()->hasRole('admin')) {
+            $navigationLinks = array_merge($navigationLinks, [
+                ['label' => 'Lifechanger List', 'route' => 'lc.masterlist', 'icon' => 'la-users', 'active' => request()->routeIs('lc.masterlist', 'lc.create', 'lifechangers')],
+                ['label' => 'Contests', 'route' => 'contests.list', 'icon' => 'la-project-diagram', 'active' => request()->routeIs('contests.*', 'contests')],
+                ['label' => 'QR Codes', 'route' => 'qrs', 'icon' => 'la-qrcode', 'active' => request()->routeIs('qrs')],
+                ['label' => 'Reports', 'route' => 'reports.index', 'icon' => 'la-file-excel', 'active' => request()->routeIs('reports.*')],
+            ]);
+        }
+    @endphp
+    <style>
+        .site-navigation { background: #fff; border-bottom: 1px solid #e2e8f0; color: #37465c; }
+        .site-navigation .nav-shell { max-width: 1600px; margin: auto; padding: 0 24px; }
+        .site-navigation .nav-row { display: flex; align-items: center; justify-content: space-between; min-height: 76px; gap: 20px; }
+        .site-navigation .nav-left { display: flex; align-items: center; gap: 24px; min-width: 0; }
+        .site-navigation .nav-brand { display: flex; align-items: center; flex-shrink: 0; padding: 4px; border-radius: 8px; }
+        .site-navigation .nav-desktop { display: flex; gap: 4px; align-items: center; }
+        .site-navigation .nav-link { display: flex; align-items: center; gap: 7px; padding: 10px 11px; border-radius: 7px; font-size: 13px; font-weight: 600; white-space: nowrap; color: #526078; transition: background-color .15s ease, color .15s ease; }
+        .site-navigation .nav-link i { font-size: 19px; }
+        .site-navigation .nav-link:hover { background: #f1f5f9; color: #263247; }
+        .site-navigation .nav-link[aria-current="page"] { background: #eef2ff; color: #4338ca; }
+        .site-navigation .nav-account { display: flex; align-items: center; padding-left: 16px; border-left: 1px solid #e2e8f0; flex-shrink: 0; }
+        .site-navigation .account-trigger { display: flex; align-items: center; gap: 9px; min-height: 40px; padding: 8px 10px; border-radius: 8px; font-size: 13px; color: #37465c; background: #f8fafc; }
+        .site-navigation .account-name { max-width: 185px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .site-navigation .nav-toggle { display: none; align-items: center; }
+        .site-navigation .nav-toggle button { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 8px; color: #37465c; background: #f1f5f9; font-weight: 600; font-size: 14px; }
+        .site-navigation .nav-mobile { border-top: 1px solid #e2e8f0; padding: 12px 16px 20px; max-height: calc(100dvh - 76px); overflow-y: auto; }
+        .site-navigation .nav-mobile-links { display: grid; gap: 4px; margin-bottom: 16px; }
+        .site-navigation .nav-mobile .nav-link { padding: 12px; font-size: 14px; }
+        .site-navigation a:focus-visible, .site-navigation button:focus-visible { outline: 2px solid #4338ca; outline-offset: 3px; }
+        .site-navigation .nav-mobile .nav-user-info { overflow-wrap: anywhere; min-width: 0; }
+        @media (max-width: 1250px) { .site-navigation .nav-desktop, .site-navigation .nav-account { display: none; } .site-navigation .nav-toggle { display: flex; } .site-navigation .nav-row { min-height: 68px; } }
+        @media (min-width: 1251px) { .site-navigation .nav-mobile { display: none !important; } }
+        @media (max-width: 640px) { .site-navigation .nav-shell { padding: 0 16px; } }
+        @media (prefers-reduced-motion: reduce) { .site-navigation .nav-link { transition: none; } }
+    </style>
     <!-- Primary Navigation Menu -->
-    <div class="px-4 mx-auto sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
+    <div class="nav-shell">
+        <div class="nav-row">
+            <div class="nav-left">
                 <!-- Logo -->
                 <div class="flex items-center shrink-0">
-                    <a href="{{ route('gen.dashboard') }}">
+                    <a class="nav-brand" href="{{ route($homeRoute) }}" aria-label="Strongnorth home">
                         <x-jet-application-mark class="block h-10" />
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
-                        <i class="mr-1 las la-lg la-home"></i> {{ __('Home') }}
-                    </x-jet-nav-link>
-                    {{-- <x-jet-nav-link href="{{ route('gen.dashboard') }}" :active="request()->routeIs('gen.dashboard')">
-                        <i class="mr-1 las la-lg la-tachometer-alt"></i> {{ __('Dashboard') }}
-                    </x-jet-nav-link> --}}
-                    @role('user')
-                        <x-jet-nav-link class="ml-2" href="{{ route('my-cooking-shows') }}" :active="request()->routeIs('my-cooking-shows')">
-                            <i class="mr-1 las la-lg la-user-alt"></i> {{ __('My Cooking Shows') }}
-                        </x-jet-nav-link>
-                        {{-- <x-jet-nav-link class="ml-2" href="{{ route('cs.booked') }}" :active="request()->routeIs('cs.booked')">
-                            <i class="mr-1 las la-lg la-user-alt"></i> {{ __('Booked Shows') }}
-                        </x-jet-nav-link>
-                        <x-jet-nav-link class="ml-2" href="{{ route('cs.cooked') }}" :active="request()->routeIs('cs.cooked')">
-                            <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('Cooking Shows') }}
-                        </x-jet-nav-link> --}}
-                    @else
-                        {{-- <x-jet-nav-link class="ml-2" href="{{ route('admin.booked') }}" :active="request()->routeIs('admin.booked')">
-                            <i class="mr-1 las la-lg la-user-alt"></i> {{ __('Booked Shows') }}
-                        </x-jet-nav-link>
-                        <x-jet-nav-link class="ml-2" href="{{ route('admin.cooked') }}" :active="request()->routeIs('admin.cooked')">
-                            <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('Cooking Shows') }}
-                        </x-jet-nav-link> --}}
-                        <x-jet-nav-link class="ml-2" href="{{ route('admin.all') }}" :active="request()->routeIs('admin.cooked')">
-                            <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('All Cooking Shows') }}
-                        </x-jet-nav-link>
-                    @endrole
-
-                    {{-- <x-jet-nav-link class="ml-2" href="{{ route('oa.list') }}" :active="request()->routeIs('oa.*')">
-                        <i class="mr-1 las la-lg la-file-invoice"></i> {{ __('Order Agreements') }}
-                    </x-jet-nav-link> --}}
-
-                    @role('admin')
-                        <x-jet-nav-link class="ml-2" href="{{ route('lc.masterlist') }}" :active="request()->routeIs('lc.masterlist')">
-                            <i class="mr-1 las la-lg la-users"></i> {{ __('Lifechanger List') }}
-                        </x-jet-nav-link>
-                        <x-jet-nav-link class="ml-2" href="{{ route('contests.list') }}" :active="request()->routeIs('contests.list')">
-                            <i class="mr-1 las la-lg la-project-diagram"></i> {{ __('Contests') }}
-                        </x-jet-nav-link>
-                        <x-jet-nav-link class="ml-2" href="{{ route('qrs') }}" :active="request()->routeIs('qrs')">
-                            <i class="mr-1 las la-lg la-qrcode"></i> {{ __('QR Codes') }}
-                        </x-jet-nav-link>
-                        <x-jet-nav-link class="ml-2" href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')">
-                            <i class="mr-1 las la-lg la-file-excel"></i> {{ __('Reports') }}
-                        </x-jet-nav-link>
-                    @endrole
+                <div class="nav-desktop">
+                    @foreach($navigationLinks as $link)
+                        <a href="{{ route($link['route']) }}" class="nav-link" @if($link['active']) aria-current="page" @endif>
+                            <i class="las {{ $link['icon'] }}" aria-hidden="true"></i><span>{{ __($link['label']) }}</span>
+                        </a>
+                    @endforeach
                 </div>
             </div>
 
-            <div class="hidden sm:flex sm:items-center sm:ml-6">
-                <!-- Settings Dropdown -->
-                <div class="relative ml-3">
-                    {{-- <x-jet-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <span class="inline-flex rounded-md">
-                                <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 border border-transparent rounded-md focus:outline-none">
-                                    <i class="las la-lg la-book"></i>
-                                    Reference Tables
-                                    <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </span>
-                        </x-slot>
-
-                        <x-slot name="content">
-
-                            <x-jet-dropdown-link href="{{ route('ref.location') }}">
-                                {{ __('Location') }}
-                            </x-jet-dropdown-link>
-
-                            <div class="border-t border-gray-100"></div>
-
-                            <x-jet-dropdown-link href="{{ route('ref.dmd') }}">
-                                {{ __('Drugs and Meds (Homis)') }}
-                            </x-jet-dropdown-link>
-
-                        </x-slot>
-                    </x-jet-dropdown> --}}
-                </div>
-
+            <div class="nav-account">
                 <!-- Settings Dropdown -->
                 <div class="relative ml-3">
                     <x-jet-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                                <button
-                                    class="flex text-sm transition border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300">
-                                    <img class="object-cover w-8 h-8 rounded-full"
-                                        src="{{ Auth::user()->profile_photo_url }}"
-                                        alt="{{ Auth::user()->full_name }}" />
-                                </button>
-                            @else
-                                <span class="inline-flex rounded-md">
-                                    <button type="button"
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 capitalize transition bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none">
-                                        {{ Auth::user()->full_name }}
-
-                                        <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </span>
-                            @endif
+                            <button type="button" class="account-trigger" aria-label="Open account menu" title="{{ Auth::user()->full_name }}">
+                                @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
+                                    <img class="object-cover w-8 h-8 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="" />
+                                @else
+                                    <i class="las la-user-circle la-lg" aria-hidden="true"></i>
+                                @endif
+                                <span class="account-name">{{ Auth::user()->full_name }}</span>
+                                <i class="las la-angle-down" aria-hidden="true"></i>
+                            </button>
                         </x-slot>
 
                         <x-slot name="content">
@@ -161,10 +118,10 @@
             </div>
 
             <!-- Hamburger -->
-            <div class="flex items-center -mr-2 sm:hidden">
-                <button @click="open = ! open"
+            <div class="nav-toggle">
+                <button type="button" @click="open = ! open" :aria-expanded="open.toString()" aria-controls="mobile-navigation" aria-label="Toggle navigation"
                     class="inline-flex items-center justify-center p-2 text-gray-400 transition rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500">
-                    <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <span>Menu</span><svg aria-hidden="true" class="w-5 h-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
@@ -177,20 +134,16 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('gen.dashboard') }}" :active="request()->routeIs('gen.dashboard')">
-                <i class="mr-1 las la-lg la-tachometer-alt"></i> {{ __('Dashboard') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('cs.booked') }}" :active="request()->routeIs('cs.booked')">
-                <i class="mr-1 las la-lg la-user-alt"></i> {{ __('Booked Shows') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('cs.cooked') }}" :active="request()->routeIs('cs.cooked')">
-                <i class="mr-1 las la-lg la-stroopwafel"></i> {{ __('Cooking Shows') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('oa.list') }}" :active="request()->routeIs('oa.*')">
-                <i class="mr-1 las la-lg la-file-invoice"></i> {{ __('Order Agreements') }}
-            </x-jet-responsive-nav-link>
+    <div id="mobile-navigation" x-show="open" style="display: none;" class="nav-mobile">
+        <div class="nav-mobile-links">
+            @foreach($navigationLinks as $link)
+                <a href="{{ route($link['route']) }}" class="nav-link" @if($link['active']) aria-current="page" @endif>
+                    <i class="las {{ $link['icon'] }}" aria-hidden="true"></i><span>{{ __($link['label']) }}</span>
+                </a>
+            @endforeach
+            <a href="{{ route('cs.booked') }}" class="nav-link">{{ __('Booked Shows') }}</a>
+            <a href="{{ route('cs.cooked') }}" class="nav-link">{{ __('Cooked Shows') }}</a>
+            <a href="{{ route('oa.list') }}" class="nav-link" @if(request()->routeIs('oa.*')) aria-current="page" @endif>{{ __('Order Agreements') }}</a>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -203,7 +156,7 @@
                     </div>
                 @endif
 
-                <div>
+                <div class="nav-user-info">
                     <div class="text-base font-medium text-gray-800">{{ Auth::user()->full_name }}</div>
                     <div class="text-sm font-medium text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
@@ -219,6 +172,8 @@
                 <x-jet-responsive-nav-link href="{{ route('lc.profile') }}" :active="request()->routeIs('lc.profile')">
                     {{ __('Lifechanger Profile') }}
                 </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('levels.index') }}" :active="request()->routeIs('levels.index')">{{ __('SSPL Library') }}</x-jet-responsive-nav-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-jet-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">

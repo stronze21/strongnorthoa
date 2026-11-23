@@ -11,153 +11,99 @@
     </div>
 </x-slot>
 
-@push('head')
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="shows-index" x-data="{ mode: 'card', filtersOpen: true }" x-init="try { mode = localStorage.getItem('cookingShowsViewMode') || 'card' } catch (e) {}" x-effect="try { localStorage.setItem('cookingShowsViewMode', mode) } catch (e) {}">
     <style>
-        /* Custom mobile-first styles */
-        .filters-row {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .filter-item {
-            width: 100%;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .show-card {
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0.75rem;
-            overflow: hidden;
-        }
-
-        .show-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .show-card-body {
-            padding: 0.75rem;
-        }
-
-        .show-card-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding: 0.5rem 0.75rem;
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .data-row {
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
-            display: flex;
-        }
-
-        .data-row i {
-            width: 1.5rem;
-            color: #6c757d;
-        }
-
-        .export-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Desktop optimizations */
-        @media (min-width: 768px) {
-            .filters-row {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-
-            .filter-item {
-                width: auto;
-            }
-
-            .stat-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .table-container {
-                display: block;
-            }
-        }
+        .shows-index { max-width: none; padding: 16px 24px 32px; margin: auto; color: #263247; }
+        .shows-index .shows-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+        .shows-index h1 { font-size: 25px; font-weight: 700; line-height: 1.25; margin-bottom: 4px; }
+        .shows-index .shows-subtitle { font-size: 14px; color: #607087; }
+        .shows-index .shows-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .shows-index .date-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .shows-index .date-presets .btn { min-height: 32px; height: 32px; padding: 0 12px; font-size: 12px; }
+        .shows-index .filter-panel { background: white; padding: 12px 16px; border-radius: 10px; margin-bottom: 12px; }
+        .shows-index .filters-row { display: grid; grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(140px, 1fr)) minmax(150px, 1fr) minmax(100px, .7fr); gap: 12px; }
+        .shows-index .filter-item { min-width: 0; }
+        .shows-index .label { padding: 0 0 4px; }
+        .shows-index .label-text { color: #526078; font-size: 13px; font-weight: 600; }
+        .shows-index .input, .shows-index .select { min-height: 36px; height: 36px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #263247; font-size: 14px; }
+        .shows-index .results-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin: 12px 0 10px; }
+        .shows-index .view-switch { display: flex; gap: 4px; padding: 4px; border-radius: 8px; background: #e8edf4; }
+        .shows-index .view-switch .btn { border: 0; background: transparent; box-shadow: none; color: #526078; min-height: 32px; height: 32px; }
+        .shows-index .view-switch .btn-active { background: white; color: #4338ca; }
+        .shows-index .export-buttons { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .shows-index .export-buttons .btn { background: white; font-size: 12px; min-height: 32px; height: 32px; }
+        .shows-index .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; background: white; border-radius: 12px; padding: 0; margin-bottom: 12px; }
+        .shows-index .stat { border-radius: 0; box-shadow: none; border-right: 1px solid #e5e7eb; padding: 10px 16px; min-width: 0; display: flex; align-items: center; gap: 12px; }
+        .shows-index .stat:last-child { border-right: 0; }
+        .shows-index .stat-title { font-size: 13px; color: #526078; }
+        .shows-index .stat-value { font-size: 23px; font-weight: 700; color: #263247; }
+        .shows-index .stat-figure { display: none; }
+        .shows-index .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .shows-index .show-card { background: white; border-radius: 12px; overflow: hidden; min-width: 0; }
+        .shows-index .show-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #edf0f4; }
+        .shows-index .show-card-header h3 { font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+        .shows-index .show-card-body { padding: 12px 16px; }
+        .shows-index .show-card-footer { padding: 8px 16px; border-top: 1px solid #edf0f4; display: flex; justify-content: flex-end; }
+        .shows-index .data-row { display: flex; gap: 8px; font-size: 13px; line-height: 1.45; margin-bottom: 6px; overflow-wrap: anywhere; }
+        .shows-index .data-row span { min-width: 0; }
+        .shows-index .data-row i { color: #607087; width: 18px; flex-shrink: 0; padding-top: 3px; }
+        .shows-index .shows-empty { grid-column: 1 / -1; padding: 32px 24px; background: white; border-radius: 12px; text-align: center; }
+        .shows-index .shows-empty p { color: #607087; }
+        .shows-index .shows-empty h2 { font-size: 20px; font-weight: 700; margin: 12px 0 8px; }
+        .shows-index .table { font-size: 13px; }
+        .shows-index .table th { text-transform: none; color: #526078; font-size: 12px; background: #f8fafc; }
+        .shows-index .table th, .shows-index .table td { padding: 8px 10px; line-height: 1.4; }
+        .shows-index .table td:nth-child(2) { min-width: 190px; max-width: 240px; }
+        .shows-index .table td:nth-child(7) { white-space: nowrap; }
+        .shows-index .badge { box-shadow: none; font-size: 11px; white-space: nowrap; }
+        .shows-index .badge-warning { background: #fee2e2; color: #991b1b; border: 0; }
+        .shows-index .badge-success { background: #dbeafe; color: #1e40af; border: 0; }
+        .shows-index a:focus-visible, .shows-index button:focus-visible, .shows-index input:focus-visible, .shows-index select:focus-visible { outline: 2px solid #4338ca; outline-offset: 3px; }
+        @media (max-width: 1100px) { .shows-index .filters-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .shows-index .filter-item:first-child { grid-column: 1 / -1; } .shows-index .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 640px) { .shows-index { padding: 16px 12px 24px; } .shows-index .card-grid { grid-template-columns: minmax(0, 1fr); } .shows-index .filter-panel { padding: 12px; } .shows-index .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .shows-index .stat { padding: 10px 12px; } .shows-index .stat:nth-child(2) { border-right: 0; } .shows-index .stat:nth-child(-n+2) { border-bottom: 1px solid #e5e7eb; } }
     </style>
-@endpush
-
-<div class="px-2 py-3 mx-auto md:px-4">
-    <!-- Action bar -->
-    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <!-- Left side - Action buttons -->
-        <div>
+    <header class="shows-header">
+        <div><h1>All Cooking Shows</h1><p class="shows-subtitle">Manage bookings, follow up with hosts, and review show outcomes.</p></div>
+        <div class="shows-actions">
+            <a href="{{ route('cs.calendar') }}" class="btn btn-sm btn-outline"><i class="las la-calendar-alt" aria-hidden="true"></i> Full Calendar</a>
             @if (Auth::user()->cur_level and Auth::user()->cur_level->sspl)
-                <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">
-                    <i class="las la-plus"></i> <span class="hidden sm:inline">Add Show</span>
-                </a>
+                <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary"><i class="las la-plus" aria-hidden="true"></i> Add Show</a>
             @endif
         </div>
-
-        <!-- Right side - View toggle -->
-        <div class="btn-group btn-group-sm">
-            <button id="card-view-btn" class="btn btn-active">
-                <i class="las la-th-large"></i> <span class="hidden sm:inline">Cards</span>
-            </button>
-            <button id="table-view-btn" class="btn">
-                <i class="las la-table"></i> <span class="hidden sm:inline">Table</span>
-            </button>
-        </div>
-    </div>
-
+    </header>
     <!-- Quick date presets -->
-    <div class="mb-3">
-        <label class="block mb-1 text-sm font-bold">Quick date range:</label>
+    <div class="date-presets">
+        <span class="text-sm mr-2">Show dates</span>
         <div class="flex flex-wrap gap-1">
             <button wire:click="setDateRange('today')" class="btn btn-xs">Today</button>
             <button wire:click="setDateRange('this_week')" class="btn btn-xs">This Week</button>
             <button wire:click="setDateRange('this_month')" class="btn btn-xs">This Month</button>
             <button wire:click="setDateRange('last_month')" class="btn btn-xs">Last Month</button>
+            <button wire:click="setDateRange('all_time')" class="btn btn-xs">All Time</button>
             <button wire:click="resetFilters" class="btn btn-xs btn-outline">Reset</button>
         </div>
     </div>
 
     <!-- Filters section -->
-    <div class="p-3 mb-4 rounded-lg bg-base-200">
+    <div class="filter-panel">
         <div class="flex items-center justify-between mb-2">
             <h3 class="text-sm font-bold">Filters</h3>
-            <button class="btn btn-xs" id="toggle-filters">
+            <button type="button" class="btn btn-xs btn-ghost" id="toggle-filters" @click="filtersOpen = !filtersOpen" :aria-expanded="filtersOpen.toString()" aria-controls="filters-container">
                 <i class="las la-filter"></i> <span class="hidden sm:inline">Toggle Filters</span>
             </button>
         </div>
 
-        <div id="filters-container" class="filters-row">
+        <div id="filters-container" class="filters-row" x-show="filtersOpen">
             <div class="filter-item form-control">
-                <label class="label">
+                <label class="label" for="show-search">
                     <span class="label-text">Search</span>
                 </label>
-                <input type="text" placeholder="Name, Email, Address..." class="w-full input input-bordered input-sm"
+                <input id="show-search" type="search" placeholder="Name, Email, Address..." class="w-full input input-bordered input-sm"
                     wire:model.debounce.300ms="search" />
             </div>
 
             <div class="filter-item form-control">
-                <label class="label">
+                <label class="label" for="date-from">
                     <span class="label-text">From Date</span>
                 </label>
                 <input type="date" id="date-from" class="w-full input input-bordered input-sm"
@@ -165,7 +111,7 @@
             </div>
 
             <div class="filter-item form-control">
-                <label class="label">
+                <label class="label" for="date-to">
                     <span class="label-text">To Date</span>
                 </label>
                 <input type="date" id="date-to" class="w-full input input-bordered input-sm"
@@ -173,21 +119,21 @@
             </div>
 
             <div class="filter-item form-control">
-                <label class="label">
+                <label class="label" for="show-status-filter">
                     <span class="label-text">Status</span>
                 </label>
-                <select class="w-full text-sm select select-bordered select-sm" wire:model="show_type">
+                <select id="show-status-filter" class="w-full text-sm select select-bordered select-sm" wire:model="show_type">
                     <option value="">All</option>
                     <option value="Booked">Booked</option>
-                    <option value="Canceled">Canceled</option>
-                    <option value="Rescheduled">Rescheduled</option>
+                    <option value="Canceled">Cancelled / Canceled</option>
+                    <option value="Rescheduled">Rescheduled / Reschedule</option>
                     <option value="Closed">Closed</option>
                     <option value="For Follow Up">For Follow Up</option>
                 </select>
             </div>
 
             <div class="filter-item form-control">
-                <label class="label">
+                <label class="label" for="page-size">
                     <span class="label-text">Results Per Page</span>
                 </label>
                 <select id="page-size" class="w-full text-sm select select-bordered select-sm" wire:model="page_no">
@@ -200,14 +146,6 @@
         </div>
     </div>
 
-    <!-- Export buttons -->
-    <div class="mb-3">
-        <label class="block mb-1 text-sm font-bold">Export options:</label>
-        <div id="export-buttons" class="export-buttons">
-            <!-- Export buttons will be inserted here by JavaScript -->
-        </div>
-    </div>
-
     <!-- Stats Cards -->
     <div class="mb-4 stat-grid">
         <div class="p-3 rounded-lg shadow-md stat bg-base-100">
@@ -215,7 +153,7 @@
                 <i class="las la-calendar-check la-2x"></i>
             </div>
             <div class="text-xs stat-title">Booked</div>
-            <div class="text-2xl stat-value text-primary">{{ $shows->where('result', 'Booked')->count() }}</div>
+            <div class="text-2xl stat-value text-primary">{{ $stats['booked'] }}</div>
         </div>
 
         <div class="p-3 rounded-lg shadow-md stat bg-base-100">
@@ -223,7 +161,7 @@
                 <i class="las la-check-circle la-2x"></i>
             </div>
             <div class="text-xs stat-title">Closed</div>
-            <div class="text-2xl stat-value text-success">{{ $shows->where('result', 'Closed')->count() }}</div>
+            <div class="text-2xl stat-value text-success">{{ $stats['closed'] }}</div>
         </div>
 
         <div class="p-3 rounded-lg shadow-md stat bg-base-100">
@@ -231,7 +169,7 @@
                 <i class="las la-exclamation-circle la-2x"></i>
             </div>
             <div class="text-xs stat-title">Follow Up</div>
-            <div class="text-2xl stat-value text-warning">{{ $shows->where('result', 'For Follow Up')->count() }}</div>
+            <div class="text-2xl stat-value text-warning">{{ $stats['follow_up'] }}</div>
         </div>
 
         <div class="p-3 rounded-lg shadow-md stat bg-base-100">
@@ -239,7 +177,7 @@
                 <i class="las la-times-circle la-2x"></i>
             </div>
             <div class="text-xs stat-title">Canceled</div>
-            <div class="text-2xl stat-value text-error">{{ $shows->where('result', 'Canceled')->count() }}</div>
+            <div class="text-2xl stat-value text-error">{{ $stats['canceled'] }}</div>
         </div>
     </div>
 
@@ -249,8 +187,24 @@
         <div class="loading loading-spinner loading-lg"></div>
     </div>
 
+    <div class="results-toolbar">
+        <div><strong>{{ number_format($shows->total()) }} shows</strong><span class="shows-subtitle"> matching your filters</span></div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="export-buttons" aria-label="Export current page">
+                <span class="text-xs mr-1">Export this page</span>
+                <button type="button" onclick="copyTableToClipboard()" class="btn btn-xs">Copy</button>
+                <button type="button" onclick="exportTableToCSV('cooking-shows.csv')" class="btn btn-xs">CSV</button>
+                <button type="button" onclick="exportTableToExcel('cooking-shows.xls')" class="btn btn-xs">Excel</button>
+                <button type="button" onclick="printTable()" class="btn btn-xs">Print</button>
+            </div>
+            <div class="view-switch" role="group" aria-label="Results layout">
+                <button type="button" id="card-view-btn" class="btn btn-sm" :class="{ 'btn-active': mode === 'card' }" :aria-pressed="(mode === 'card').toString()" @click="mode = 'card'"><i class="las la-th-large" aria-hidden="true"></i> Cards</button>
+                <button type="button" id="table-view-btn" class="btn btn-sm" :class="{ 'btn-active': mode === 'table' }" :aria-pressed="(mode === 'table').toString()" @click="mode = 'table'"><i class="las la-table" aria-hidden="true"></i> Table</button>
+            </div>
+        </div>
+    </div>
     <!-- Card View (Default for mobile) -->
-    <div id="card-view" class="space-y-4">
+    <div id="card-view" class="card-grid" x-show="mode === 'card'">
         @forelse ($shows as $show)
             <div class="show-card bg-base-100">
                 <div class="show-card-header">
@@ -260,7 +214,7 @@
                 <div class="show-card-body">
                     <div class="data-row">
                         <i class="las la-calendar"></i>
-                        <span>{{ $show->date->format('F j, Y') . ' ' . $show->time->format('h:i a') }}</span>
+                        <span>{{ ($show->date ? $show->date->format('F j, Y') : 'Date not set') . ' · ' . ($show->formatted_time ?: 'Time not set') }}</span>
                     </div>
                     <div class="data-row">
                         <i class="las la-map-marker"></i>
@@ -278,7 +232,7 @@
                         <i class="las la-user"></i>
                         <span>Lifechanger: {{ $show->lifechanger }}</span>
                     </div>
-                    @if ($show->partner_id)
+                    @if ($show->partner_id && $show->partner_user)
                         <div class="data-row">
                             <i class="las la-users"></i>
                             <span>Partner: {{ $show->partner_user->fullname() }}</span>
@@ -291,24 +245,25 @@
                 </div>
                 <div class="show-card-footer">
                     <div class="flex gap-1">
-                        <a href="{{ route('cs.view', $show->cs_id) }}" class="btn btn-xs btn-info">
+                        <a href="{{ route('cs.view', $show->cs_id) }}" class="btn btn-sm btn-outline" aria-label="View cooking show details">
                             <i class="las la-eye"></i> View
                         </a>
                     </div>
                 </div>
             </div>
         @empty
-            <div class="p-8 text-center rounded-lg shadow bg-base-100">
+            <div class="shows-empty">
                 <i class="mb-2 text-gray-400 las la-calendar-times la-3x"></i>
-                <p class="mb-2 text-lg">No cooking shows found</p>
+                <h2>No cooking shows found</h2>
                 <p class="mb-4 text-sm text-gray-500">Try changing your filters or adding a new show</p>
+                <button wire:click="setDateRange('all_time')" class="btn btn-sm btn-outline">Show All Dates</button>
                 <button wire:click="resetFilters" class="btn btn-sm btn-ghost">Reset Filters</button>
             </div>
         @endforelse
     </div>
 
     <!-- Table View (Hidden on mobile by default) -->
-    <div id="table-view" class="hidden overflow-x-auto bg-white rounded-md shadow-lg">
+    <div id="table-view" x-show="mode === 'table'" style="display: none;" class="overflow-x-auto bg-white rounded-xl" tabindex="0" role="region" aria-label="Cooking shows table">
         <table id="cooking-shows-table" class="table w-full table-zebra table-compact">
             <thead>
                 <tr>
@@ -334,18 +289,18 @@
                         <td class="whitespace-nowrap">{{ $show->host_email }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->lifechanger }}</td>
                         <td class="whitespace-nowrap">
-                            {{ $show->date->format('M j, Y') . ' ' . $show->time->format('h:i a') }}
+                            {{ ($show->date ? $show->date->format('M j, Y') : 'Date not set') . ' · ' . ($show->formatted_time ?: 'Time not set') }}
                         </td>
                         <td>{{ $show->type }}</td>
                         <td class="capitalize whitespace-nowrap">
-                            {{ $show->partner_id ? $show->partner_user->fullname() : '' }}</td>
+                            {{ $show->partner_id && $show->partner_user ? $show->partner_user->fullname() : '—' }}</td>
                         <td class="capitalize whitespace-nowrap">{{ $show->presenter }}</td>
                         <td class="capitalize whitespace-nowrap">
                             {!! $show->current_result() !!}
                         </td>
                         <td class="whitespace-nowrap">
                             <div class="flex gap-1">
-                                <a href="{{ route('cs.view', $show->cs_id) }}" class="btn btn-xs btn-info">
+                                <a href="{{ route('cs.view', $show->cs_id) }}" class="btn btn-sm btn-outline" aria-label="View cooking show details">
                                     <i class="las la-eye"></i>
                                 </a>
                             </div>
@@ -368,79 +323,6 @@
 
 @push('scripts')
     <script>
-        // Wait for document ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set up view toggling
-            setupViewToggle();
-
-            // Set up export buttons manually
-            setupExportButtons();
-
-            // Set up toggle filters functionality
-            $('#toggle-filters').on('click', function() {
-                $('#filters-container').slideToggle();
-            });
-        });
-
-        // Toggle between table and card views
-        function setupViewToggle() {
-            $('#table-view-btn').on('click', function() {
-                $(this).addClass('btn-active');
-                $('#card-view-btn').removeClass('btn-active');
-                $('#table-view').show();
-                $('#card-view').hide();
-                localStorage.setItem('cookingShowsViewMode', 'table');
-            });
-
-            $('#card-view-btn').on('click', function() {
-                $(this).addClass('btn-active');
-                $('#table-view-btn').removeClass('btn-active');
-                $('#table-view').hide();
-                $('#card-view').show();
-                localStorage.setItem('cookingShowsViewMode', 'card');
-            });
-
-            // Check if user has a saved preference
-            const savedViewMode = localStorage.getItem('cookingShowsViewMode');
-            if (savedViewMode === 'table') {
-                $('#table-view-btn').click();
-            }
-        }
-
-        // Set up manual export buttons
-        function setupExportButtons() {
-            // Clear existing buttons
-            $('#export-buttons').empty();
-
-            // Add copy button
-            $('<button class="btn btn-xs"><i class="las la-copy"></i> Copy</button>')
-                .appendTo('#export-buttons')
-                .on('click', function() {
-                    copyTableToClipboard();
-                });
-
-            // Add CSV button
-            $('<button class="btn btn-xs"><i class="las la-file-csv"></i> CSV</button>')
-                .appendTo('#export-buttons')
-                .on('click', function() {
-                    exportTableToCSV('cooking-shows.csv');
-                });
-
-            // Add Excel button
-            $('<button class="btn btn-xs"><i class="las la-file-excel"></i> Excel</button>')
-                .appendTo('#export-buttons')
-                .on('click', function() {
-                    exportTableToExcel('cooking-shows.xls');
-                });
-
-            // Add Print button
-            $('<button class="btn btn-xs"><i class="las la-print"></i> Print</button>')
-                .appendTo('#export-buttons')
-                .on('click', function() {
-                    printTable();
-                });
-        }
-
         // Copy table data to clipboard
         function copyTableToClipboard() {
             let tableData = gatherDataForExport();

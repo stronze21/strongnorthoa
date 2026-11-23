@@ -69,14 +69,42 @@ class ViewShow extends Component
         $this->redirect(route('oa.view', ['oa_id' => $oa_id]));
     }
 
+    public function openStatusModal()
+    {
+        $this->resetValidation();
+        $this->result = $this->show->result;
+        $this->amount_sold = $this->show->amount_sold ?: 0;
+        $this->date = $this->show->date ? $this->show->date->format('Y-m-d') : null;
+        $this->time = $this->show->time ? $this->show->time->format('H:i') : null;
+        $this->open_modal = true;
+    }
+
+    public function closeStatusModal()
+    {
+        $this->open_modal = false;
+        $this->resetValidation();
+    }
+
     public function update_result()
     {
+        $rules = ['result' => 'required|in:For Follow Up,Booked,Closed,Reschedule,Cancelled'];
+        if ($this->result === 'Reschedule') {
+            $rules['date'] = 'required|date_format:Y-m-d|after_or_equal:today';
+            $rules['time'] = 'required|date_format:H:i';
+        } elseif ($this->result === 'Closed') {
+            $rules['amount_sold'] = 'nullable|numeric|min:0';
+        }
+        $this->validate($rules);
+
         $this->show->result = $this->result;
-        $this->show->amount_sold = $this->amount_sold;
-        $this->show->orig_date = $this->show->date;
-        $this->show->orig_time = $this->show->time;
-        $this->show->date = $this->date;
-        $this->show->time = $this->time;
+        if ($this->result === 'Reschedule') {
+            $this->show->orig_date = $this->show->date;
+            $this->show->orig_time = $this->show->time;
+            $this->show->date = $this->date;
+            $this->show->time = $this->time;
+        } elseif ($this->result === 'Closed') {
+            $this->show->amount_sold = $this->amount_sold ?: 0;
+        }
         $this->show->save();
         $this->open_modal = false;
 

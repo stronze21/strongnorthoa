@@ -56,6 +56,7 @@ Route::middleware([
     Route::get('/lifechanger-masterlist', Masterlist::class)->name('lc.masterlist');
 
     Route::prefix('/cookingshows')->name('cs.')->group(function () {
+        Route::get('/calendar', \App\Http\Livewire\Shows\FullCalendar::class)->name('calendar');
         Route::get('/', BookedShows::class)->name('booked');
         Route::get('/cookedshows', CookedShows::class)->name('cooked');
         Route::get('/add', AddShow::class)->name('add');

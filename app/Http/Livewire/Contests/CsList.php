@@ -14,11 +14,47 @@ class CsList extends Component
 
     protected $listeners = ['showCreate'];
 
+    public $search = '';
+    public $schedule = '';
+    protected $queryString = ['search' => ['except' => ''], 'schedule' => ['except' => '']];
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSchedule()
+    {
+        $this->resetPage();
+    }
+
+    public function clearFilters()
+    {
+        $this->reset(['search', 'schedule']);
+        $this->resetPage();
+    }
+
     public $title, $description, $start_date, $end_date, $shows = 0, $sales = 0, $sets = 0, $strict = 0, $for_team_builders = false;
 
     public function render()
     {
-        $data = Contest::paginate(20);
+        $data = Contest::with('sspl')
+            ->when($this->search, function ($query) {
+                $query->where(function ($query) {
+                    $query->where('title', 'like', '%' . $this->search . '%')
+                        ->orWhere('description', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->schedule === 'running', function ($query) {
+                $query->whereDate('start_date', '<=', today())->whereDate('end_date', '>=', today());
+            })
+            ->when($this->schedule === 'upcoming', function ($query) {
+                $query->whereDate('start_date', '>', today());
+            })
+            ->when($this->schedule === 'ended', function ($query) {
+                $query->whereDate('end_date', '<', today());
+            })
+            ->orderBy('id')->paginate(20);
 
         return view('livewire.contests.cs-list', [
             'data' => $data
