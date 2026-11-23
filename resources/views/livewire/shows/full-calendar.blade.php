@@ -23,6 +23,9 @@
         .booking-calendar a:focus-visible, .booking-calendar button:focus-visible { outline: 2px solid #1e40af; outline-offset: 2px; }
         .booking-calendar .calendar-status { display: block; font-weight: 700; }
         .booking-calendar .legend-label { padding: 4px 8px; border-radius: 4px; }
+        .booking-calendar .calendar-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; padding: 16px; margin-bottom: 16px; background: white; border-radius: 10px; }
+        .booking-calendar .calendar-filters label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+        .booking-calendar .calendar-filters .input, .booking-calendar .calendar-filters .select { min-height: 38px; height: 38px; background: white; border-color: #cbd5e1; font-size: 13px; }
         @media (max-width: 640px) { .booking-calendar { padding: 16px; } }
     </style>
 
@@ -36,6 +39,16 @@
             <button type="button" class="btn btn-sm btn-outline" :disabled="exporting" wire:loading.attr="disabled" @click="exporting = true; exportMessage = ''; try { await downloadBookingCalendar($root); exportMessage = 'Calendar PNG downloaded.'; } catch (error) { exportMessage = 'Could not export the calendar. Please try again.'; } finally { exporting = false; }"><i class="las la-download" aria-hidden="true"></i><span x-text="exporting ? 'Exporting…' : 'Download PNG'">Download PNG</span></button>
         </div>
     </div>
+    <div class="calendar-filters">
+        <div><label for="calendar-month">Calendar month</label><input id="calendar-month" type="month" class="input input-bordered" wire:model="month"></div>
+        <div><label for="calendar-consultant">Consultant / Lifechanger</label><select id="calendar-consultant" class="select select-bordered" wire:model="lifechanger"><option value="">All consultants / lifechangers</option>@foreach(($lifechangers ?? collect()) as $name)<option value="{{ $name }}">{{ $name }}</option>@endforeach</select></div>
+        <div><label for="calendar-result">Results</label><select id="calendar-result" class="select select-bordered" wire:model="resultFilter"><option value="">All results</option><option value="closed">Closed only</option><option value="follow_up">Follow Up only (FFUP)</option></select></div>
+        <div><label for="calendar-from">Period from</label><input id="calendar-from" type="date" class="input input-bordered" wire:model.lazy="fromDate"></div>
+        <div><label for="calendar-to">Period to</label><input id="calendar-to" type="date" class="input input-bordered" wire:model.lazy="toDate"></div>
+        <button type="button" class="btn btn-sm btn-outline" wire:click="resetFilters">Clear filters</button>
+    </div>
+    @if($periodError ?? '')<p class="mb-3 text-sm text-error" role="alert">{{ $periodError }}</p>@endif
+    <p class="mb-3 text-sm calendar-filter-summary" aria-live="polite">{{ $lifechanger ?? '' ?: 'All consultants / lifechangers' }} · {{ ($resultFilter ?? '') === 'closed' ? 'Closed only' : (($resultFilter ?? '') === 'follow_up' ? 'Follow Up only' : 'All results') }}@if(($fromDate ?? '') || ($toDate ?? '')) · Period: {{ $fromDate ?: 'Any start' }} to {{ $toDate ?: 'Any end' }}. Browse months to view the rest of the period.@endif</p>
     <p x-show="exportMessage" x-text="exportMessage" style="display: none;" class="mb-3 text-sm" role="status"></p>
     <div class="calendar-legend" aria-label="Booking colors">
         <span class="legend-label calendar-follow-up">Follow up / For follow up</span>
@@ -73,7 +86,7 @@
         </table>
     </div>
     @if($shows->flatten(1)->filter(function ($show) use ($calendarMonth) { return $show->date->format('Y-m') === $calendarMonth->format('Y-m'); })->isEmpty())
-        <p class="mt-4 text-sm" role="status">No cooking show bookings for {{ $calendarMonth->format('F Y') }}.</p>
+        <p class="mt-4 text-sm" role="status">No cooking show bookings for {{ $calendarMonth->format('F Y') }}.@if(($lifechanger ?? '') || ($resultFilter ?? '') || ($fromDate ?? '') || ($toDate ?? '')) No bookings match the selected filters.@endif</p>
     @endif
 </div>
 

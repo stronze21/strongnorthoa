@@ -34,11 +34,14 @@ window.downloadBookingCalendar = async function (root) {
         if (line) lines.push(line);
         return lines;
     }
+    const summary = root.querySelector('.calendar-filter-summary');
+    const summaryLines = summary ? wrap(summary.textContent.trim().replace(/\s+/g, ' ').replace(/\. Browse months.*$/, ''), width - margin * 2) : [];
+    const summaryHeight = summaryLines.length ? summaryLines.length * 20 + 10 : 0;
     const heights = weeks.map(week => Math.max(160, ...week.map(cell => {
         cell.events.forEach(event => { event.lines = wrap(event.text, columnWidth - 32); });
         return 44 + cell.events.reduce((sum, event) => sum + event.lines.length * 21 + 22, 0);
     })));
-    const height = 166 + heights.reduce((sum, rowHeight) => sum + rowHeight, 0) + margin;
+    const height = 166 + summaryHeight + heights.reduce((sum, rowHeight) => sum + rowHeight, 0) + margin;
     // Keep large booking months within common canvas size limits.
     const scale = Math.min(2, 16000 / Math.max(width, height), Math.sqrt(60000000 / (width * height)));
     canvas.width = Math.floor(width * scale);
@@ -54,7 +57,9 @@ window.downloadBookingCalendar = async function (root) {
         ctx.fillStyle = item[0]; ctx.fillRect(x, 88, i === 0 ? 265 : 160, 30);
         ctx.fillStyle = item[1]; ctx.fillText(item[2], x + 10, 95);
     });
-    const weekdayTop = 130;
+    ctx.fillStyle = '#526078'; ctx.font = `15px ${font}`;
+    summaryLines.forEach((line, index) => ctx.fillText(line, margin, 130 + index * 20));
+    const weekdayTop = 130 + summaryHeight;
     Array.from(table.tHead.rows[0].cells).forEach((cell, column) => {
         const x = margin + column * columnWidth;
         ctx.fillStyle = '#f3f4f6'; ctx.fillRect(x, weekdayTop, columnWidth, 36);
@@ -62,7 +67,7 @@ window.downloadBookingCalendar = async function (root) {
         ctx.font = `bold 16px ${font}`; ctx.fillStyle = '#374151';
         ctx.fillText(cell.textContent.trim(), x + 10, weekdayTop + 10);
     });
-    let top = 166;
+    let top = 166 + summaryHeight;
     weeks.forEach((week, index) => {
         week.forEach((cell, column) => {
             const x = margin + column * columnWidth;
