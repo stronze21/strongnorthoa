@@ -1,4 +1,4 @@
-<div class="booking-calendar">
+<div class="booking-calendar" x-data="{ exporting: false, exportMessage: '' }">
     <x-slot name="header">
         <h1 class="text-xl font-semibold">Full Calendar</h1>
     </x-slot>
@@ -33,8 +33,10 @@
             <button type="button" class="btn btn-sm btn-outline" wire:click="today" wire:loading.attr="disabled">Today</button>
             <button type="button" class="btn btn-sm btn-outline" wire:click="nextMonth" wire:loading.attr="disabled" aria-label="Next month"><i class="las la-angle-right" aria-hidden="true"></i></button>
             <a href="{{ route('cs.add') }}" class="btn btn-sm btn-primary">Add Cooking Show</a>
+            <button type="button" class="btn btn-sm btn-outline" :disabled="exporting" wire:loading.attr="disabled" @click="exporting = true; exportMessage = ''; try { await downloadBookingCalendar($root); exportMessage = 'Calendar PNG downloaded.'; } catch (error) { exportMessage = 'Could not export the calendar. Please try again.'; } finally { exporting = false; }"><i class="las la-download" aria-hidden="true"></i><span x-text="exporting ? 'Exporting…' : 'Download PNG'">Download PNG</span></button>
         </div>
     </div>
+    <p x-show="exportMessage" x-text="exportMessage" style="display: none;" class="mb-3 text-sm" role="status"></p>
     <div class="calendar-legend" aria-label="Booking colors">
         <span class="legend-label calendar-follow-up">Follow up / For follow up</span>
         <span class="legend-label calendar-amount">With amount</span>
@@ -74,4 +76,8 @@
         <p class="mt-4 text-sm" role="status">No cooking show bookings for {{ $calendarMonth->format('F Y') }}.</p>
     @endif
 </div>
+
+@push('scripts')
+    <script src="{{ asset('js/calendar-export.js') }}"></script>
+@endpush
 
