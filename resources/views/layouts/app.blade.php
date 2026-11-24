@@ -23,7 +23,7 @@
 
     <style>
         .app-pagebar { background: #fff; border-bottom: 1px solid #e2e8f0; }
-        .app-pagebar-inner { max-width: 1600px; margin: auto; padding: 7px 24px; min-height: 38px; display: flex; align-items: center; color: #526078; }
+        .app-pagebar-inner { width: 100%; padding: 7px 24px; min-height: 38px; display: flex; align-items: center; color: #526078; }
         .app-pagebar .breadcrumbs { padding: 0; font-size: 12px; }
         .app-pagebar .breadcrumbs a:hover { color: #4338ca; }
         .app-pagebar a:focus-visible { outline: 2px solid #4338ca; outline-offset: 3px; }
